@@ -2,7 +2,7 @@ package pl.dinosauruski.lesson;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dinosauruski.availableHour.AvailableSlot;
+import pl.dinosauruski.availableSlot.AvailableSlot;
 import pl.dinosauruski.student.Student;
 import pl.dinosauruski.teacher.Teacher;
 

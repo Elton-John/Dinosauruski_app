@@ -1,4 +1,4 @@
-package pl.dinosauruski.availableHour;
+package pl.dinosauruski.availableSlot;
 
 import lombok.Getter;
 import lombok.Setter;

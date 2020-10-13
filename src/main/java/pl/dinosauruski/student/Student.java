@@ -2,7 +2,7 @@ package pl.dinosauruski.student;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dinosauruski.availableHour.AvailableSlot;
+import pl.dinosauruski.availableSlot.AvailableSlot;
 import pl.dinosauruski.teacher.Teacher;
 
 import javax.persistence.*;
