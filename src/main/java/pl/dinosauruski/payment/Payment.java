@@ -5,8 +5,7 @@ import lombok.Setter;
 import pl.dinosauruski.student.Student;
 import pl.dinosauruski.teacher.Teacher;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -18,8 +17,10 @@ public class Payment {
     @Getter
     private Long id;
     private LocalDate date;
-   // private Student student;
-   // private Teacher teacher;
+    @ManyToOne
+    private Student student;
+    @ManyToOne
+    private Teacher teacher;
     private Double sum;
 
 

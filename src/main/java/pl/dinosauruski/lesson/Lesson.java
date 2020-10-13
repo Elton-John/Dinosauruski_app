@@ -2,14 +2,11 @@ package pl.dinosauruski.lesson;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dinosauruski.availableHour.AvailableHour;
+import pl.dinosauruski.availableHour.AvailableSlot;
 import pl.dinosauruski.student.Student;
 import pl.dinosauruski.teacher.Teacher;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -20,9 +17,12 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate date;
-    //private AvailableHour time;
-    //private Teacher teacher;
-   // private Student student;
+    @ManyToOne
+    private AvailableSlot slot;
+    @ManyToOne
+    private Teacher teacher;
+    @ManyToOne
+    private Student student;
     private boolean completed;
     private boolean cancelled;
     private boolean lastMinuteCancelled;

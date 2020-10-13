@@ -2,13 +2,10 @@ package pl.dinosauruski.student;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dinosauruski.availableHour.AvailableHour;
+import pl.dinosauruski.availableHour.AvailableSlot;
 import pl.dinosauruski.teacher.Teacher;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -25,7 +22,9 @@ public class Student {
     private String password;
     private String email;
     private Double priceForOneLesson;
-  //  private List<Teacher> teachers;
-   // private List<AvailableHour> fixedHours;
+    @ManyToMany(mappedBy = "students")
+    private List<Teacher> teachers;
+    @OneToMany(mappedBy = "regularStudent")
+    private List<AvailableSlot> fixedHours;
 
 }
