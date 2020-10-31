@@ -1,4 +1,4 @@
-package pl.dinosauruski.config;
+package pl.dinosauruski;
 
 
 import org.springframework.context.annotation.Bean;

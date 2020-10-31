@@ -1,9 +1,9 @@
-package pl.dinosauruski.payment;
+package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dinosauruski.student.Student;
-import pl.dinosauruski.teacher.Teacher;
+import pl.dinosauruski.models.Student;
+import pl.dinosauruski.models.Teacher;
 
 import javax.persistence.*;
 import java.time.LocalDate;

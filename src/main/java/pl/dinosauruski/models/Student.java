@@ -1,9 +1,7 @@
-package pl.dinosauruski.student;
+package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dinosauruski.availableSlot.AvailableSlot;
-import pl.dinosauruski.teacher.Teacher;
 
 import javax.persistence.*;
 import java.util.List;

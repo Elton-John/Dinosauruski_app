@@ -1,4 +1,4 @@
-package pl.dinosauruski.dayName;
+package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
