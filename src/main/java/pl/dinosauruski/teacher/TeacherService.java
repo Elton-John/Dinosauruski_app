@@ -12,10 +12,9 @@ import javax.transaction.Transactional;
 
 @Transactional
 @AllArgsConstructor
-
 @Service
 public class TeacherService {
-    @Autowired
+
     private TeacherRepository teacherRepository;
 
     public Teacher getOneOrThrow(Long id) {
@@ -25,11 +24,16 @@ public class TeacherService {
     public void create(Teacher teacher) {
         String hashedPassword = hashPassword(teacher.getPassword());
         teacher.setPassword(hashedPassword);
+        teacher.setRepeatPassword(hashedPassword);
         teacherRepository.save(teacher);
     }
 
-    public void update(Teacher teacher) {
+    public Teacher update(Teacher teacher) {
+        String hashedPassword = hashPassword(teacher.getPassword());
+        teacher.setPassword(hashedPassword);
+        teacher.setRepeatPassword(hashedPassword);
         teacherRepository.save(teacher);
+        return getOneOrThrow(teacher.getId());
     }
 
     public void delete(Teacher teacher) {

@@ -5,12 +5,12 @@
     <title></title>
 </head>
 <body>
-Witaj, <span th:text="${name}"></span>
+Witaj, <span th:text="${teacher.getName()}"></span>
 <br>
 <a th:href="@{/teacher/{id}/edit(id=${teacher.getId()})}">edytuj profil</a>
 <br>
-<a th:href="">wyloguj się</a>
+<a th:href="@{/teacher/logout}">wyloguj się</a>
 <br>
-<a th:href="">usuń profil</a>
+<a th:href="@{/teacher/submit/{id}(id=${teacher.getId()})}">DELETE</a>
 </body>
 </html>
