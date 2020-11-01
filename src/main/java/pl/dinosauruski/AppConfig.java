@@ -12,12 +12,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleContextResolver;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
@@ -51,7 +49,6 @@ public class AppConfig implements WebMvcConfigurer {
         return jpaTransactionManager;
     }
 
-
     @Override   // dodajemy również beana odpowiedzialnego za prawidłową interpretację plików css i js
     public void configureDefaultServletHandling(
             DefaultServletHandlerConfigurer configurer) {
@@ -69,15 +66,6 @@ public class AppConfig implements WebMvcConfigurer {
     public Validator validator() {
         return new LocalValidatorFactoryBean();
     }
-
-//    @Bean
-//    public ViewResolver viewResolver() {
-//        InternalResourceViewResolver viewResolver =
-//                new InternalResourceViewResolver();
-//        viewResolver.setPrefix("/WEB-INF/views/");
-//        viewResolver.setSuffix(".jsp");
-//        return viewResolver;
-//    }
 
     /*
      *Thymeleaf configuration

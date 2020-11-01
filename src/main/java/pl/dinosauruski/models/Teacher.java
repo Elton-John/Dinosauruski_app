@@ -1,17 +1,13 @@
 package pl.dinosauruski.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -29,9 +25,9 @@ public class Teacher {
     @NotBlank(message = "Pole nie może być pustym.")
     private String login;
     @NotBlank(message = "Pole nie może być pustym.")
-    @Size(min = 8, message = "Minimum 8 znaków.")
+    @Size(min = 3, message = "Minimum 8 znaków.")
     private String password;
-    @Transient
+    // @Transient
     @NotBlank(message = "Pole nie może być pustym.")
     private String repeatPassword;
     @NotBlank(message = "Pole nie może być pustym.")
@@ -44,9 +40,5 @@ public class Teacher {
     private Set<AvailableSlot> availableSlots = new HashSet<>();
     @OneToMany(mappedBy = "teacher")
     private Set<Payment> payments = new HashSet<>();
-
-    public Teacher() {
-    }
-
 
 }

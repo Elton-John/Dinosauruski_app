@@ -3,6 +3,7 @@ package pl.dinosauruski;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.FilterRegistration;
@@ -23,5 +24,11 @@ public class AppInitializer implements WebApplicationInitializer {
         filterRegistration.setInitParameter("encoding", "UTF-8");
         filterRegistration.setInitParameter("forceEncoding", "true");
         filterRegistration.addMappingForUrlPatterns(null, true, "/*");
+        registerHiddenFieldFilter(container);
+    }
+
+    private void registerHiddenFieldFilter(ServletContext aContext) {
+        aContext.addFilter("hiddenHttpMethodFilter",
+                new HiddenHttpMethodFilter()).addMappingForUrlPatterns(null ,true, "/*");
     }
 }

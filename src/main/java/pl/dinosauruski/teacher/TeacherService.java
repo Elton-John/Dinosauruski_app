@@ -1,9 +1,7 @@
 package pl.dinosauruski.teacher;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.models.Teacher;
 

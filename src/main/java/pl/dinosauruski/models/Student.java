@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Setter
@@ -21,8 +22,9 @@ public class Student {
     private String email;
     private Double priceForOneLesson;
     @ManyToMany(mappedBy = "students")
-    private List<Teacher> teachers;
+    private Set<Teacher> teachers = new HashSet<>();
     @OneToMany(mappedBy = "regularStudent")
-    private List<AvailableSlot> fixedHours;
+    private Set<AvailableSlot> fixedHours = new HashSet<>();
+
 
 }
