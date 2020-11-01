@@ -19,7 +19,7 @@ public class TeacherService {
     private TeacherRepository teacherRepository;
 
     public Teacher getOneOrThrow(Long id) {
-        return teacherRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return teacherRepository.findById(id).orElseThrow(EntityNotFoundException::new);   // teacher not found
     }
 
     public void create(Teacher teacher) {
@@ -38,6 +38,14 @@ public class TeacherService {
 
     public String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    public Teacher checkLogin(String email, String password) {
+        Teacher teacher = teacherRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new); // teacher not found
+        if (BCrypt.checkpw(password, teacher.getPassword())) {
+            return teacher;
+        }
+        return null;
     }
 
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dinosauruski</title>
+</head>
+<body>
+<h1>Witamy na Dinosauruski!</h1>
+<p>Zaloguj się</p>
+<form th:method="POST" th:action="@{/teacher/login}">
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email">
+    <br>
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password">
+    <br>
+    <input type="submit" value="ZALOGUJ SIĘ">
+</form>
+<p></p>
+<a th:href="@{/teacher/new}">Nie masz konta? Zarejestruj się</a>
+</body>
+</html>

@@ -7,7 +7,7 @@
 <body>
 Witaj, <span th:text="${name}"></span>
 <br>
-<a th:href="">edytuj profil</a>
+<a th:href="@{/teacher/{id}/edit(id=${teacher.getId()})}">edytuj profil</a>
 <br>
 <a th:href="">wyloguj się</a>
 <br>

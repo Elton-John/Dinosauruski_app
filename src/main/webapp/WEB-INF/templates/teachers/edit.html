@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/teacher/{id}(id=${teacher.getId()})}" th:object="${teacher}">
+    <label for="title">Enter title</label>
+    <input type="text" th:field="*{title}" id="title"/>
+    <br>
+    <input type="submit" value="UPDATE"/>
+</form>
+</body>
+</html>
