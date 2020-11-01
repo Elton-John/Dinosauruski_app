@@ -16,5 +16,26 @@ public class DayName {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    private boolean isDayOff;
     private Integer displayOrder;
+
+    public boolean isDayOff() {
+        return isDayOff;
+    }
+
+    public void setDayOff(boolean dayOff) {
+        isDayOff = dayOff;
+    }
+
+    @Override
+    public String toString() {
+        return "DayName{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isDayOff=" + isDayOff +
+                ", displayOrder=" + displayOrder +
+                '}';
+    }
+
+
 }

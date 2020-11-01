@@ -1,1 +1,1 @@
-INSERT INTO `DayName` (name, displayOrder) VALUES ('poniedziałek', 1),( 'wtorek', 2),('środa', 3),('czwartek', 4),('piątek', 5),( 'sobota', 6),( 'niedziela', 7);
+INSERT INTO `DayName` (name, displayOrder, isDayOff) VALUES ('poniedziałek', 1, true),( 'wtorek', 2, true),('środa', 3, true),('czwartek', 4, true),('piątek', 5, true),( 'sobota', 6, true),( 'niedziela', 7, true);
