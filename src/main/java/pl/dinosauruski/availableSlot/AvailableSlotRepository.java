@@ -1,0 +1,19 @@
+package pl.dinosauruski.availableSlot;
+
+import lombok.AllArgsConstructor;
+import org.hibernate.sql.Update;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import pl.dinosauruski.models.AvailableSlot;
+
+@Repository
+public interface AvailableSlotRepository extends JpaRepository<AvailableSlot, Long> {
+
+
+    @Modifying
+    @Query("update AvailableSlot slot set slot.regularStudent = null where slot.id =  :id")
+    void deleteStudentReference(@Param("id") Long id);
+}

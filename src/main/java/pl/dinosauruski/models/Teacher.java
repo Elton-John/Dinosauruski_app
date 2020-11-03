@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -37,7 +38,7 @@ public class Teacher {
     @JoinTable(name = "teachers_student", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Set<Student> students = new HashSet<>();
     @OneToMany(mappedBy = "teacher")
-    private Set<AvailableSlot> availableSlots = new HashSet<>();
+    private List<AvailableSlot> availableSlots;
     @OneToMany(mappedBy = "teacher")
     private Set<Payment> payments = new HashSet<>();
 

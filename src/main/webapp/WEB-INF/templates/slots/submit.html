@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+Delete
+<p th:text="${dayName}"></p>?
+<p th:text="${time}"></p>?
+<a href="/slots">Wróć </a>
+<form th:method="DELETE" th:action="@{/slots/delete/{id}(id=${id})}">
+    <input type="submit" value="DELETE">
+</form>
+</body>
+</html>

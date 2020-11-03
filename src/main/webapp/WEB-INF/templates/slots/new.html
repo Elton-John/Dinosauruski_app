@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+Tu dodajemy nowy slot:
+
+<form th:method="post" th:action="@{/slots/new}" th:object="${slot}">
+
+    <label for="day">Wybierz dzień:</label>
+    <select th:field="*{dayName.id}">
+        <option th:each="day : ${days}" th:value="${day.id}" th:text="${day.name}" id="day"></option>
+    </select>
+    <br>
+
+    <label for="time">Godzina:</label>
+    <input type="time" th:field="*{time}" id="time">
+    <br>
+
+    <input type="submit" value="SAVE">
+</form>
+</body>
+</html>

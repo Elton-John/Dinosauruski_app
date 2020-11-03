@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<h1>Slots list</h1>
+
+<table>
+    <tr>
+        <th>DAY</th>
+        <th>TIME</th>
+        <th>IS BOOKED</th>
+        <th>IS ONCE FREE</th>
+        <th>EDIT</th>
+        <th>DELETE</th>
+
+    </tr>
+    <tr th:each="slot : ${slots}">
+        <td th:text="${slot.dayName.name}">day name</td>
+        <td th:text="${slot.time}">time</td>
+
+        <td th:if="${slot.isBooked()} == true">BOOKED</td>
+        <td th:if="${slot.isBooked()} == false">FREE</td>
+
+        <td th:if="${slot.isOnceFree()} == true">FREE FOR ONCE</td>
+        <td th:if="${slot.isOnceFree()} == false">---</td>
+
+        <td><a th:href="@{/slots/{id}/edit(id=${slot.getId()})}"> edytuj</a></td>
+        <td><a th:href="@{/slots/submit/{id}(id=${slot.getId()})}"> usuń</a></td>
+
+    </tr>
+</table>
+
+<p>
+    <a th:href="@{/}">Return to home</a>
+</p>
+</body>
+</html>
