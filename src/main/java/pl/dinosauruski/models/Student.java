@@ -23,8 +23,13 @@ public class Student {
     private Double priceForOneLesson;
     @ManyToMany(mappedBy = "students")
     private Set<Teacher> teachers = new HashSet<>();
-    @OneToMany(mappedBy = "regularStudent")
-    private Set<AvailableSlot> fixedHours = new HashSet<>();
+    @OneToMany(mappedBy = "regularStudent", fetch = FetchType.EAGER)
+    private Set<AvailableSlot> slots = new HashSet<>();
+    private Boolean active;
+
+    public String getFullName() {
+        return this.name + " " + this.surname;
+    }
 
 
 }

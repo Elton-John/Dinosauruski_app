@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/students/{id}(id=${student.getId()})}" th:object="${student}">
+    <label for="name">Imię:</label>
+    <input type="text" th:field="*{name}" id="name">
+    <p class="error" th:errors="*{name}"></p>
+    <br>
+    <label for="surname">Nazwisko:</label>
+    <input type="text" th:field="*{surname}" id="surname">
+    <p class="error" th:errors="*{surname}"></p>
+    <br>
+    <label for="email">Adres e-mail:</label>
+    <input type="email" th:field="*{email}" id="email">
+    <p class="error" th:errors="*{email}"></p>
+    <br>
+    <label for="priceForOneLesson">Cena za lekcję:</label>
+    <input type="number" th:field="*{priceForOneLesson}" id="priceForOneLesson">
+    <p class="error" th:errors="*{priceForOneLesson}"></p>
+    <input type="submit" value="SAVE">
+</form>
+</body>
+</html>

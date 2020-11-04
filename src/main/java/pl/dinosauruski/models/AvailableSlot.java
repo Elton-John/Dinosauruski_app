@@ -27,7 +27,7 @@ public class AvailableSlot {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private Boolean isBooked;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Student regularStudent;
 
     public Boolean getOnceFree() {

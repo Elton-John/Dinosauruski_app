@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h1>Students list</h1>
+
+<table>
+    <tr>
+        <th> NAME</th>
+        <th> SURNAME</th>
+        <th>EMAIL</th>
+        <th>PRICE FOR ONE LESSON</th>
+        <!--        <th>STATUS</th>-->
+        <th>PROFILE</th>
+
+
+    </tr>
+    <tr th:each="student : ${students}">
+        <td th:text="${student.name}"> name</td>
+        <td th:text="${student.surname}"> name</td>
+        <td th:text="${student.email}">email</td>
+
+        <td th:text="${student.priceForOneLesson}">price</td>
+        <td th:if="${student.priceForOneLesson}==null">0.0</td>
+
+        <td><a th:href="@{/students/{id}/profile(id=${student.getId()})}"> ZOBACZ PROFIL</a></td>
+
+
+    </tr>
+</table>
+<h2>
+    <a th:href="@{/students/new}">Dodaj nowego studenta</a>
+</h2>
+<p>
+    <a th:href="@{/}">Return to home</a>
+</p>
+</body>
+</html>

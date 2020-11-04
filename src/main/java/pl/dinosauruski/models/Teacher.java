@@ -35,7 +35,7 @@ public class Teacher {
     @Email
     private String email;
     @ManyToMany
-    @JoinTable(name = "teachers_student", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
+    @JoinTable(name = "teachers_students", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Set<Student> students = new HashSet<>();
     @OneToMany(mappedBy = "teacher")
     private List<AvailableSlot> availableSlots;

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h1 th:text="${student.name}"></h1>
+<h1 th:text="${student.surname}"></h1>
+<p th:text="${student.email}"></p>
+<p th:text="${student.priceForOneLesson}"></p>
+<div th:each="slot : ${slots}">
+    <p  th:text="${slot.dayName.name}">day</p>
+    <p  th:text="${slot.time}">time</p>
+</div>
+<td><a th:href="@{/students/{id}/edit(id=${student.getId()})}"> edytuj</a></td>
+<td><a th:href="@{/students/submit/{id}(id=${student.getId()})}"> usuń</a></td>
+</body>
+</html>

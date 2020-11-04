@@ -21,4 +21,19 @@ public class StudentService {
     public List<Student> findAll() {
         return studentRepository.findAll();
     }
+
+    public void create(Student student){
+        studentRepository.save(student);
+    }
+
+    public void update(Student student){
+        studentRepository.save(student);
+    }
+
+    public void delete( Student student){
+        studentRepository.delete(student);
+    }
+
+
+
 }
