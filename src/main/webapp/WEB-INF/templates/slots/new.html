@@ -18,6 +18,24 @@ Tu dodajemy nowy slot:
     <label for="time">Godzina:</label>
     <input type="time" th:field="*{time}" id="time">
     <br>
+    <div>
+        <label th:for="isBooked" th:text="'Is Booked:'"></label>
+        <input type="checkbox" th:field="*{isBooked}"/>
+    </div>
+
+
+        <label for="students">Wybierz studenta:</label>
+        <select th:field="*{regularStudent.id}">
+            <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.name}" id="students">
+            </option>
+        </select>
+    <br>
+    <div>
+        <label th:for="isOnceFree" th:text="'Is once free:'"></label>
+        <input type="checkbox" th:field="*{isOnceFree}"/>
+    </div>
+
+    <input type="date" th:value="*{date}" th:field="*{date}" />
 
     <input type="submit" value="SAVE">
 </form>

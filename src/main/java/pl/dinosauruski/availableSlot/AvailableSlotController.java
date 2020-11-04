@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.dayName.DayNameService;
 import pl.dinosauruski.models.AvailableSlot;
 import pl.dinosauruski.models.DayName;
+import pl.dinosauruski.models.Student;
+import pl.dinosauruski.student.StudentService;
 
 import javax.swing.*;
 import java.awt.print.Book;
@@ -20,6 +22,7 @@ import java.util.List;
 public class AvailableSlotController {
     private final AvailableSlotService availableSlotService;
     private final DayNameService dayNameService;
+    private final StudentService studentService;
 
     @GetMapping
     protected String index(Model model) {
@@ -29,31 +32,34 @@ public class AvailableSlotController {
     }
 
     @GetMapping("/new")
-    protected String newSlot(Model model){
+    protected String newSlot(Model model) {
         AvailableSlot availableSlot = new AvailableSlot();
         model.addAttribute("slot", availableSlot);
         model.addAttribute("days");
+        model.addAttribute("students");
         return "slots/new";
     }
 
     @PostMapping("/new")
-    protected String create(AvailableSlot availableSlot){
-        availableSlotService.createRegularFreeSlot(availableSlot);
+    protected String create(AvailableSlot availableSlot) {
+        availableSlotService.create(availableSlot);
         return "redirect:/slots";
     }
 
     @GetMapping("/{id}/edit")
-    protected String editForm(@PathVariable Long id, Model model){
+    protected String editForm(@PathVariable Long id, Model model) {
         AvailableSlot slot = availableSlotService.getOneOrThrow(id);
         model.addAttribute("slot", slot);
-        return "slots/edit";
+                return "slots/edit";
     }
 
     @PatchMapping("/{id}/edit")
-    protected String edit(AvailableSlot availableSlot){
+    protected String edit(AvailableSlot availableSlot, @PathVariable Long id) {
+        availableSlotService.getOneOrThrow(id);
         availableSlotService.update(availableSlot);
         return "redirect:/slots";
     }
+
     @GetMapping("/submit/{id}")
     public String submitDeleting(@PathVariable Long id, Model model) {
         AvailableSlot slot = availableSlotService.getOneOrThrow(id);
@@ -69,8 +75,14 @@ public class AvailableSlotController {
         availableSlotService.delete(slot);
         return "redirect:/slots";
     }
+
     @ModelAttribute("days")
-    protected List<DayName> days(){
+    protected List<DayName> days() {
         return dayNameService.showAllDays();
+    }
+
+    @ModelAttribute("students")
+    protected List<Student> students() {
+        return studentService.findAll();
     }
 }

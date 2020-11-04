@@ -14,6 +14,7 @@
         <th>TIME</th>
         <th>IS BOOKED</th>
         <th>IS ONCE FREE</th>
+        <th>DATE</th>
         <th>EDIT</th>
         <th>DELETE</th>
 
@@ -22,18 +23,22 @@
         <td th:text="${slot.dayName.name}">day name</td>
         <td th:text="${slot.time}">time</td>
 
-        <td th:if="${slot.isBooked()} == true">BOOKED</td>
-        <td th:if="${slot.isBooked()} == false">FREE</td>
+        <td th:if="${slot.getBooked()} == true">BOOKED</td>
+        <td th:if="${slot.getBooked()} == false">FREE</td>
 
-        <td th:if="${slot.isOnceFree()} == true">FREE FOR ONCE</td>
-        <td th:if="${slot.isOnceFree()} == false">---</td>
+        <td th:if="${slot.getOnceFree()} == true">FREE FOR ONCE</td>
+        <td th:if="${slot.getOnceFree()} == false">---</td>
+
+        <td th:text="${slot.date}">date</td>
 
         <td><a th:href="@{/slots/{id}/edit(id=${slot.getId()})}"> edytuj</a></td>
         <td><a th:href="@{/slots/submit/{id}(id=${slot.getId()})}"> usuń</a></td>
 
     </tr>
 </table>
-
+<h2>
+    <a th:href="@{/slots/new}">Dodaj nowy termin</a>
+</h2>
 <p>
     <a th:href="@{/}">Return to home</a>
 </p>

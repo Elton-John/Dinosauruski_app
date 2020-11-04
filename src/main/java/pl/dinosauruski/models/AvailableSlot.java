@@ -2,6 +2,7 @@ package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -22,25 +23,26 @@ public class AvailableSlot {
     //@Column(nullable = false)
     @ManyToOne
     private Teacher teacher;
-    private boolean isOnceFree;
-    private LocalDate localDate;
-    private boolean isBooked;
+    private Boolean isOnceFree;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
+    private Boolean isBooked;
     @ManyToOne
     private Student regularStudent;
 
-    public boolean isOnceFree() {
+    public Boolean getOnceFree() {
         return isOnceFree;
     }
 
-    public void setOnceFree(boolean onceFree) {
+    public void setOnceFree(Boolean onceFree) {
         isOnceFree = onceFree;
     }
 
-    public boolean isBooked() {
+    public Boolean getBooked() {
         return isBooked;
     }
 
-    public void setBooked(boolean booked) {
+    public void setBooked(Boolean booked) {
         isBooked = booked;
     }
 }

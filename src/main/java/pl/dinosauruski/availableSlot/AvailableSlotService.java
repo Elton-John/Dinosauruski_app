@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.dayName.DayNameService;
 import pl.dinosauruski.models.AvailableSlot;
+import pl.dinosauruski.models.DayName;
 import pl.dinosauruski.models.Student;
 import pl.dinosauruski.student.StudentService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -25,6 +27,12 @@ public class AvailableSlotService {
 
     public AvailableSlot getOneOrThrow(Long id) {
         return availableSlotRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public void create(AvailableSlot availableSlot) {
+        availableSlotRepository.save(availableSlot);
+        Integer dayNameId = availableSlot.getDayName().getId();
+        dayNameService.markAsWorkDay(dayNameId);
     }
 
     public void createRegularFreeSlot(AvailableSlot availableSlot) {
@@ -44,16 +52,41 @@ public class AvailableSlotService {
         Student student = studentService.getOneOrThrow(studentId);
         availableSlot.setRegularStudent(student);
         availableSlot.setBooked(true);
-        update(availableSlot);
+        updateBooked(availableSlot);
     }
 
     public void unBookedSlot(AvailableSlot availableSlot) {
         availableSlotRepository.deleteStudentReference(availableSlot.getId());
         availableSlot.setBooked(false);
-        update(availableSlot);
+        updateBooked(availableSlot);
     }
 
     public void update(AvailableSlot availableSlot) {
+        dayNameService.markAsWorkDay(availableSlot.getDayName().getId());
+        availableSlotRepository.save(availableSlot);
+        refreshDayNameStatus();
+    }
+
+    private void refreshDayNameStatus() {
+        Set<Integer> workDaysId = availableSlotRepository.findAllDayNameId();
+        for (int id = 1; id <= 7; id++) {
+            DayName dayName = dayNameService.getById(id);
+            if (workDaysId.contains(id)) {
+                dayName.setDayOff(false);
+            } else {
+                dayName.setDayOff(true);
+            }
+        }
+    }
+
+    private void checkIsDayOff(Integer oldDayNameId) {
+        Set<Integer> daysId = availableSlotRepository.findAllDayNameId();
+        if (!daysId.contains(oldDayNameId)) {
+            dayNameService.markAsDayOff(oldDayNameId);
+        }
+    }
+
+    public void updateBooked(AvailableSlot availableSlot) {
         availableSlotRepository.save(availableSlot);
     }
 

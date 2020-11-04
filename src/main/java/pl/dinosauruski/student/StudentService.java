@@ -6,6 +6,7 @@ import pl.dinosauruski.models.Student;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -15,5 +16,9 @@ public class StudentService {
 
     public Student getOneOrThrow(Long id){
        return studentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public List<Student> findAll() {
+        return studentRepository.findAll();
     }
 }
