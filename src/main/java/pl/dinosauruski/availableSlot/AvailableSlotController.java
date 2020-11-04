@@ -3,7 +3,6 @@ package pl.dinosauruski.availableSlot;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.dayName.DayNameService;
 import pl.dinosauruski.models.AvailableSlot;
@@ -11,8 +10,6 @@ import pl.dinosauruski.models.DayName;
 import pl.dinosauruski.models.Student;
 import pl.dinosauruski.student.StudentService;
 
-import javax.swing.*;
-import java.awt.print.Book;
 import java.util.List;
 
 ///only CRUD
@@ -50,7 +47,7 @@ public class AvailableSlotController {
     protected String editForm(@PathVariable Long id, Model model) {
         AvailableSlot slot = availableSlotService.getOneOrThrow(id);
         model.addAttribute("slot", slot);
-                return "slots/edit";
+        return "slots/edit";
     }
 
     @PatchMapping("/{id}/edit")

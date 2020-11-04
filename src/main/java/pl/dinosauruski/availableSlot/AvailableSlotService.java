@@ -67,6 +67,15 @@ public class AvailableSlotService {
         refreshDayNameStatus();
     }
 
+    public void updateBooked(AvailableSlot availableSlot) {
+        availableSlotRepository.save(availableSlot);
+    }
+
+    public void delete(AvailableSlot availableSlot) {
+        availableSlotRepository.delete(availableSlot);
+        refreshDayNameStatus();
+    }
+
     private void refreshDayNameStatus() {
         Set<Integer> workDaysId = availableSlotRepository.findAllDayNameId();
         for (int id = 1; id <= 7; id++) {
@@ -77,20 +86,5 @@ public class AvailableSlotService {
                 dayName.setDayOff(true);
             }
         }
-    }
-
-    private void checkIsDayOff(Integer oldDayNameId) {
-        Set<Integer> daysId = availableSlotRepository.findAllDayNameId();
-        if (!daysId.contains(oldDayNameId)) {
-            dayNameService.markAsDayOff(oldDayNameId);
-        }
-    }
-
-    public void updateBooked(AvailableSlot availableSlot) {
-        availableSlotRepository.save(availableSlot);
-    }
-
-    public void delete(AvailableSlot availableSlot) {
-        availableSlotRepository.delete(availableSlot);
     }
 }
