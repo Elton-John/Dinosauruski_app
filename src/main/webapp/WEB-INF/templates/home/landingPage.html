@@ -7,7 +7,7 @@
 <body>
 <h1>Witamy na Dinosauruski!</h1>
 <p>Zaloguj się</p>
-<form th:method="POST" th:action="@{/teacher/login}">
+<form th:method="POST" th:action="@{/login}">
     <label for="email">Email:</label>
     <input type="email" name="email" id="email">
     <br>
@@ -17,6 +17,6 @@
     <input type="submit" value="ZALOGUJ SIĘ">
 </form>
 <p></p>
-<a th:href="@{/teacher/new}">Nie masz konta? Zarejestruj się</a>
+<a th:href="@{/new}">Nie masz konta? Zarejestruj się</a>
 </body>
 </html>

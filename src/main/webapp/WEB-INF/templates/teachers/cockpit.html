@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title></title>
@@ -20,7 +20,8 @@ Witaj, <span th:text="${teacher.getName()}"></span>
 <span>------------------------------------------------</span>
 <h3>OPŁATY</h3>
 <span>------------------------------------------------</span>
-<h3>STUDENCI</h3>
+
+<a th:href="@{/teacher/students}"><h3>STUDENCI</h3></a>
 <span>------------------------------------------------</span>
 
 <a th:href=""></a>

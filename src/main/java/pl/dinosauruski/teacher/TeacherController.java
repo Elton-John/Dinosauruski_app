@@ -3,7 +3,6 @@ package pl.dinosauruski.teacher;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.WebUtils;
 import pl.dinosauruski.models.Teacher;
@@ -11,56 +10,15 @@ import pl.dinosauruski.models.Teacher;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import javax.servlet.http.HttpSession;
 
 @AllArgsConstructor
 @Controller
 @RequestMapping("/teacher")
 public class TeacherController {
 
-    private TeacherService teacherService;
+    private final TeacherService teacherService;
 
-    @GetMapping("/new")
-    public String newTeacher(Model model) {
-        model.addAttribute("teacher", new Teacher());
-        return "teachers/new";
-    }
-
-    @PostMapping("/new")
-    public String create(@Valid @ModelAttribute Teacher teacher,
-                         BindingResult result,
-                         Model model) {
-        if (result.hasErrors()) {
-            return "teachers/new";
-        }
-        if (teacher.getPassword().equals(teacher.getRepeatPassword())) {
-            teacherService.create(teacher);
-            return "redirect:/";
-        } else {
-            model.addAttribute("passwordError", "Hasła są rożne.");
-            return "teachers/new";
-        }
-    }
-
-    @PostMapping("/login")
-    public String displayLoginForm(@RequestParam("email") String email,
-                                   @RequestParam("password") String password,
-                                   HttpServletResponse response,
-                                   Model model) {
-        if (teacherService.checkLogin(email, password) == null) {
-            return "redirect:/";
-        } else {
-            Teacher loggedTeacher = teacherService.checkLogin(email, password);
-            Cookie loginCookie = new Cookie("login", "yes");
-            Cookie idCookie = new Cookie("id", loggedTeacher.getId().toString());
-            loginCookie.setPath("/teacher");
-            idCookie.setPath("/teacher");
-            response.addCookie(loginCookie);
-            response.addCookie(idCookie);
-            model.addAttribute("teacher", loggedTeacher);
-            return "teachers/cockpit";
-        }
-    }
 
     @GetMapping("/cockpit")
     public String displayCockpit(
@@ -114,9 +72,12 @@ public class TeacherController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
+    public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         deleteCookie(request, response, "login");
         deleteCookie(request, response, "id");
+        if (session != null) {
+            session.invalidate();
+        }
         return "redirect:/";
     }
 
