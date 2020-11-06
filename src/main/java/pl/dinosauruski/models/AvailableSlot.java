@@ -45,4 +45,8 @@ public class AvailableSlot {
     public void setBooked(Boolean booked) {
         isBooked = booked;
     }
+
+    public String getDayAndTime() {
+        return this.dayName.getName() + " " + this.time;
+    }
 }

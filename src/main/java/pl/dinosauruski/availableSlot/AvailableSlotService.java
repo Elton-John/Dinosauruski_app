@@ -56,10 +56,15 @@ public class AvailableSlotService {
     }
 
     public void unBookedSlot(AvailableSlot availableSlot) {
-        availableSlotRepository.deleteStudentReference(availableSlot.getId());
+        deleteStudentReference(availableSlot);
         availableSlot.setBooked(false);
         updateBooked(availableSlot);
     }
+
+    private void deleteStudentReference(AvailableSlot availableSlot) {
+        availableSlot.setRegularStudent(null);
+    }
+
 
     public void update(AvailableSlot availableSlot) {
         dayNameService.markAsWorkDay(availableSlot.getDayName().getId());
@@ -86,5 +91,9 @@ public class AvailableSlotService {
                 dayName.setDayOff(true);
             }
         }
+    }
+
+    public List<AvailableSlot> getAllFreeSlots() {
+        return availableSlotRepository.findAllWhereIsBookedIsFalse();
     }
 }

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/teacher/students/edit/{id}(id=${student.getId()})}" th:object="${student}">
+
+    <input type="hidden" th:field="*{name}">
+    <input type="hidden" th:field="*{surname}">
+    <input type="hidden" th:field="*{email}">
+
+    <label for="priceForOneLesson">Cena za lekcję:</label>
+    <input type="number" th:field="*{priceForOneLesson}" id="priceForOneLesson">
+    <p class="error" th:errors="*{priceForOneLesson}"></p>
+    <input type="submit" value="SAVE">
+</form>
+</body>
+</html>

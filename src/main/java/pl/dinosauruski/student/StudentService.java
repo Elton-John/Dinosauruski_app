@@ -12,28 +12,25 @@ import java.util.List;
 @Transactional
 @AllArgsConstructor
 public class StudentService {
-    private final StudentRepository studentRepository;
-
-    public Student getOneOrThrow(Long id){
-       return studentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-    }
+    protected final StudentRepository studentRepository;
 
     public List<Student> findAll() {
         return studentRepository.findAll();
     }
 
-    public void create(Student student){
+    public Student getOneOrThrow(Long id) {
+        return studentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public void create(Student student) {
         studentRepository.save(student);
     }
 
-    public void update(Student student){
+    public void update(Student student) {
         studentRepository.save(student);
     }
 
-    public void delete( Student student){
-        studentRepository.delete(student);
+    public void delete(Long id) {
+        studentRepository.deleteById(id);
     }
-
-
-
 }

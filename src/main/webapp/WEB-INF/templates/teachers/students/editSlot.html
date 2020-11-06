@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+Stałe godziny zajęć studenta <span th:text="${student.name}"></span> <span th:text="${student.surname}"></span>
+
+<table>
+    <tr>
+        <th> day</th>
+        <th> time</th>
+        <th> daytime</th>
+        <th> usuń </th>
+
+
+
+    </tr>
+    <tr th:each="slot : ${slots}">
+        <td th:text="${slot.dayName.name}"> name</td>
+        <td th:text="${slot.time}"> name</td>
+        <td th:text="${slot.getDayAndTime()}"> name</td>
+
+
+        <td><a th:href="@{/teacher/students/{id}/delete/slot/{slotId}(id=${student.getId()},slotId=${slot.getId()})}"> USUŃ </a></td>
+
+
+    </tr>
+</table>
+
+
+
+<form th:method="PATCH" th:action="@{/teacher/students/{id}/add/slot/{slotId}(id=${student.getId()},slotId=${freeSlot.id})}" th:object="${student}">
+    <input type="hidden" th:field="*{name}">
+    <input type="hidden" th:field="*{surname}">
+    <input type="hidden" th:field="*{email}">
+    <input type="hidden" th:field="*{priceForOneLesson}" id="priceForOneLesson">
+
+<!--    <label for="slot">Wybierz inną godzinę z dostępnych:</label>-->
+<!--    <select th:field="*{slots}">-->
+<!--        <option th:each="freeSlot : ${freeSlots}" th:value="${freeSlot.id}" th:text="${freeSlot.getDayAndTime()}" id="slot">-->
+<!--        </option>-->
+<!--    </select>-->
+<!--    <br>-->
+
+    <ul>
+        <li th:each="checkboxValue: ${freeSlots}">
+            <input type="checkbox"
+                   th:field="*{slots}"
+                   th:value="${checkboxValue.time}" />
+            <label
+                    th:for="${#ids.prev('freeSlots')}"
+                    th:text="${checkboxValue}"></label>
+        </li>
+    </ul>
+    <input type="submit" value="SAVE">
+</form>
+</body>
+</html>

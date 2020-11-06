@@ -6,14 +6,20 @@
 </head>
 <body>
 <h1>Students list</h1>
-
+<h3>
+    <a th:href="@{/teacher/students/active}"> Pokaż tylko aktywnych</a>
+</h3>
+<h3>
+    <a th:href="@{/teacher/students}"> Pokaż wszystkich </a>
+</h3>
+<span th:text="${onlyActive} ? 'TYLKO AKTYWNI' : 'WSZYSCY'"></span>
 <table>
     <tr>
         <th> NAME</th>
         <th> SURNAME</th>
         <th>EMAIL</th>
         <th>PRICE FOR ONE LESSON</th>
-        <!--        <th>STATUS</th>-->
+        <th>STATUS</th>
         <th>PROFILE</th>
 
 
@@ -25,14 +31,14 @@
 
         <td th:text="${student.priceForOneLesson}">price</td>
         <td th:if="${student.priceForOneLesson}==null">0.0</td>
+        <td th:text="${student.active} ? 'ACTIVE' : 'RETIRED'"></td>
 
-        <td><a th:href="@{/students/{id}/profile(id=${student.getId()})}"> ZOBACZ PROFIL</a></td>
-
-
+        <td><a th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}"> ZOBACZ PROFIL</a></td>
     </tr>
 </table>
+
 <h2>
-    <a th:href="@{/students/new}">Dodaj nowego studenta</a>
+    <a th:href="@{/teacher/students/new}">Dodaj nowego studenta</a>
 </h2>
 <p>
     <a th:href="@{/}">Return to home</a>
