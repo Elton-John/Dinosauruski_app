@@ -1,44 +1,50 @@
 package pl.dinosauruski.teacher;
 
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import pl.dinosauruski.models.Teacher;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
-@AllArgsConstructor
 @Controller
-@RequestMapping()
+@RequestMapping("/login")
 public class LoginController {
-    private final TeacherService teacherService;
 
-    @PostMapping("/login")
-    public String login(@SessionAttribute(value = "loggedTeacher", required = false) Teacher teacher, @RequestParam("email") String email,
-                        @RequestParam("password") String password,
-                        HttpServletResponse response,
-                        Model model, HttpSession session) {
-        if (teacherService.checkLogin(email, password) == null) {
-            return "redirect:/";
-        } else {
-            Teacher loggedTeacher = teacherService.checkLogin(email, password);
-            Cookie loginCookie = new Cookie("login", "yes");
-            Cookie idCookie = new Cookie("id", loggedTeacher.getId().toString());
-            loginCookie.setPath("/teacher");
-            idCookie.setPath("/teacher");
-            response.addCookie(loginCookie);
-            response.addCookie(idCookie);
-            model.addAttribute("teacher", loggedTeacher);
-            session.setAttribute("loggedTeacher", loggedTeacher);
+    @Autowired
+    private LoginService loginService;
+    @Autowired
+    private TeacherService teacherService;
 
-//
-            return "teachers/cockpit";
+    @GetMapping
+    public String loginPage(@SessionAttribute(value = "loggedTeacher", required = false) TeacherDTO loggedTeacher) {
+        if (loggedTeacher != null) {
+            return "redirect:/teacher/cockpit";
         }
+        return "teachers/login";
+    }
+
+    @PostMapping
+    public String login(@SessionAttribute(value = "loggedTeacher", required = false) TeacherDTO loggedTeacher,
+                               @ModelAttribute("teacherLoginForm") @Valid TeacherLoginFormDTO form, BindingResult result,
+                               HttpSession session, Model model) {
+        if (loggedTeacher != null) {
+            return "redirect:/teacher/cockpit";
+        }
+        if (result.hasErrors()) {
+            return "teachers/login";
+        }
+        boolean validCredentials = loginService.validate(form.getEmail(), form.getPassword());
+        if (!validCredentials) {
+            result.rejectValue("email", "errors.invalid", "Login i/lub hasło są niepoprawne");
+            return "teachers/login";
+        }
+        TeacherDTO teacherDTO = loginService.login(form.getEmail());
+        session.setAttribute("loggedTeacher", teacherDTO);
+//        Teacher teacher = teacherService.getOneOrThrow(teacherDTO.getId());
+//        model.addAttribute("teacher", teacher);
+        return "redirect:/teacher/cockpit";
     }
 }

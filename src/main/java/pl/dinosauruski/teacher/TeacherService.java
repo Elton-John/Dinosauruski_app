@@ -3,9 +3,13 @@ package pl.dinosauruski.teacher;
 import lombok.AllArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 import pl.dinosauruski.models.Teacher;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 @Transactional
@@ -42,12 +46,14 @@ public class TeacherService {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public Teacher checkLogin(String email, String password) {
-        Teacher teacher = teacherRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new); // teacher not found
-        if (BCrypt.checkpw(password, teacher.getPassword())) {
-            return teacher;
-        }
-        return null;
-    }
 
+    protected void deleteCookie(HttpServletRequest request,
+                                HttpServletResponse response,
+                                String cookieName) {
+        Cookie cookie = WebUtils.getCookie(request, cookieName);
+        if (cookie != null) {
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+    }
 }

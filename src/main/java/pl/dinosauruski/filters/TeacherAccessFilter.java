@@ -1,6 +1,6 @@
 package pl.dinosauruski.filters;
 
-import pl.dinosauruski.models.Teacher;
+import pl.dinosauruski.teacher.TeacherDTO;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -15,6 +15,7 @@ public class TeacherAccessFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
 
     }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -22,7 +23,7 @@ public class TeacherAccessFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         HttpSession session = req.getSession();
-        Teacher teacher = (Teacher) session.getAttribute("loggedTeacher");
+        TeacherDTO teacher = (TeacherDTO) session.getAttribute("loggedTeacher");
 
         if (teacher == null) {
             res.sendRedirect("/");
@@ -31,6 +32,7 @@ public class TeacherAccessFilter implements Filter {
         chain.doFilter(request, response);
 
     }
+
     @Override
     public void destroy() {
 

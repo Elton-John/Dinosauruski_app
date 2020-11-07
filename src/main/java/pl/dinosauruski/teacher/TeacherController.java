@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.WebUtils;
+import pl.dinosauruski.availableSlot.AvailableSlotService;
+import pl.dinosauruski.models.AvailableSlot;
 import pl.dinosauruski.models.Teacher;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @AllArgsConstructor
 @Controller
@@ -18,20 +19,23 @@ import javax.servlet.http.HttpSession;
 public class TeacherController {
 
     private final TeacherService teacherService;
+    private final AvailableSlotService availableSlotService;
 
 
     @GetMapping("/cockpit")
-    public String displayCockpit(
-            Model model,
-            HttpServletRequest request) {
-        Cookie loginCookie = WebUtils.getCookie(request, "login");
-        Cookie idCookie = WebUtils.getCookie(request, "id");
-        if (loginCookie == null || idCookie == null) {
-            return "redirect:/";
-        }
-        Long id = Long.parseLong(idCookie.getValue());
+    public String displayCockpit(@SessionAttribute(value = "loggedTeacher", required = false) TeacherDTO loggedTeacher,
+                                 Model model,
+                                 HttpServletRequest request) {
+//        Cookie loginCookie = WebUtils.getCookie(request, "login");
+//        Cookie idCookie = WebUtils.getCookie(request, "id");
+//        if (loginCookie == null || idCookie == null) {
+//            return "redirect:/";
+//        }
+//        Long id = Long.parseLong(idCookie.getValue());
+        Long id = loggedTeacher.getId();
         Teacher teacher = teacherService.getOneOrThrow(id);
         model.addAttribute("teacher", teacher);
+        model.addAttribute("freeSlots");
         return "teachers/cockpit";
     }
 
@@ -66,28 +70,25 @@ public class TeacherController {
                          HttpServletResponse response) {
         Teacher teacher = teacherService.getOneOrThrow(id);
         teacherService.delete(teacher);
-        deleteCookie(request, response, "login");
-        deleteCookie(request, response, "id");
+        teacherService.deleteCookie(request, response, "login");
+        teacherService.deleteCookie(request, response, "id");
         return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-        deleteCookie(request, response, "login");
-        deleteCookie(request, response, "id");
+        teacherService.deleteCookie(request, response, "login");
+        teacherService.deleteCookie(request, response, "id");
         if (session != null) {
             session.invalidate();
         }
         return "redirect:/";
     }
 
-    protected void deleteCookie(HttpServletRequest request,
-                                HttpServletResponse response,
-                                String cookieName) {
-        Cookie cookie = WebUtils.getCookie(request, cookieName);
-        if (cookie != null) {
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
-        }
+
+    @ModelAttribute("freeSlots")
+    public List<AvailableSlot> slots() {
+        return availableSlotService.getAllFreeSlots();
     }
+
 }
