@@ -2,12 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+
     <title></title>
 </head>
 <body>
 Witaj, <span th:text="${teacher.getName()}"></span>
 <br>
-<a th:href="@{/teacher/{id}/edit(id=${teacher.getId()})}">EDYTUJ PROFIL</a>
+<a th:href="@{/teacher/edit/{id}(id=${teacher.getId()})}">EDYTUJ PROFIL</a>
 <br>
 <a th:href="@{/teacher/logout}">WYLOGUJ SIĘ</a>
 <br>

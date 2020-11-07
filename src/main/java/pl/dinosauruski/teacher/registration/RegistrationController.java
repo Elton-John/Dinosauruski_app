@@ -1,4 +1,4 @@
-package pl.dinosauruski.teacher;
+package pl.dinosauruski.teacher.registration;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.dinosauruski.models.Teacher;
+import pl.dinosauruski.teacher.TeacherService;
 
 import javax.validation.Valid;
 
@@ -32,12 +33,14 @@ public class RegistrationController {
         if (result.hasErrors()) {
             return "teachers/new";
         }
-        if (teacher.getPassword().equals(teacher.getRepeatPassword())) {
-            teacherService.create(teacher);
-            return "redirect:/";
-        } else {
-            model.addAttribute("passwordError", "Hasła są rożne.");
-            return "teachers/new";
-        }
+        teacherService.create(teacher);
+        return "redirect:/";
+//        if (teacher.getPassword().equals(teacher.getRepeatPassword())) {
+//            teacherService.create(teacher);
+//            return "redirect:/";
+//        } else {
+//            model.addAttribute("passwordError", "Hasła są rożne.");
+//            return "teachers/new";
+//        }
     }
 }

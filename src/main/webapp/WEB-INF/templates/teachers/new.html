@@ -7,7 +7,7 @@
 <body>
 
 
-<form th:method="post" th:action="@{/new}" th:object="${teacher}">
+<form th:method="POST" th:action="@{/new}" th:object="${teacher}">
     <label for="name">Imię:</label>
     <input type="text" th:field="*{name}" id="name">
     <p class="error" th:errors="*{name}"></p>
@@ -23,18 +23,18 @@
     <input type="email" th:field="*{email}" id="email">
     <p class="error" th:errors="*{email}"></p>
     <br>
-    <label for="login">Wymyśl login:</label>
-    <input type="text" th:field="*{login}" id="login">
-    <p class="error" th:errors="*{login}"></p>
-    <br>
+    <!--    <label for="login">Wymyśl login:</label>-->
+    <!--    <input type="text" th:field="*{login}" id="login">-->
+    <!--    <p class="error" th:errors="*{login}"></p>-->
+    <!--    <br>-->
     <label for="password">Wymyśl hasło:</label>
     <input type="password" th:field="*{password}" id="password">
     <p class="error" th:errors="*{password}"></p>
     <br>
-    <label for="repeatPassword">Powtórz hasło:</label>
-    <input type="password" th:field="*{repeatPassword}" id="repeatPassword">
-    <p th:text="${passwordError}"></p>
-    <br>
+    <!--    <label for="repeatPassword">Powtórz hasło:</label>-->
+    <!--    <input type="password" th:field="*{repeatPassword}" id="repeatPassword">-->
+    <!--    <p th:text="${passwordError}"></p>-->
+    <!--    <br>-->
     <input type="submit" value="SAVE">
 </form>
 

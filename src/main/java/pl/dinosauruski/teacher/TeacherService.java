@@ -11,6 +11,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Transactional
 @AllArgsConstructor
@@ -20,22 +21,26 @@ public class TeacherService {
     private TeacherRepository teacherRepository;
 
     public Teacher getOneOrThrow(Long id) {
-        return teacherRepository.findById(id).orElseThrow(EntityNotFoundException::new);   // teacher not found
+        return teacherRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public Optional<TeacherEditDTO> getOneDTOToEdit(Long id) {
+        return teacherRepository.findEditableDataById(id);
     }
 
     public void create(Teacher teacher) {
         String hashedPassword = hashPassword(teacher.getPassword());
         teacher.setPassword(hashedPassword);
-        teacher.setRepeatPassword(hashedPassword);
         teacherRepository.save(teacher);
     }
 
-    public Teacher update(Teacher teacher) {
-        String hashedPassword = hashPassword(teacher.getPassword());
-        teacher.setPassword(hashedPassword);
-        teacher.setRepeatPassword(hashedPassword);
+    public Teacher update(TeacherEditDTO teacherEditDTO) {
+        Teacher teacher = teacherRepository.getOne(teacherEditDTO.getId());
+        teacher.setName(teacherEditDTO.getName());
+        teacher.setSurname(teacherEditDTO.getSurname());
+        teacher.setNickname(teacherEditDTO.getNickname());
         teacherRepository.save(teacher);
-        return getOneOrThrow(teacher.getId());
+        return teacher;
     }
 
     public void delete(Teacher teacher) {
@@ -47,9 +52,9 @@ public class TeacherService {
     }
 
 
-    protected void deleteCookie(HttpServletRequest request,
-                                HttpServletResponse response,
-                                String cookieName) {
+    public void deleteCookie(HttpServletRequest request,
+                             HttpServletResponse response,
+                             String cookieName) {
         Cookie cookie = WebUtils.getCookie(request, cookieName);
         if (cookie != null) {
             cookie.setMaxAge(0);

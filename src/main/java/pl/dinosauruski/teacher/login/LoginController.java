@@ -1,10 +1,11 @@
-package pl.dinosauruski.teacher;
+package pl.dinosauruski.teacher.login;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.dinosauruski.teacher.TeacherService;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -28,8 +29,8 @@ public class LoginController {
 
     @PostMapping
     public String login(@SessionAttribute(value = "loggedTeacher", required = false) TeacherDTO loggedTeacher,
-                               @ModelAttribute("teacherLoginForm") @Valid TeacherLoginFormDTO form, BindingResult result,
-                               HttpSession session, Model model) {
+                        @ModelAttribute("teacherLoginForm") @Valid TeacherLoginFormDTO form, BindingResult result,
+                        HttpSession session, Model model) {
         if (loggedTeacher != null) {
             return "redirect:/teacher/cockpit";
         }

@@ -1,9 +1,11 @@
-package pl.dinosauruski.teacher;
+package pl.dinosauruski.teacher.login;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.models.Teacher;
+import pl.dinosauruski.teacher.TeacherRepository;
+import pl.dinosauruski.teacher.login.TeacherDTO;
 
 import javax.persistence.EntityNotFoundException;
 

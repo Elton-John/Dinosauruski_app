@@ -12,26 +12,10 @@
     <br>
     <label for="surname">Nazwisko:</label>
     <input type="text" th:field="*{surname}" id="surname">
-<!--    <p class="error" th:errors="*{surname}"></p>-->
+        <p class="error" th:errors="*{surname}"></p>
     <br>
     <label for="nickname">Podaj pseudonim. Tak będą Cię widzieć inni użytkownicy:</label>
     <input type="text" th:field="*{nickname}" id="nickname">
-    <br>
-    <label for="email">Podaj adres e-mail:</label>
-    <input type="email" th:field="*{email}" id="email">
-<!--    <p class="error" th:errors="*{email}"></p>-->
-    <br>
-    <label for="login">Wymyśl login:</label>
-    <input type="text" th:field="*{login}" id="login">
-<!--    <p class="error" th:errors="*{login}"></p>-->
-    <br>
-    <label for="password">Wymyśl hasło:</label>
-    <input type="password" th:field="*{password}" id="password">
-<!--    <p class="error" th:errors="*{password}"></p>-->
-    <br>
-    <label for="repeatPassword">Powtórz hasło:</label>
-    <input type="password" th:field="*{repeatPassword}" id="repeatPassword">
-    <p th:text="${passwordError}"></p>
     <br>
     <input type="submit" value="SAVE">
 </form>

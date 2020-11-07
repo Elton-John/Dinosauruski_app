@@ -1,4 +1,4 @@
-package pl.dinosauruski.teacher;
+package pl.dinosauruski.teacher.login;
 
 import lombok.Getter;
 import lombok.Setter;

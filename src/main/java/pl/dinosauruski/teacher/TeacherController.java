@@ -3,14 +3,18 @@ package pl.dinosauruski.teacher;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.availableSlot.AvailableSlotService;
 import pl.dinosauruski.models.AvailableSlot;
 import pl.dinosauruski.models.Teacher;
+import pl.dinosauruski.teacher.login.TeacherDTO;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @AllArgsConstructor
@@ -39,22 +43,40 @@ public class TeacherController {
         return "teachers/cockpit";
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-        Teacher teacher = teacherService.getOneOrThrow(id);
-        model.addAttribute("teacher", teacher);
+        TeacherEditDTO teacherEditDTO = teacherService.getOneDTOToEdit(id).orElseThrow(EntityNotFoundException::new);
+        model.addAttribute("teacher", teacherEditDTO);
         return "teachers/edit";
     }
 
     @PatchMapping("/{id}")
     public String update(@PathVariable Long id,
-                         @ModelAttribute Teacher teacher,
+                         @Valid @ModelAttribute ("teacher") TeacherEditDTO teacherEditDTO,
+                         BindingResult result,
                          Model model) {
         teacherService.getOneOrThrow(id);
-        Teacher updatedTeacher = teacherService.update(teacher);
+        if (result.hasErrors()) {
+            return "teachers/edit";
+        }
+        Teacher updatedTeacher = teacherService.update(teacherEditDTO);
         model.addAttribute("teacher", updatedTeacher);
         return "redirect:cockpit";
     }
+
+//    @PatchMapping("/{id}")
+//    public String update(@PathVariable Long id,
+//                         @Valid @ModelAttribute TeacherEditDTO teacherEditDTO,
+//                         BindingResult result,
+//                         Model model) {
+//        teacherService.getOneOrThrow(id);
+//        if (result.hasErrors()) {
+//            return "teachers/edit";
+//        }
+//        Teacher updatedTeacher = teacherService.update(teacherEditDTO);
+//        model.addAttribute("teacher", updatedTeacher);
+//        return "redirect:cockpit";
+//    }
 
     @GetMapping("/submit/{id}")
     public String submitDeleting(@PathVariable Long id, Model model) {
@@ -85,10 +107,8 @@ public class TeacherController {
         return "redirect:/";
     }
 
-
     @ModelAttribute("freeSlots")
     public List<AvailableSlot> slots() {
         return availableSlotService.getAllFreeSlots();
     }
-
 }
