@@ -18,20 +18,20 @@ public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Pole nie może być pustym.")
+    @NotBlank(message = "Pole nie może być puste.")
     private String name;
-    @NotBlank(message = "Pole nie może być pustym.")
+    @NotBlank(message = "Pole nie może być puste.")
     private String surname;
     private String nickname;
-    @NotBlank(message = "Pole nie może być pustym.")
+    @NotBlank(message = "Pole nie może być puste.")
     private String login;
-    @NotBlank(message = "Pole nie może być pustym.")
+    @NotBlank(message = "Pole nie może być puste.")
     @Size(min = 3, message = "Minimum 8 znaków.")
     private String password;
     // @Transient
-    @NotBlank(message = "Pole nie może być pustym.")
+    @NotBlank(message = "Pole nie może być puste.")
     private String repeatPassword;
-    @NotBlank(message = "Pole nie może być pustym.")
+    @NotBlank(message = "Pole nie może być puste.")
     @Email
     private String email;
     @ManyToMany
