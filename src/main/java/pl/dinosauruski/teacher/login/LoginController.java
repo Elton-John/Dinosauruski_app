@@ -20,32 +20,34 @@ public class LoginController {
     private TeacherService teacherService;
 
     @GetMapping
-    public String loginPage(@SessionAttribute(value = "loggedTeacher", required = false) TeacherDTO loggedTeacher) {
+    public String loginPage(@SessionAttribute(value = "loggedTeacher", required = false) TeacherDTO loggedTeacher,
+                            Model model) {
         if (loggedTeacher != null) {
             return "redirect:/teacher/cockpit";
         }
+        model.addAttribute("teacherLoginForm", new TeacherLoginFormDTO());
         return "teachers/login";
     }
 
     @PostMapping
     public String login(@SessionAttribute(value = "loggedTeacher", required = false) TeacherDTO loggedTeacher,
-                        @ModelAttribute("teacherLoginForm") @Valid TeacherLoginFormDTO form, BindingResult result,
-                        HttpSession session, Model model) {
+                        @Valid @ModelAttribute("teacherLoginForm") TeacherLoginFormDTO loginFormDTO,
+                        BindingResult result,
+                        HttpSession session,
+                        Model model) {
         if (loggedTeacher != null) {
             return "redirect:/teacher/cockpit";
         }
         if (result.hasErrors()) {
             return "teachers/login";
         }
-        boolean validCredentials = loginService.validate(form.getEmail(), form.getPassword());
+        boolean validCredentials = loginService.validate(loginFormDTO.getEmail(), loginFormDTO.getPassword());
         if (!validCredentials) {
-            result.rejectValue("email", "errors.invalid", "Login i/lub hasło są niepoprawne");
+            //    result.rejectValue("email", "errors.invalid", "Login i/lub hasło są niepoprawne");
             return "teachers/login";
         }
-        TeacherDTO teacherDTO = loginService.login(form.getEmail());
+        TeacherDTO teacherDTO = loginService.login(loginFormDTO.getEmail());
         session.setAttribute("loggedTeacher", teacherDTO);
-//        Teacher teacher = teacherService.getOneOrThrow(teacherDTO.getId());
-//        model.addAttribute("teacher", teacher);
         return "redirect:/teacher/cockpit";
     }
 }

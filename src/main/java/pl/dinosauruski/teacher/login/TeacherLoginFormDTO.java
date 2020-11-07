@@ -1,16 +1,20 @@
 package pl.dinosauruski.teacher.login;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TeacherLoginFormDTO {
-    @NotBlank(message = "Pole nie może być puste")
+    @NotBlank(message = "Pole nie może być puste powiada TeacherLoginForm")
     private String email;
-    @NotBlank(message = "Pole nie może być puste")
+    @NotBlank(message = "Pole nie może być puste powiada TeacherLoginForm")
     private String password;
 
     @Override
