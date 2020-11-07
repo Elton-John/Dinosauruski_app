@@ -37,23 +37,23 @@ Stałe godziny zajęć studenta <span th:text="${student.name}"></span> <span th
     <input type="hidden" th:field="*{email}">
     <input type="hidden" th:field="*{priceForOneLesson}" id="priceForOneLesson">
 
-<!--    <label for="slot">Wybierz inną godzinę z dostępnych:</label>-->
-<!--    <select th:field="*{slots}">-->
-<!--        <option th:each="freeSlot : ${freeSlots}" th:value="${freeSlot.id}" th:text="${freeSlot.getDayAndTime()}" id="slot">-->
-<!--        </option>-->
-<!--    </select>-->
-<!--    <br>-->
+    <label for="freeSlot">Wybierz inną godzinę z dostępnych:</label>
+    <select th:field="*{slots}">
+        <option th:each="freeSlot : ${freeSlots}" th:value="${freeSlot.id}" th:text="${freeSlot.getDayAndTime()}" id="freeSlot">
+        </option>
+    </select>
+    <br>
 
-    <ul>
-        <li th:each="checkboxValue: ${freeSlots}">
-            <input type="checkbox"
-                   th:field="*{slots}"
-                   th:value="${checkboxValue.time}" />
-            <label
-                    th:for="${#ids.prev('freeSlots')}"
-                    th:text="${checkboxValue}"></label>
-        </li>
-    </ul>
+<!--    <ul>-->
+<!--        <li th:each="checkboxValue: ${freeSlots}">-->
+<!--            <input type="checkbox"-->
+<!--                   th:field="*{slots}"-->
+<!--                   th:value="${checkboxValue.time}" />-->
+<!--            <label-->
+<!--                    th:for="${#ids.prev('freeSlots')}"-->
+<!--                    th:text="${checkboxValue}"></label>-->
+<!--        </li>-->
+<!--    </ul>-->
     <input type="submit" value="SAVE">
 </form>
 </body>

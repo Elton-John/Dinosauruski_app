@@ -7,11 +7,11 @@
 <body>
 Witaj, <span th:text="${teacher.getName()}"></span>
 <br>
-<a th:href="@{/teacher/{id}/edit(id=${teacher.getId()})}">edytuj profil</a>
+<a th:href="@{/teacher/{id}/edit(id=${teacher.getId()})}">EDYTUJ PROFIL</a>
 <br>
-<a th:href="@{/teacher/logout}">wyloguj się</a>
+<a th:href="@{/teacher/logout}">WYLOGUJ SIĘ</a>
 <br>
-<a th:href="@{/teacher/submit/{id}(id=${teacher.getId()})}">DELETE</a>
+<a th:href="@{/teacher/submit/{id}(id=${teacher.getId()})}">USUŃ KONTO</a>
 
 <span>------------------------------------------------</span>
 <h3>AKTUALNY PLAN</h3>
@@ -23,7 +23,22 @@ Witaj, <span th:text="${teacher.getName()}"></span>
 
 <a th:href="@{/teacher/students}"><h3>STUDENCI</h3></a>
 <span>------------------------------------------------</span>
+<h4> DOSTĘPNE WOLNE TERMINY:</h4>
+<table>
+    <tr>
+        <th>DAY</th>
+        <th>TIME</th>
+        <th>STATUS</th>
+    </tr>
+    <tr th:each="slot : ${freeSlots}">
+        <td th:text="${slot.dayName.name}">day name</td>
+        <td th:text="${slot.time}">time</td>
 
-<a th:href=""></a>
+        <td th:if="${slot.getBooked()} == true">BOOKED</td>
+        <td th:if="${slot.getBooked()} == false">FREE</td>
+
+    </tr>
+</table>
+<a th:href="@{/slots}">ZARZĄDZAJ SLOTAMI</a>
 </body>
 </html>
