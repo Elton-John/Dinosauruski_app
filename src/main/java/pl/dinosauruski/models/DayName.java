@@ -17,7 +17,7 @@ public class DayName {
     private boolean isDayOff;
     private Integer displayOrder;
     @OneToMany(mappedBy = "dayName")
-    private Set<AvailableSlot> availableSlots;
+    private Set<Slot> slots;
 
     public boolean isDayOff() {
         return isDayOff;

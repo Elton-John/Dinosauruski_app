@@ -16,14 +16,17 @@ public class TeacherQueryService {
     private final TeacherRepository teacherRepository;
 
     public Teacher getOneOrThrow(Long id) {
-        return teacherRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return teacherRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
-    public Optional<TeacherEditDTO> getOneDTOToEdit(Long id) {
-        return teacherRepository.findEditableDataById(id);
+    public TeacherEditDTO getOneDTOToEdit(Long id) {
+        return teacherRepository.findEditableDataById(id)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     public Teacher getOneByEmailOrThrow(String email) {
-        return teacherRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        return teacherRepository.findByEmail(email).
+                orElseThrow(EntityNotFoundException::new);
     }
 }

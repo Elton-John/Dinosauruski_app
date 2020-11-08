@@ -15,7 +15,7 @@ public class Lesson {
     private Long id;
     private LocalDate date;
     @ManyToOne
-    private AvailableSlot slot;
+    private Slot slot;
     @ManyToOne
     private Teacher teacher;
     @ManyToOne

@@ -26,7 +26,7 @@ public class Student {
     @ManyToMany(mappedBy = "students")
     private Set<Teacher> teachers = new HashSet<>();
     @OneToMany(mappedBy = "regularStudent", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<AvailableSlot> slots = new ArrayList<>();
+    private List<Slot> slots = new ArrayList<>();
     private Boolean active;
 
     public String getFullName() {

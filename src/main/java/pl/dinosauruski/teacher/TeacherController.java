@@ -5,8 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.dinosauruski.availableSlot.SlotService;
+import pl.dinosauruski.models.Slot;
+import pl.dinosauruski.slot.SlotCommandService;
 import pl.dinosauruski.models.Teacher;
+import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 import pl.dinosauruski.teacher.dto.TeacherEditDTO;
 
@@ -14,6 +16,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
 @AllArgsConstructor
 @Controller
@@ -22,7 +25,7 @@ class TeacherController {
 
     private final TeacherCommandService teacherCommandService;
     private final TeacherQueryService teacherQueryService;
-    private final SlotService slotService;
+    private final SlotQueryService slotQueryService;
 
 
     @GetMapping("/cockpit")
@@ -44,7 +47,7 @@ class TeacherController {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-        TeacherEditDTO teacherEditDTO = teacherQueryService.getOneDTOToEdit(id).orElseThrow(EntityNotFoundException::new);
+        TeacherEditDTO teacherEditDTO = teacherQueryService.getOneDTOToEdit(id);
         model.addAttribute("teacher", teacherEditDTO);
         return "teachers/edit";
     }
@@ -97,8 +100,8 @@ class TeacherController {
     }
 
 
-//    @ModelAttribute("freeSlots")
-//    public List<Slot> slots() {
-//        return slotService.getAllFreeSlots();
-//    }
+    @ModelAttribute("freeSlots")
+    public List<Slot> slots() {
+        return slotQueryService.getAllFreeSlots();
+    }
 }

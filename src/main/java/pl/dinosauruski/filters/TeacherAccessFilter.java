@@ -1,6 +1,6 @@
 package pl.dinosauruski.filters;
 
-import pl.dinosauruski.teacher.login.TeacherDTO;
+import pl.dinosauruski.teacher.dto.TeacherDTO;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;

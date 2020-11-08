@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @Getter
 
 
-public class AvailableSlot {
+public class Slot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

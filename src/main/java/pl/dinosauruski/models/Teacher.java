@@ -38,7 +38,7 @@ public class Teacher {
     @JoinTable(name = "teachers_students", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Set<Student> students = new HashSet<>();
     @OneToMany(mappedBy = "teacher")
-    private List<AvailableSlot> availableSlots;
+    private List<Slot> slots;
     @OneToMany(mappedBy = "teacher")
     private Set<Payment> payments = new HashSet<>();
 
