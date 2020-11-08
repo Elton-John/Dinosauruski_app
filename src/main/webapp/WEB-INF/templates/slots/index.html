@@ -31,7 +31,7 @@
 
         <td th:text="${slot.date}">date</td>
 
-        <td><a th:href="@{/teacher/slots/{id}/edit(id=${slot.getId()})}"> edytuj</a></td>
+        <td><a th:href="@{/teacher/slots/edit/{id}(id=${slot.getId()})}"> edytuj</a></td>
         <td><a th:href="@{/teacher/slots/submit/{id}(id=${slot.getId()})}"> usuń</a></td>
 
     </tr>

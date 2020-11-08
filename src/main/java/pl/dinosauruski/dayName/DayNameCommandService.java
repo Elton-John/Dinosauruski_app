@@ -6,13 +6,11 @@ import pl.dinosauruski.models.DayName;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.List;
 
+@Service
 @Transactional
 @AllArgsConstructor
-@Service
-public class DayNameService {
-
+public class DayNameCommandService {
     private final DayNameRepository dayNameRepository;
 
     public void markAsWorkDay(Integer id) {
@@ -23,17 +21,5 @@ public class DayNameService {
             dayName.setDayOff(false);
             dayNameRepository.save(dayName);
         }
-    }
-
-    public List<DayName> showAllDays() {
-        return dayNameRepository.findAll();
-    }
-
-    public List<DayName> showAllWorkDays() {
-        return dayNameRepository.findAllByIsDayOff(false);
-    }
-
-    public DayName getById(int id) {
-        return dayNameRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 }

@@ -22,7 +22,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
-import pl.dinosauruski.availableSlot.SlotConverter;
+import pl.dinosauruski.slot.SlotConverter;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Locale;

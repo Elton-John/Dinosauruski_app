@@ -5,12 +5,12 @@
     <title></title>
 </head>
 <body>
-Delete
-<p th:text="${dayName}"></p>?
-<p th:text="${time}"></p>?
-<a href="/slots">Wróć </a>
-<form th:method="DELETE" th:action="@{/slots/delete/{id}(id=${id})}">
-    <input type="submit" value="DELETE">
+Usunąć ten termin z dostępnych?
+<span th:text="${slot.dayName.name}"></span>
+<span th:text="${slot.time}"></span>
+<a href="/teacher/slots">NIE USUWAJ, WRÓĆ </a>
+<form th:method="DELETE" th:action="@{/teacher/slots/delete/{id}(id=${id})}">
+    <input type="submit" value="USUŃ">
 </form>
 </body>
 </html>
