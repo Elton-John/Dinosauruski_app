@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleContextResolver;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -23,7 +22,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
-import pl.dinosauruski.availableSlot.AvailableSlotConverter;
+import pl.dinosauruski.availableSlot.SlotConverter;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Locale;
@@ -110,8 +109,8 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AvailableSlotConverter getPublisherConverter() {
-        return new AvailableSlotConverter();
+    public SlotConverter getPublisherConverter() {
+        return new SlotConverter();
     }
 
 }

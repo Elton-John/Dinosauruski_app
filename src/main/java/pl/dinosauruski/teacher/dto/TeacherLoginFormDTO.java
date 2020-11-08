@@ -1,4 +1,4 @@
-package pl.dinosauruski.teacher.login;
+package pl.dinosauruski.teacher.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

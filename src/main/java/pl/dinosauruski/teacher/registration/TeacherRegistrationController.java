@@ -8,39 +8,38 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.dinosauruski.models.Teacher;
-import pl.dinosauruski.teacher.TeacherService;
+import pl.dinosauruski.teacher.TeacherCommandService;
+import pl.dinosauruski.teacher.dto.TeacherRegistrationFormDTO;
 
 import javax.validation.Valid;
 
 @AllArgsConstructor
 @Controller
 @RequestMapping("/new")
-public class RegistrationController {
+ class TeacherRegistrationController {
 
-    private final TeacherService teacherService;
+    private final TeacherCommandService teacherCommandService;
 
     @GetMapping
     public String newTeacher(Model model) {
-        model.addAttribute("teacher", new Teacher());
+        model.addAttribute("teacher", new TeacherRegistrationFormDTO());
         return "teachers/new";
     }
 
     @PostMapping
-    public String create(@Valid @ModelAttribute Teacher teacher,
+    public String create(@Valid @ModelAttribute("teacher") TeacherRegistrationFormDTO registrationForm,
                          BindingResult result,
                          Model model) {
         if (result.hasErrors()) {
             return "teachers/new";
         }
-        teacherService.create(teacher);
-        return "redirect:/";
-//        if (teacher.getPassword().equals(teacher.getRepeatPassword())) {
-//            teacherService.create(teacher);
-//            return "redirect:/";
-//        } else {
-//            model.addAttribute("passwordError", "Hasła są rożne.");
-//            return "teachers/new";
-//        }
+
+        if (registrationForm.getPassword().equals(registrationForm.getRepeatPassword())) {
+            teacherCommandService.create(registrationForm);
+            return "redirect:/";
+        } else {
+            model.addAttribute("passwordError", "Hasła są rożne.");
+            return "teachers/new";
+        }
     }
 }

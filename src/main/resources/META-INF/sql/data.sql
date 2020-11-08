@@ -1,5 +1,5 @@
 INSERT INTO `DayName` (name, displayOrder, isDayOff) VALUES ('poniedziałek', 1, false),( 'wtorek', 2, false),('środa', 3, true),('czwartek', 4, false),('piątek', 5, true),( 'sobota', 6, true),( 'niedziela', 7, true);
-INSERT INTO Teacher (name, surname, nickname, email,  password ) VALUES ('Tomas','Mann','TheBestTeacher', '222@222', '222');
+INSERT INTO Teacher (name, surname, nickname, email,  password ) VALUES ('Tomas','Mann','TheBestTeacher', 'olikdiz@mail.ru', '000');
 INSERT INTO dinosauruski.Student (active, email, login, name, nickname, password, priceForOneLesson, surname) VALUES (true, 'elton@john', 'aaa', 'Elton', 'Rocketman', '111', 90, 'John');
 INSERT INTO dinosauruski.Student (active, email, login, name, nickname, password, priceForOneLesson, surname) VALUES (true, 'john@john', 'bbb', 'John', 'Dirty', '111', 100, 'Johnovich');
 INSERT INTO dinosauruski.Student (active, email, login, name, nickname, password, priceForOneLesson, surname) VALUES (true, 'leonardo@oscar', 'bbb', 'Leonardo', 'Leo', '111', 120, 'Di Kaprio');

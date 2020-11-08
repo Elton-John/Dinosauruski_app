@@ -23,18 +23,14 @@
     <input type="email" th:field="*{email}" id="email">
     <p class="error" th:errors="*{email}"></p>
     <br>
-    <!--    <label for="login">Wymyśl login:</label>-->
-    <!--    <input type="text" th:field="*{login}" id="login">-->
-    <!--    <p class="error" th:errors="*{login}"></p>-->
-    <!--    <br>-->
-    <label for="password">Wymyśl hasło:</label>
+      <label for="password">Wymyśl hasło:</label>
     <input type="password" th:field="*{password}" id="password">
     <p class="error" th:errors="*{password}"></p>
     <br>
-    <!--    <label for="repeatPassword">Powtórz hasło:</label>-->
-    <!--    <input type="password" th:field="*{repeatPassword}" id="repeatPassword">-->
-    <!--    <p th:text="${passwordError}"></p>-->
-    <!--    <br>-->
+        <label for="repeatPassword">Powtórz hasło:</label>
+        <input type="password" th:field="*{repeatPassword}" id="repeatPassword">
+        <p th:text="${passwordError}"></p>
+        <br>
     <input type="submit" value="SAVE">
 </form>
 
