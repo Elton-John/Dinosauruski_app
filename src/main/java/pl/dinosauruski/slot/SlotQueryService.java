@@ -31,4 +31,8 @@ public class SlotQueryService {
     public SlotDTO getOneSlotDtoOrThrow(Long id) {
         return slotRepository.findOneSlotDtoById(id).orElseThrow(EntityNotFoundException::new);
     }
+
+    public List<Slot> getSlots(Long teacherId, Long studentId) {
+        return slotRepository.findAllByTeacherIdAndStudentId(teacherId, studentId);
+    }
 }

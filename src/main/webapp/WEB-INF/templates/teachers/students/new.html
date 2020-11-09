@@ -19,7 +19,7 @@
     <p class="error" th:errors="*{email}"></p>
     <br>
     <label for="priceForOneLesson">Cena za lekcję:</label>
-    <input type="number" th:field="*{priceForOneLesson}" id="priceForOneLesson">
+    <input type="number" step="0.01" th:field="*{priceForOneLesson}" id="priceForOneLesson">
     <p class="error" th:errors="*{priceForOneLesson}"></p>
     <input type="submit" value="SAVE">
 </form>

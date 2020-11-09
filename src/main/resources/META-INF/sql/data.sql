@@ -2,7 +2,7 @@ INSERT INTO `DayName` (name, displayOrder, isDayOff) VALUES ('poniedziałek', 1,
 INSERT INTO Teacher (name, surname, nickname, email,  password ) VALUES ('Tomas','Mann','TheBestTeacher', 'olikdiz@mail.ru', '000');
 INSERT INTO Student (active, email, login, name, nickname, password, priceForOneLesson, surname) VALUES (true, 'elton@john', 'aaa', 'Elton', 'Rocketman', '111', 90, 'John');
 INSERT INTO Student (active, email, login, name, nickname, password, priceForOneLesson, surname) VALUES (true, 'john@john', 'bbb', 'John', 'Dirty', '111', 100, 'Johnovich');
-INSERT INTO Student (active, email, login, name, nickname, password, priceForOneLesson, surname) VALUES (true, 'leonardo@oscar', 'bbb', 'Leonardo', 'Leo', '111', 120, 'Di Kaprio');
+INSERT INTO Student (active, email, login, name, nickname, password, priceForOneLesson, surname) VALUES (true, 'leonardo@oscar', 'bbb', 'Leonardo', 'Leo', '111', 120, 'DiCaprio');
 INSERT INTO Student (active, email, login, name, nickname, password, priceForOneLesson, surname) VALUES (true, 'elon@cosmos', 'bbb', 'Elon', 'Mars', '111', 100, 'Musk');
 INSERT INTO Slot (isBooked, isOnceFree, date, time, dayName_id, regularStudent_id, teacher_id) VALUES (true, true, '2020-11-19', '20:10:00', 1, 1, 1);
 INSERT INTO Slot (isBooked, isOnceFree, date, time, dayName_id, regularStudent_id, teacher_id) VALUES (true, false, null, '19:10:00', 2, 1, 1);
@@ -12,3 +12,7 @@ INSERT INTO Slot (isBooked, isOnceFree, date, time, dayName_id, regularStudent_i
 INSERT INTO Slot (isBooked, isOnceFree, date, time, dayName_id, regularStudent_id, teacher_id) VALUES (false, false, null, '10:00:00', 4, null, 1);
 INSERT INTO Slot (isBooked, isOnceFree, date, time, dayName_id, regularStudent_id, teacher_id) VALUES (false, false, null, '11:00:00', 2, null, 1);
 INSERT INTO Slot (isBooked, isOnceFree, date, time, dayName_id, regularStudent_id, teacher_id) VALUES (false, false, null, '13:00:00', 1, null, 1);
+INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 1);
+INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 2);
+INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 3);
+INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 4);

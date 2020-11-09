@@ -25,7 +25,6 @@ public class SlotCommandService {
     private final DayNameCommandService dayNameCommandService;
     private final TeacherQueryService teacherQueryService;
 
-
     public void createNewRegularFreeSlot(TeacherDTO loggedTeacher, SlotDTO slotForm) {
         Teacher teacher = teacherQueryService.getOneOrThrow(loggedTeacher.getId());
         Slot slot = create(slotForm, teacher);
@@ -42,7 +41,6 @@ public class SlotCommandService {
         slot.setOnceFree(false);
         slotRepository.save(slot);
         return slot;
-
     }
 
     public void update(SlotDTO slotDTO) {
@@ -64,7 +62,6 @@ public class SlotCommandService {
 //        slotRepository.save(slot);
 //    }
 
-
     public void bookedSlot(Slot slot, Student student) {
         // Student student = studentService.getOneOrThrow(studentId);
         slot.setRegularStudent(student);
@@ -72,21 +69,19 @@ public class SlotCommandService {
         updateBooked(slot);
     }
 
-    //    public void unBookedSlot(Slot slot) {
-//        deleteStudentReference(slot);
-//        slot.setBooked(false);
-//        updateBooked(slot);
-//    }
-//
-//    private void deleteStudentReference(Slot slot) {
-//        slot.setRegularStudent(null);
-//    }
+    public void unBookedSlot(Slot slot) {
+        deleteStudentReference(slot);
+        slot.setBooked(false);
+        updateBooked(slot);
+    }
 
+    private void deleteStudentReference(Slot slot) {
+        slot.setRegularStudent(null);
+    }
 
     public void updateBooked(Slot slot) {
         slotRepository.save(slot);
     }
-
 
     private void refreshDayNameStatus() {
         Set<Integer> workDaysId = slotRepository.findAllDayNameId();

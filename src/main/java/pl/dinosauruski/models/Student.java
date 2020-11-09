@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,16 +25,11 @@ public class Student {
     private String login;
     private String password;
     private String email;
-    private Double priceForOneLesson;
+    private BigDecimal priceForOneLesson;
     @ManyToMany(mappedBy = "students")
     private Set<Teacher> teachers = new HashSet<>();
-    @OneToMany(mappedBy = "regularStudent", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "regularStudent", fetch = FetchType.EAGER)
     private List<Slot> slots = new ArrayList<>();
     private Boolean active;
-
-    public String getFullName() {
-        return this.name + " " + this.surname;
-    }
-
 
 }

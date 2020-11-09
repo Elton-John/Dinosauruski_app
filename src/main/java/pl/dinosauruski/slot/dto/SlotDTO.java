@@ -1,8 +1,10 @@
 package pl.dinosauruski.slot.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.dinosauruski.models.DayName;
-import pl.dinosauruski.models.Teacher;
 
 import java.time.LocalTime;
 
@@ -14,8 +16,5 @@ public class SlotDTO {
     private Long id;
     private DayName dayName;
     private LocalTime time;
-   // private Long teacherId;
-
-
 
 }

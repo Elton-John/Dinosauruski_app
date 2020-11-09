@@ -6,7 +6,7 @@
 </head>
 <body>
 Delete
-<p th:text="${fullName}"></p>?
+<p th:text="${student.getFullName()}"></p>?
 <a th:href="@{/teacher/students/{id}/profile(id=${id})}">>Wróć </a>
 <form th:method="DELETE" th:action="@{/teacher/students/delete/{id}(id=${id})}">
     <input type="submit" value="DELETE">

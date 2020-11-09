@@ -18,13 +18,14 @@
     <input type="email" th:field="*{email}" id="email">
     <p class="error" th:errors="*{email}"></p>
     <br>
-    <div>
-        <label th:for="active" th:text="'Aktywny:'"></label>
-        <input type="checkbox" th:field="*{active}" />
-    </div>
+<!--    <div>-->
+<!--        <label th:for="active" th:text="'Aktywny:'"></label>-->
+<!--        <input type="checkbox" th:field="*{active}" />-->
+<!--    </div>-->
 
-    <input type="hidden" th:field="*{priceForOneLesson}" id="priceForOneLesson">
-
+    <label th:for="priceForOneLesson">Cena za lekcję:</label>
+    <input type="number" step="0.01" th:field="*{priceForOneLesson}" id="priceForOneLesson">
+    <p class="error" th:errors="*{priceForOneLesson}"></p>
     <input type="submit" value="SAVE">
 </form>
 </body>
