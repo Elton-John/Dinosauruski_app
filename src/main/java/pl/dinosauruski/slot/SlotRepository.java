@@ -9,20 +9,16 @@ import pl.dinosauruski.slot.dto.SlotDTO;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface SlotRepository extends JpaRepository<Slot, Long> {
-
-    @Query("select slot.dayName.id FROM Slot slot")
-    Set<Integer> findAllDayNameId();
 
     @Query("select slot from Slot slot WHERE slot.isBooked = false ")
     List<Slot> findAllWhereIsBookedIsFalse();
 
     List<Slot> findAllByTeacherId(Long id);
 
-    @Query("SELECT new pl.dinosauruski.slot.dto.SlotDTO(s.id, s.dayName,s.time) " +
+    @Query("SELECT new pl.dinosauruski.slot.dto.SlotDTO(s.id, s.time, s.dayOfWeek) " +
             "FROM Slot s WHERE s.id = :id")
     Optional<SlotDTO> findOneSlotDtoById(@Param("id") Long id);
 

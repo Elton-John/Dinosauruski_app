@@ -35,4 +35,5 @@ public class SlotQueryService {
     public List<Slot> getSlots(Long teacherId, Long studentId) {
         return slotRepository.findAllByTeacherIdAndStudentId(teacherId, studentId);
     }
+
 }

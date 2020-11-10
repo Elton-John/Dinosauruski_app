@@ -3,6 +3,7 @@ package pl.dinosauruski.models;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.dinosauruski.slot.DAY_OF_WEEK;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,10 +18,8 @@ public class Slot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private DayName dayName;
+    private DAY_OF_WEEK dayOfWeek;
     private LocalTime time;
-    //@Column(nullable = false)
     @ManyToOne
     private Teacher teacher;
     private Boolean isOnceFree;
@@ -46,7 +45,5 @@ public class Slot {
         isBooked = booked;
     }
 
-    public String getDayAndTime() {
-        return this.dayName.getName() + " " + this.time;
-    }
+
 }

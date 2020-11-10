@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.dinosauruski.models.DayName;
+import pl.dinosauruski.slot.DAY_OF_WEEK;
 
 import java.time.LocalTime;
 
@@ -14,7 +14,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class BookingSlotDTO {
     private Long id;
-    private DayName dayName;
+    private DAY_OF_WEEK dayOfWeek;
     private LocalTime time;
     private Long teacherId;
     private Boolean isBooked;

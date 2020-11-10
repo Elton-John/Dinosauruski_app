@@ -2,9 +2,6 @@ package pl.dinosauruski.slot;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.dinosauruski.dayName.DayNameCommandService;
-import pl.dinosauruski.dayName.DayNameQueryService;
-import pl.dinosauruski.models.DayName;
 import pl.dinosauruski.models.Slot;
 import pl.dinosauruski.models.Student;
 import pl.dinosauruski.models.Teacher;
@@ -13,7 +10,6 @@ import pl.dinosauruski.teacher.TeacherQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
 import javax.transaction.Transactional;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -21,21 +17,20 @@ import java.util.Set;
 public class SlotCommandService {
     private final SlotRepository slotRepository;
     private final SlotQueryService slotQueryService;
-    private final DayNameQueryService dayNameQueryService;
-    private final DayNameCommandService dayNameCommandService;
+
     private final TeacherQueryService teacherQueryService;
 
     public void createNewRegularFreeSlot(TeacherDTO loggedTeacher, SlotDTO slotForm) {
         Teacher teacher = teacherQueryService.getOneOrThrow(loggedTeacher.getId());
-        Slot slot = create(slotForm, teacher);
-        Integer dayNameId = slot.getDayName().getId();
-        dayNameCommandService.markAsWorkDay(dayNameId);
+        create(slotForm, teacher);
+
     }
 
     private Slot create(SlotDTO addSlotForm, Teacher teacher) {
         Slot slot = new Slot();
-        slot.setDayName(addSlotForm.getDayName());
+        slot.setDayOfWeek(addSlotForm.getDayOfWeek());
         slot.setTime(addSlotForm.getTime());
+        slot.setDayOfWeek(addSlotForm.getDayOfWeek());
         slot.setTeacher(teacher);
         slot.setBooked(false);
         slot.setOnceFree(false);
@@ -45,16 +40,13 @@ public class SlotCommandService {
 
     public void update(SlotDTO slotDTO) {
         Slot slot = slotQueryService.getOneOrThrow(slotDTO.getId());
-        slot.setDayName(slotDTO.getDayName());
+        slot.setDayOfWeek(slotDTO.getDayOfWeek());
         slot.setTime(slotDTO.getTime());
         slotRepository.save(slot);
-        dayNameCommandService.markAsWorkDay(slot.getDayName().getId());
-        refreshDayNameStatus();
     }
 
     public void delete(Long id) {
         slotRepository.deleteById(id);
-        refreshDayNameStatus();
     }
 
 //    public void createOnceFreeSlot(Slot slot) {
@@ -83,15 +75,4 @@ public class SlotCommandService {
         slotRepository.save(slot);
     }
 
-    private void refreshDayNameStatus() {
-        Set<Integer> workDaysId = slotRepository.findAllDayNameId();
-        for (int id = 1; id <= 7; id++) {
-            DayName dayName = dayNameQueryService.getById(id);
-            if (workDaysId.contains(id)) {
-                dayName.setDayOff(false);
-            } else {
-                dayName.setDayOff(true);
-            }
-        }
-    }
 }

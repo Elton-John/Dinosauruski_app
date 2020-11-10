@@ -32,7 +32,7 @@ Witaj, <span th:text="${teacher.getName()}"></span>
         <th>STATUS</th>
     </tr>
     <tr th:each="slot : ${freeSlots}">
-        <td th:text="${slot.dayName.name}">day name</td>
+        <td th:text="${slot.dayOfWeek.translation}">day name</td>
         <td th:text="${slot.time}">time</td>
 
         <td th:if="${slot.getBooked()} == true">BOOKED</td>

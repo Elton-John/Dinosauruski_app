@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.dinosauruski.dayName.DayNameQueryService;
-import pl.dinosauruski.models.DayName;
-import pl.dinosauruski.slot.dto.SlotDTO;
 import pl.dinosauruski.models.Slot;
+import pl.dinosauruski.slot.dto.SlotDTO;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
 import java.util.List;
@@ -17,8 +15,6 @@ import java.util.List;
 @RequestMapping("teacher/slots")
 class SlotController {
     private final SlotCommandService slotCommandService;
-
-    private final DayNameQueryService dayNameQueryService;
     private final SlotQueryService slotQueryService;
 
 
@@ -33,7 +29,6 @@ class SlotController {
     @GetMapping("/new")
     String newSlot(Model model) {
         model.addAttribute("slot", new SlotDTO());
-        model.addAttribute("days");
         return "slots/new";
     }
 
@@ -75,8 +70,5 @@ class SlotController {
 //    protected List<Student> students() {
 //        return studentService.findAll();
 //    }
-    @ModelAttribute("days")
-    private List<DayName> days() {
-        return dayNameQueryService.showAllDays();
-    }
+
 }

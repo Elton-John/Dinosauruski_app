@@ -6,8 +6,7 @@
 </head>
 <body>
 Usunąć ten termin z dostępnych?
-<span th:text="${slot.dayName.name}"></span>
-<span th:text="${slot.time}"></span>
+<span th:text="${slot.getDayAndTime()}"></span>
 <a href="/teacher/slots">NIE USUWAJ, WRÓĆ </a>
 <form th:method="DELETE" th:action="@{/teacher/slots/delete/{id}(id=${id})}">
     <input type="submit" value="USUŃ">

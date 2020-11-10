@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.dinosauruski.models.DayName;
+import pl.dinosauruski.slot.DAY_OF_WEEK;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalTime;
 
 @Setter
@@ -14,7 +15,12 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class SlotDTO {
     private Long id;
-    private DayName dayName;
+    @NotBlank(message = "Pole nie może być puste")
     private LocalTime time;
+    private DAY_OF_WEEK dayOfWeek;
+
+    public String getDayAndTime() {
+        return this.dayOfWeek.getTranslation() + " " + this.time;
+    }
 
 }

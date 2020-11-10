@@ -9,33 +9,43 @@ Tu dodajemy nowy slot:
 
 <form th:method="post" th:action="@{/teacher/slots/new}" th:object="${slot}">
 
-    <label for="day">Wybierz dzień:</label>
-    <select th:field="*{dayName.id}">
-        <option th:each="day : ${days}" th:value="${day.id}" th:text="${day.name}" id="day"></option>
+    <label for="dayss">Wybierz dzień druga opcja:</label>
+    <select th:field="*{dayOfWeek}">
+        <option th:each="day : ${T(pl.dinosauruski.slot.DAY_OF_WEEK).values()}"
+                th:value="${day}" th:text="${day.translation}" id="dayss"></option>
     </select>
     <br>
-
     <label for="time">Godzina:</label>
     <input type="time" th:field="*{time}" id="time">
     <br>
-<!--    <div>-->
-<!--        <label th:for="isBooked" th:text="'Is Booked:'"></label>-->
-<!--        <input type="checkbox" th:field="*{isBooked}"/>-->
-<!--    </div>-->
+
+    <!--    <select name="color">-->
+    <!--        <option th:each="day : ${T(pl.dinosauruski.Slot.DAY_OF_WEEK).values()}"-->
+    <!--                th:value="${day}" th:text="${day}"></option>-->
+    <!--    </select>-->
+
+    <!--    <select name="color">-->
+    <!--        <option th:each="colorOpt : ${T(com.baeldung.thymeleaf.model.Color).values()}"-->
+    <!--                th:value="${colorOpt}" th:text="${colorOpt}"></option>-->
+    <!--    </select>-->
+    <!--    <div>-->
+    <!--        <label th:for="isBooked" th:text="'Is Booked:'"></label>-->
+    <!--        <input type="checkbox" th:field="*{isBooked}"/>-->
+    <!--    </div>-->
 
 
-<!--        <label for="students">Wybierz studenta:</label>-->
-<!--        <select th:field="*{regularStudent.id}">-->
-<!--            <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.name}" id="students">-->
-<!--            </option>-->
-<!--        </select>-->
-<!--    <br>-->
-<!--    <div>-->
-<!--        <label th:for="isOnceFree" th:text="'Is once free:'"></label>-->
-<!--        <input type="checkbox" th:field="*{isOnceFree}"/>-->
-<!--    </div>-->
+    <!--        <label for="students">Wybierz studenta:</label>-->
+    <!--        <select th:field="*{regularStudent.id}">-->
+    <!--            <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.name}" id="students">-->
+    <!--            </option>-->
+    <!--        </select>-->
+    <!--    <br>-->
+    <!--    <div>-->
+    <!--        <label th:for="isOnceFree" th:text="'Is once free:'"></label>-->
+    <!--        <input type="checkbox" th:field="*{isOnceFree}"/>-->
+    <!--    </div>-->
 
-<!--    <input type="date" th:value="*{date}" th:field="*{date}" />-->
+    <!--    <input type="date" th:value="*{date}" th:field="*{date}" />-->
 
     <input type="submit" value="SAVE">
 </form>

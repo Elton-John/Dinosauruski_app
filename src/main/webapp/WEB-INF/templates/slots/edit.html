@@ -8,10 +8,10 @@
 tu edytujemy slot
 <form th:method="PATCH" th:action="@{/teacher/slots/edit}" th:object="${slot}">
     <input type="hidden" th:field="*{id}"/>
-
-    <label for="day">Wybierz dzień:</label>
-    <select th:field="*{dayName.id}">
-        <option th:each="day : ${days}" th:value="${day.id}" th:text="${day.name}" id="day"></option>
+    <label for="dayss">Wybierz dzień druga opcja:</label>
+    <select th:field="*{dayOfWeek}">
+        <option th:each="day : ${T(pl.dinosauruski.slot.DAY_OF_WEEK).values()}"
+                th:value="${day}" th:text="${day.translation}" id="dayss"></option>
     </select>
     <br>
 

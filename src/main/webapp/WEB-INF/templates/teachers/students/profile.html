@@ -15,8 +15,9 @@
 <span>--------------------------</span>
 
 <div th:each="slot : ${slots}">
-    <p th:text="${slot.dayName.name}">day</p>
-    <p th:text="${slot.time}">time</p>
+    <p th:text="${slot.dayOfWeek.translation}">day</p>
+    <p th:text="${slot.time}">day</p>
+
 </div>
 <p><a th:href="@{/teacher/students/edit/slot/{id}(id=${student.getId()})}"> zarządzaj stałymi godzinami</a></p>
 <span>--------------------------</span>
