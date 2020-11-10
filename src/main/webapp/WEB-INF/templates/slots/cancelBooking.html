@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+student w sessji
+Stałe godziny zajęć studenta
+<span th:text="${student.name}"></span>
+<span th:text="${student.surname}"></span>
+
+<table>
+    <tr>
+        <th> day</th>
+        <th> time</th>
+        <th> usuń</th>
+
+
+    </tr>
+    <tr th:each="slot : ${studentSlots}">
+        <td th:text="${slot.dayOfWeek.translation}"> name</td>
+        <td th:text="${slot.time}"> name</td>
+        <td>
+            <form th:method="DELETE" th:action="@{/teacher/slots/cancel/{id}(id=${slot.getId()})}">
+                <input type="submit" value="USUŃ"></form>
+        </td>
+    </tr>
+</table>
+<p>----------------------------------------</p>
+<form th:method="POST"
+      th:action="@{/teacher/slots/booking}">
+    <label for="freeSlot">Wybierz inną godzinę z dostępnych:</label>
+    <select th:name="bookedSlotId">
+        <option th:each="freeSlot : ${freeSlots}" th:value="${freeSlot.id}" th:text="${freeSlot.getDayAndTime()}"
+                id="freeSlot">
+        </option>
+    </select>
+    <br>
+    <input type="submit" value="SAVE">
+</form>
+<span>--------------------------------------</span>
+<a th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}">WRÓĆ DO PROFILU STUDENTA</a>
+</body>
+</html>

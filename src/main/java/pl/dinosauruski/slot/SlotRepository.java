@@ -13,10 +13,11 @@ import java.util.Optional;
 @Repository
 public interface SlotRepository extends JpaRepository<Slot, Long> {
 
-    @Query("select slot from Slot slot WHERE slot.isBooked = false ")
-    List<Slot> findAllWhereIsBookedIsFalse();
+    @Query("SELECT s FROM Slot s WHERE s.teacher.id = :id AND s.isBooked = false ")
+    List<Slot> findAllByTeacherWhereIsBookedIsFalse(@Param("id") Long id);
 
-    List<Slot> findAllByTeacherId(Long id);
+    @Query("SELECT s FROM Slot s WHERE s.teacher.id = :id")
+    List<Slot> findAllByTeacherId(@Param("id") Long id);
 
     @Query("SELECT new pl.dinosauruski.slot.dto.SlotDTO(s.id, s.time, s.dayOfWeek) " +
             "FROM Slot s WHERE s.id = :id")

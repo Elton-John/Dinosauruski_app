@@ -62,7 +62,8 @@ public class StudentCommandService {
 
     private void cancelBookedSlots(Long teacherId, Long studentId) {
         List<Slot> slots = slotQueryService.getSlots(teacherId, studentId);
-        slots.forEach(slotCommandService::unBookedSlot);
+        slots.forEach(slotCommandService::makeSlotFree);
 
     }
+
 }

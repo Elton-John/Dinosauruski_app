@@ -3,9 +3,9 @@ package pl.dinosauruski.slot;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.models.Slot;
-import pl.dinosauruski.models.Student;
 import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.slot.dto.SlotDTO;
+import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.teacher.TeacherQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
@@ -17,7 +17,7 @@ import javax.transaction.Transactional;
 public class SlotCommandService {
     private final SlotRepository slotRepository;
     private final SlotQueryService slotQueryService;
-
+    private final StudentQueryService studentQueryService;
     private final TeacherQueryService teacherQueryService;
 
     public void createNewRegularFreeSlot(TeacherDTO loggedTeacher, SlotDTO slotForm) {
@@ -54,25 +54,21 @@ public class SlotCommandService {
 //        slotRepository.save(slot);
 //    }
 
-    public void bookedSlot(Slot slot, Student student) {
-        // Student student = studentService.getOneOrThrow(studentId);
-        slot.setRegularStudent(student);
-        slot.setBooked(true);
-        updateBooked(slot);
-    }
-
-    public void unBookedSlot(Slot slot) {
+    public void makeSlotFree(Slot slot) {
         deleteStudentReference(slot);
         slot.setBooked(false);
-        updateBooked(slot);
+        slotRepository.save(slot);
     }
 
     private void deleteStudentReference(Slot slot) {
         slot.setRegularStudent(null);
     }
 
-    public void updateBooked(Slot slot) {
+
+    public void makeSlotBooked(Long bookedSlotId, Long studentId) {
+        Slot slot = slotQueryService.getOneOrThrow(bookedSlotId);
+        slot.setBooked(true);
+        slot.setRegularStudent(studentQueryService.getOneOrThrow(studentId));
         slotRepository.save(slot);
     }
-
 }

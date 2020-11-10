@@ -19,7 +19,7 @@
     <p th:text="${slot.time}">day</p>
 
 </div>
-<p><a th:href="@{/teacher/students/edit/slot/{id}(id=${student.getId()})}"> zarządzaj stałymi godzinami</a></p>
+<p><a th:href="@{/teacher/slots/booking/{studentId}(studentId=${student.getId()})}"> DODAJ LUB USUŃ STAŁY TERMIN</a></p>
 <span>--------------------------</span>
 <p><a th:href="@{/teacher/students/submit/{id}(id=${student.getId()})}"> usuń studenta</a></p>
 

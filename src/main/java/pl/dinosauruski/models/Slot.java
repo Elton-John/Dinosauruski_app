@@ -45,5 +45,8 @@ public class Slot {
         isBooked = booked;
     }
 
+    public String getDayAndTime() {
+        return this.dayOfWeek.getTranslation() + " " + this.time;
+    }
 
 }

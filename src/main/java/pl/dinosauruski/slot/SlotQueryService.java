@@ -24,8 +24,8 @@ public class SlotQueryService {
         return slotRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    public List<Slot> getAllFreeSlots() {
-        return slotRepository.findAllWhereIsBookedIsFalse();
+    public List<Slot> getAllFreeSlotsByTeacher(Long id) {
+        return slotRepository.findAllByTeacherWhereIsBookedIsFalse(id);
     }
 
     public SlotDTO getOneSlotDtoOrThrow(Long id) {

@@ -41,7 +41,7 @@ class TeacherController {
         Long id = loggedTeacher.getId();
         Teacher teacher = teacherQueryService.getOneOrThrow(id);
         model.addAttribute("teacher", teacher);
-        model.addAttribute("freeSlots");
+        model.addAttribute("freeSlots", slotQueryService.getAllFreeSlotsByTeacher(id));
         return "teachers/cockpit";
     }
 
@@ -100,8 +100,8 @@ class TeacherController {
     }
 
 
-    @ModelAttribute("freeSlots")
-    public List<Slot> slots() {
-        return slotQueryService.getAllFreeSlots();
-    }
+//    @ModelAttribute("freeSlots")
+//    public List<Slot> slots() {
+//        return slotQueryService.getAllFreeSlots();
+//    }
 }
