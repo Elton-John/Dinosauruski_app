@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.models.Slot;
 import pl.dinosauruski.slot.dto.SlotDTO;
+import pl.dinosauruski.slot.dto.SlotInfoDTO;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -36,4 +37,7 @@ public class SlotQueryService {
         return slotRepository.findAllByTeacherIdAndStudentId(teacherId, studentId);
     }
 
+    public List<SlotInfoDTO> getAllBookedSlotInfoDtoByTeacher(Long id) {
+        return slotRepository.findAllBookedSlotInfoByTeacherId(id);
+    }
 }

@@ -2,6 +2,7 @@ package pl.dinosauruski.slot;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.dinosauruski.lesson.LessonCommandService;
 import pl.dinosauruski.models.Slot;
 import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.slot.dto.SlotDTO;
@@ -19,6 +20,7 @@ public class SlotCommandService {
     private final SlotQueryService slotQueryService;
     private final StudentQueryService studentQueryService;
     private final TeacherQueryService teacherQueryService;
+    private final LessonCommandService lessonCommandService;
 
     public void createNewRegularFreeSlot(TeacherDTO loggedTeacher, SlotDTO slotForm) {
         Teacher teacher = teacherQueryService.getOneOrThrow(loggedTeacher.getId());
@@ -58,6 +60,7 @@ public class SlotCommandService {
         deleteStudentReference(slot);
         slot.setBooked(false);
         slotRepository.save(slot);
+        lessonCommandService.removeGeneratedLessons(slot);
     }
 
     private void deleteStudentReference(Slot slot) {
@@ -70,5 +73,6 @@ public class SlotCommandService {
         slot.setBooked(true);
         slot.setRegularStudent(studentQueryService.getOneOrThrow(studentId));
         slotRepository.save(slot);
+        lessonCommandService.generateFutureLessonsForStudent(slot, studentId);
     }
 }

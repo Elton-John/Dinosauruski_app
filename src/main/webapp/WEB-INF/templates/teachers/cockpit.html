@@ -5,19 +5,41 @@
 
     <title></title>
 </head>
-<body>
-Witaj, <span th:text="${teacher.getName()}"></span>
-<br>
-<a th:href="@{/teacher/edit/{id}(id=${teacher.getId()})}">EDYTUJ PROFIL</a>
-<br>
-<a th:href="@{/login/logout}">WYLOGUJ SIĘ</a>
-<br>
-<a th:href="@{/teacher/submit/{id}(id=${teacher.getId()})}">USUŃ KONTO</a>
+<p>
+    Witaj, <span th:text="${teacher.getName()}"></span>
+    <br>
+    <a th:href="@{/teacher/edit/{id}(id=${teacher.getId()})}">EDYTUJ PROFIL</a>
+    <br>
+    <a th:href="@{/login/logout}">WYLOGUJ SIĘ</a>
+    <br>
+    <a th:href="@{/teacher/submit/{id}(id=${teacher.getId()})}">USUŃ KONTO</a>
 
-<span>------------------------------------------------</span>
+    <span>------------------------------------------------</span>
 <h3>AKTUALNY PLAN</h3>
+
+<p th:if="${isGenerated}==false">
+    Dodaj wolne terminy, przypisz do nich studentów,
+    następnie wygeneruj plan na bieżący tydzień
+    <br>
+    <a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>
+</p>
+
+<table th:if="${isGenerated}==true">
+    <tr>
+        <th>DAY</th>
+        <th>TIME</th>
+        <th>DATE</th>
+        <th>STUDENT</th>
+    </tr>
+    <tr th:each="lesson : ${thisWeekLessons}">
+        <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>
+        <td th:text="${lesson.slot.time}">day name</td>
+        <td th:text="${lesson.date}">BOOKED</td>
+        <td th:text="${lesson.student.name}">FREE</td>
+    </tr>
+</table>
 <span>------------------------------------------------</span>
-<h3>KALENDARZ</h3>
+<a th:href="@{/teacher/calendar}"><h3>KALENDARZ</h3></a>
 <span>------------------------------------------------</span>
 <h3>OPŁATY</h3>
 <span>------------------------------------------------</span>

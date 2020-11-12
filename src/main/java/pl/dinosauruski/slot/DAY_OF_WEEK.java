@@ -2,13 +2,13 @@ package pl.dinosauruski.slot;
 
 public enum DAY_OF_WEEK {
 
-    MON("poniedziałek"),
-    TUE("wtorek"),
-    WED("środa"),
-    THU("czwartek"),
-    FRI("piątek"),
-    SAT("sobota"),
-    SUN("niedziela");
+    MONDAY("poniedziałek"),
+    TUESDAY("wtorek"),
+    WEDNESDAY("środa"),
+    THURSDAY("czwartek"),
+    FRIDAY("piątek"),
+    SATURDAY("sobota"),
+    SUNDAY("niedziela");
 
     private String translation;
 

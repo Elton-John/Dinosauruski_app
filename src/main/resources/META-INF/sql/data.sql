@@ -15,3 +15,11 @@ INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 1
 INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 2);
 INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 3);
 INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 4);
+INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id) VALUES ('F', 'F', 46, 2020, 1);
+INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id) VALUES ('F', 'F', 47, 2020, 1);
+INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id) VALUES ('F', 'F', 48, 2020, 1);
+INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id) VALUES ('F', 'F', 49, 2020, 1);
+INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id) VALUES ('F', 'F', 50, 2020, 1);
+INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id) VALUES ('F', 'F', 51, 2020, 1);
+INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id) VALUES ('F', 'F', 52, 2020, 1);
+INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id) VALUES ('F', 'F', 53, 2020, 1);

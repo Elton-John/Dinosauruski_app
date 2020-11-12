@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.dinosauruski.models.Slot;
 import pl.dinosauruski.slot.dto.SlotDTO;
+import pl.dinosauruski.slot.dto.SlotInfoDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +28,7 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
     List<Slot> findAllByTeacherIdAndStudentId(@Param("teacherId") Long teacherId,
                                               @Param("studentId") Long studentId);
 
+    @Query("SELECT new pl.dinosauruski.slot.dto.SlotInfoDTO(s.id, s.dayOfWeek,s.time,s.regularStudent) " +
+            "FROM Slot s WHERE s.teacher.id = :id AND s.isBooked = TRUE")
+    List<SlotInfoDTO> findAllBookedSlotInfoByTeacherId(@Param("id") Long id);
 }

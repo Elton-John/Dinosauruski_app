@@ -5,14 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.dinosauruski.models.Slot;
-import pl.dinosauruski.slot.SlotCommandService;
+import pl.dinosauruski.lesson.LessonQueryService;
+import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 import pl.dinosauruski.teacher.dto.TeacherEditDTO;
+import pl.dinosauruski.week.WeekQueryService;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -26,6 +26,8 @@ class TeacherController {
     private final TeacherCommandService teacherCommandService;
     private final TeacherQueryService teacherQueryService;
     private final SlotQueryService slotQueryService;
+    private final WeekQueryService weekQueryService;
+    private final LessonQueryService lessonQueryService;
 
 
     @GetMapping("/cockpit")
@@ -42,6 +44,14 @@ class TeacherController {
         Teacher teacher = teacherQueryService.getOneOrThrow(id);
         model.addAttribute("teacher", teacher);
         model.addAttribute("freeSlots", slotQueryService.getAllFreeSlotsByTeacher(id));
+        Boolean isGenerated = weekQueryService.checkCurrentWeekIsGenerated(id);
+        if (isGenerated) {
+            model.addAttribute("isGenerated", true);
+            List<Lesson> lessons = lessonQueryService.getAllThisWeekLessonsByTeacher(id);
+            model.addAttribute("thisWeekLessons", lessons);
+        } else {
+            model.addAttribute("isGenerated", false);
+        }
         return "teachers/cockpit";
     }
 

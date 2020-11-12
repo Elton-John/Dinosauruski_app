@@ -41,5 +41,7 @@ public class Teacher {
     private List<Slot> slots;
     @OneToMany(mappedBy = "teacher")
     private Set<Payment> payments = new HashSet<>();
+    @OneToMany(mappedBy = "teacher")
+    private List<Week> weeks;
 
 }

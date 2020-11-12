@@ -8,6 +8,7 @@ import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.teacher.dto.TeacherEditDTO;
 import pl.dinosauruski.teacher.dto.TeacherRegistrationFormDTO;
+import pl.dinosauruski.week.WeekCommandService;
 
 import javax.transaction.Transactional;
 import java.util.Set;
@@ -20,6 +21,7 @@ public class TeacherCommandService {
     private final TeacherRepository teacherRepository;
     private final TeacherQueryService teacherQueryService;
     private final StudentQueryService studentQueryService;
+    private final WeekCommandService weekCommandService;
 
     public void create(TeacherRegistrationFormDTO registrationForm) {
         //String hashedPassword = hashPassword(registrationForm.getPassword());
@@ -30,7 +32,10 @@ public class TeacherCommandService {
         teacher.setEmail(registrationForm.getEmail());
         //      teacher.setPassword(hashedPassword);
         teacher.setPassword(registrationForm.getPassword());
+
         teacherRepository.save(teacher);
+        Teacher savedTeacher = teacherQueryService.getOneByEmailOrThrow(teacher.getEmail());
+        weekCommandService.generateWeeksOnesInYear(savedTeacher.getId());
     }
 
     public Teacher update(TeacherEditDTO teacherEditDTO) {

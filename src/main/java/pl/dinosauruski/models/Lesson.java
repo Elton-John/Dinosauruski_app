@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -13,6 +14,7 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+  //  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDate date;
     @ManyToOne
     private Slot slot;
@@ -24,6 +26,10 @@ public class Lesson {
     private boolean cancelled;
     private boolean lastMinuteCancelled;
     private boolean transferred;
+    private boolean archived;
     private boolean paid;
-    private Double requiredPayment;
+    private BigDecimal requiredPayment;
+    @ManyToOne
+    private Week week;
+
 }
