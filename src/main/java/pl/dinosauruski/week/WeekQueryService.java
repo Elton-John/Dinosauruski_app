@@ -2,12 +2,13 @@ package pl.dinosauruski.week;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.dinosauruski.lesson.LessonQueryService;
+import org.threeten.extra.YearWeek;
 import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.models.Week;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.util.List;
@@ -17,12 +18,11 @@ import java.util.List;
 @AllArgsConstructor
 public class WeekQueryService {
     private WeekRepository weekRepository;
-    private final LessonQueryService lessonQueryService;
 
     public Week getOneOrThrow(Integer year, Integer numberOfWeek, Long teacherId) {
-        return weekRepository.findByYearAndNumberAndTeacherId(year, numberOfWeek, teacherId).orElseThrow(EntityNotFoundException::new);
+        return weekRepository.findByYearAndNumberAndTeacherId(year, numberOfWeek, teacherId)
+                .orElseThrow(EntityNotFoundException::new);
     }
-
 
     public Boolean checkIsGenerated(Integer year, Integer numberOfWeek, Long teacherId) {
         Week week = getOneOrThrow(year, numberOfWeek, teacherId);
@@ -30,17 +30,32 @@ public class WeekQueryService {
     }
 
     public Boolean checkCurrentWeekIsGenerated(Long teacherId) {
-        LocalDate now = LocalDate.now();
-        int year = now.getYear();
-        int weekOfYear = now.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+        int weekOfYear = getCurrentNumberOfWeek();
+        int year = LocalDate.now().getYear();
         return checkIsGenerated(year, weekOfYear, teacherId);
     }
 
-
     public List<Week> getAllGeneratedWeeksInFuture(Teacher teacher) {
-        LocalDate today = LocalDate.now();
-        int weekOfYear = today.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
-        int year = today.getYear();
-        return weekRepository.findAllGeneratedWeeksByYearAndTeacherId(year, teacher.getId(), weekOfYear);
+        return weekRepository.findAllGeneratedInFuture(getCurrentYear(), getCurrentNumberOfWeek(), teacher.getId());
+    }
+
+    public int getCurrentNumberOfWeek() {
+        LocalDate now = LocalDate.now();
+        return now.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+    }
+
+    public Boolean checkWeekIsGenerated(int year, int nextNumberOfWeek, Long teacherId) {
+        Week week = getOneOrThrow(year, nextNumberOfWeek, teacherId);
+        return week.getGenerated();
+    }
+
+    public int getCurrentYear() {
+        return LocalDate.now().getYear();
+    }
+
+    public LocalDate getDateByNumberOfWeekAndDayName(int year, int week, String dayName) {
+        YearWeek yw = YearWeek.of(year, week);
+        return yw.atDay(DayOfWeek.valueOf(dayName));
+
     }
 }

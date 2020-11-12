@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import pl.dinosauruski.lesson.dto.LessonCompletionDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.models.Lesson;
-import pl.dinosauruski.models.Slot;
-import pl.dinosauruski.models.Student;
+import pl.dinosauruski.models.Week;
+import pl.dinosauruski.week.WeekQueryService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -20,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class LessonQueryService {
     private LessonRepository lessonRepository;
+    private WeekQueryService weekQueryService;
 
     public Lesson getOneOrThrow(Long id) {
         return lessonRepository.findById(id).orElseThrow(EntityNotFoundException::new);
@@ -41,7 +42,8 @@ public class LessonQueryService {
         return lessonRepository.findAllThisWeekLessonsByTeacher(id, thisMondayDate, thisSundayDate);
     }
 
-    public List<Lesson> getAllLessonsBySlotAndStudentInFuture(Slot slot, Student student, LocalDate today) {
-       return lessonRepository.AllLessonsBySlotAndStudentInFuture(slot,student, today);
+    public List<Lesson> getGeneratedLessonsOfWeek(int year, int nextNumberOfWeek, Long teacherId) {
+        Week week = weekQueryService.getOneOrThrow(year, nextNumberOfWeek, teacherId);
+        return lessonRepository.findAllLessonByWeekAndTeacherId(week, teacherId);
     }
 }

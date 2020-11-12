@@ -123,6 +123,12 @@
             <version>2.3.3.RELEASE</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threeten-extra</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>Dinosauruski_app</finalName>

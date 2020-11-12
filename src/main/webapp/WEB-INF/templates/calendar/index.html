@@ -4,9 +4,71 @@
     <meta charset="UTF-8">
     <title></title>
 </head>
-<body>
+<p>
 Witaj, <span th:text="${teacher.id}"></span>
 Tutaj możesz zobaczyć swój kalendarz i wygenerować plan lekcji.
 <!--<a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>-->
+
+
+<h3>AKTUALNY PLAN</h3>
+
+<!--<p th:if="${isGenerated}==false">-->
+<!--    Dodaj wolne terminy, przypisz do nich studentów,-->
+<!--    następnie wygeneruj plan na bieżący tydzień-->
+<!--    <br>-->
+<!--    <a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>-->
+<!--</p>-->
+Dodaj wolne terminy, przypisz do nich studentów,-->
+    następnie wygeneruj plan na bieżący tydzień
+    <br>
+<div th:if="${isGenerated}==false">
+<form th:method="GET" th:action="@{/teacher/calendar/generate/{year}/{week}(week=${week}, year=${year})}">
+    <input type="hidden" th:name="index" th:value="true">
+    <input type="submit" value="WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ">
+</form>
+</div>
+
+
+<table th:if="${isGenerated}==true">
+    <tr>
+        <th>DAY</th>
+        <th>TIME</th>
+        <th>DATE</th>
+        <th>STUDENT</th>
+    </tr>
+    <tr th:each="lesson : ${thisWeekLessons}">
+        <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>
+        <td th:text="${lesson.slot.time}">day name</td>
+        <td th:text="${lesson.date}">BOOKED</td>
+        <td th:text="${lesson.student.name}">FREE</td>
+    </tr>
+</table>
+
+<div th:if="${isNextGenerated}==false">
+<form th:method="GET" th:action="@{/teacher/calendar/generate/{year}/{week}(week=${nextWeek}, year=${nextYear})}">
+<!--    <input type="hidden" th:name="${index}">-->
+    <input type="submit" value="WYGENERUJ NASTĘPNY TYDZIEŃ">
+</form>
+</div>
+
+<table th:if="${isNextGenerated}==true">
+    <tr>
+        <th>DAY</th>
+        <th>TIME</th>
+        <th>DATE</th>
+        <th>STUDENT</th>
+    </tr>
+    <tr th:each="lesson : ${nextWeekLessons}">
+        <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>
+        <td th:text="${lesson.slot.time}">day name</td>
+        <td th:text="${lesson.date}">BOOKED</td>
+        <td th:text="${lesson.student.name}">FREE</td>
+    </tr>
+</table>
+
+<p>
+    <a th:href="@{/teacher/cockpit}">Return to cockpit</a>
+</p>
+
 </body>
 </html>

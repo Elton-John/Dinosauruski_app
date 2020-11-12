@@ -14,12 +14,10 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-  //  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    //  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDate date;
     @ManyToOne
     private Slot slot;
-//    @ManyToOne
-//    private Teacher teacher;
     @ManyToOne
     private Student student;
     private boolean completed;
@@ -32,4 +30,18 @@ public class Lesson {
     @ManyToOne(fetch = FetchType.EAGER)
     private Week week;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Lesson lesson = (Lesson) o;
+
+        return id != null ? id.equals(lesson.id) : lesson.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

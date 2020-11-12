@@ -17,13 +17,6 @@
     <span>------------------------------------------------</span>
 <h3>AKTUALNY PLAN</h3>
 
-<p th:if="${isGenerated}==false">
-    Dodaj wolne terminy, przypisz do nich studentów,
-    następnie wygeneruj plan na bieżący tydzień
-    <br>
-    <a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>
-</p>
-
 <table th:if="${isGenerated}==true">
     <tr>
         <th>DAY</th>
