@@ -11,6 +11,7 @@ INSERT INTO Slot (isBooked, isOnceFree, date, time, dayOfWeek, regularStudent_id
 INSERT INTO Slot (isBooked, isOnceFree, date, time,dayOfWeek,  regularStudent_id, teacher_id) VALUES (false, false, null, '10:00:00', 3, null, 1);
 INSERT INTO Slot (isBooked, isOnceFree, date, time, dayOfWeek, regularStudent_id, teacher_id) VALUES (false, false, null, '11:00:00', 1, null, 1);
 INSERT INTO Slot (isBooked, isOnceFree, date, time,dayOfWeek,  regularStudent_id, teacher_id) VALUES (false, false, null, '13:00:00', 0, null, 1);
+INSERT INTO Slot (date, dayOfWeek, isBooked, isOnceFree, time, regularStudent_id, teacher_id) VALUES (null, 6, true, false, '20:59:00', 3, 1);
 INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 1);
 INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 2);
 INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 3);

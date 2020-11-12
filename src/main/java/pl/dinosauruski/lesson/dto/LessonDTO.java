@@ -8,7 +8,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import pl.dinosauruski.models.Slot;
 import pl.dinosauruski.models.Student;
 import pl.dinosauruski.models.Teacher;
+import pl.dinosauruski.models.Week;
 
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 @Setter
 @Getter
@@ -19,8 +22,9 @@ public class LessonDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private Slot slot;
-    private Teacher teacher;
+   // private Teacher teacher;
     private Student student;
+     private Week week;
 
 
 }

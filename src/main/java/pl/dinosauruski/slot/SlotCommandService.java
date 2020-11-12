@@ -57,10 +57,11 @@ public class SlotCommandService {
 //    }
 
     public void makeSlotFree(Slot slot) {
+        lessonCommandService.removeGeneratedLessons(slot);
         deleteStudentReference(slot);
         slot.setBooked(false);
         slotRepository.save(slot);
-        lessonCommandService.removeGeneratedLessons(slot);
+
     }
 
     private void deleteStudentReference(Slot slot) {

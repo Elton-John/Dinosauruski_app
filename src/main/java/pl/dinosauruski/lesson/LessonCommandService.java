@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.lesson.dto.LessonCompletionDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
-import pl.dinosauruski.models.Lesson;
-import pl.dinosauruski.models.Slot;
-import pl.dinosauruski.models.Week;
+import pl.dinosauruski.models.*;
 import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.slot.dto.SlotInfoDTO;
 import pl.dinosauruski.student.StudentQueryService;
@@ -20,6 +18,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,8 @@ public class LessonCommandService {
         lesson.setDate(lessonDTO.getDate());
         lesson.setSlot(lessonDTO.getSlot());
         lesson.setStudent(lessonDTO.getStudent());
-        lesson.setTeacher(lessonDTO.getTeacher());
+        lesson.setWeek(lessonDTO.getWeek());
+        // lesson.setTeacher(lessonDTO.getTeacher());
         lesson.setCompleted(false);
         lesson.setCancelled(false);
         lesson.setLastMinuteCancelled(false);
@@ -67,6 +67,8 @@ public class LessonCommandService {
         List<SlotInfoDTO> bookedSlots = slotQueryService.getAllBookedSlotInfoDtoByTeacher(id);
         ZoneId zoneId = ZoneId.of("Europe/Warsaw");
         LocalDate today = LocalDate.now(zoneId);
+        int weekOfYear = today.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+        int thisYear = today.getYear();
         LocalDate thisMondayDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate thisSundayDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
 
@@ -78,55 +80,62 @@ public class LessonCommandService {
                     lessonDTO.setDate(thisMondayDate);
                     lessonDTO.setSlot(slotQueryService.getOneOrThrow(slotInfoDTO.getId()));
                     lessonDTO.setStudent(slotInfoDTO.getRegularStudent());
-                    lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
+                    lessonDTO.setWeek(weekQueryService.getOneOrThrow(thisYear, weekOfYear, id));
+                    //  lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
                     create(lessonDTO);
                     break;
                 case 1:     //tue
                     lessonDTO.setDate(thisMondayDate.plusDays(1));
                     lessonDTO.setSlot(slotQueryService.getOneOrThrow(slotInfoDTO.getId()));
                     lessonDTO.setStudent(slotInfoDTO.getRegularStudent());
-                    lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
+                    lessonDTO.setWeek(weekQueryService.getOneOrThrow(thisYear, weekOfYear, id));
+                    //  lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
                     create(lessonDTO);
                     break;
                 case 2:    //wed
                     lessonDTO.setDate(thisMondayDate.plusDays(2));
                     lessonDTO.setSlot(slotQueryService.getOneOrThrow(slotInfoDTO.getId()));
                     lessonDTO.setStudent(slotInfoDTO.getRegularStudent());
-                    lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
+                    lessonDTO.setWeek(weekQueryService.getOneOrThrow(thisYear, weekOfYear, id));
+                    //   lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
                     create(lessonDTO);
                     break;
                 case 3:    //thu
                     lessonDTO.setDate(thisMondayDate.plusDays(3));
                     lessonDTO.setSlot(slotQueryService.getOneOrThrow(slotInfoDTO.getId()));
                     lessonDTO.setStudent(slotInfoDTO.getRegularStudent());
-                    lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
+                    lessonDTO.setWeek(weekQueryService.getOneOrThrow(thisYear, weekOfYear, id));
+                    //   lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
                     create(lessonDTO);
                     break;
                 case 4:    //fri
                     lessonDTO.setDate(thisMondayDate.plusDays(4));
                     lessonDTO.setSlot(slotQueryService.getOneOrThrow(slotInfoDTO.getId()));
                     lessonDTO.setStudent(slotInfoDTO.getRegularStudent());
-                    lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
+                    lessonDTO.setWeek(weekQueryService.getOneOrThrow(thisYear, weekOfYear, id));
+                    //   lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
                     create(lessonDTO);
                     break;
                 case 5:    //sat
                     lessonDTO.setDate(thisMondayDate.plusDays(5));
                     lessonDTO.setSlot(slotQueryService.getOneOrThrow(slotInfoDTO.getId()));
                     lessonDTO.setStudent(slotInfoDTO.getRegularStudent());
-                    lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
+                    lessonDTO.setWeek(weekQueryService.getOneOrThrow(thisYear, weekOfYear, id));
+                    //  lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
                     create(lessonDTO);
                     break;
                 case 6:    //sun
                     lessonDTO.setDate(thisMondayDate.plusDays(6));
                     lessonDTO.setSlot(slotQueryService.getOneOrThrow(slotInfoDTO.getId()));
                     lessonDTO.setStudent(slotInfoDTO.getRegularStudent());
-                    lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
+                    lessonDTO.setWeek(weekQueryService.getOneOrThrow(thisYear, weekOfYear, id));
+                    //   lessonDTO.setTeacher(teacherQueryService.getOneOrThrow(id));
                     create(lessonDTO);
                     break;
             }
         });
 
-        int weekOfYear = today.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+
         weekCommandService.setGenerated(weekOfYear, today.getYear(), id);
 
     }
@@ -144,6 +153,7 @@ public class LessonCommandService {
         LocalDate today = LocalDate.now();
         int numberOfDayOfWeek = today.getDayOfWeek().getValue() - 1;
         int thisWeek = today.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+        int thisYear = today.getYear();
         List<Integer> numberOfWeekList = weeks.stream().map(Week::getNumberOfWeek).collect(Collectors.toList());
 
         //Check if this week should be changed
@@ -153,32 +163,47 @@ public class LessonCommandService {
                 LocalDate thisDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.valueOf(slot.getDayOfWeek().name())));
                 lessonDTO.setDate(thisDate);
                 lessonDTO.setStudent(studentQueryService.getOneOrThrow(studentId));
-                lessonDTO.setTeacher(slot.getTeacher());
+                lessonDTO.setWeek(weekQueryService.getOneOrThrow(thisYear, thisWeek, slot.getTeacher().getId()));
+                //  lessonDTO.setTeacher(slot.getTeacher());
                 create(lessonDTO);
             }
         }
 
         //Check if other weeks should be changed                                                //cheka na testowanie
-        numberOfWeekList.stream().filter(num -> num != thisWeek).forEach(num -> {
-            lessonDTO.setSlot(slot);
-            LocalDate thisDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.valueOf(slot.getDayOfWeek().name())));
-            lessonDTO.setDate(thisDate);
-            lessonDTO.setStudent(studentQueryService.getOneOrThrow(studentId));
-            lessonDTO.setTeacher(slot.getTeacher());
-            create(lessonDTO);
-        });
+//        numberOfWeekList.stream().filter(num -> num != thisWeek).forEach(num -> {
+//            lessonDTO.setSlot(slot);
+//            LocalDate thisDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.valueOf(slot.getDayOfWeek().name())));
+//            lessonDTO.setDate(thisDate);
+//            lessonDTO.setStudent(studentQueryService.getOneOrThrow(studentId));
+//            lessonDTO.setWeek(weekQueryService.getOneOrThrow(thisYear, thisWeek,slot.getTeacher().getId()));
+//           // lessonDTO.setTeacher(slot.getTeacher());
+//            create(lessonDTO);
+//        });
 
     }
 
     public void removeGeneratedLessons(Slot slot) {                              //cheka na testowanie
         LocalDate today = LocalDate.now();
-        //pobierz tygdoni, które już są generowane, z przysszłości
-        List<Week> weeks = weekQueryService.getAllGeneratedWeeksInFuture(slot.getTeacher());
+        //pobierz tygdonie, które już są generowane, z przysszłości
+        Student student = slot.getRegularStudent();
+        Teacher teacher = slot.getTeacher();
+        List<Week> weeks = weekQueryService.getAllGeneratedWeeksInFuture(teacher);
         //usuń lessony dla tych tygodni jeśli data jest późnijesz niż dzisiaj
-        weeks.stream().forEach(week -> week.getLessons()
-                .stream()
-                .filter(lesson -> lesson.getSlot().equals(slot))
-                .filter(lesson -> lesson.getDate().isAfter(today))
-                .forEach(lesson -> delete(lesson.getId())));
+        //lessonQueryService.getAllLessonsByWeek(w)
+        List<Lesson> allLessons = new ArrayList<>();
+
+        weeks.forEach(week -> {
+            List<Lesson> weekLessons = lessonQueryService.getAllLessonsBySlotAndStudentInFuture(slot, student, today);
+            allLessons.addAll(weekLessons);
+        });
+
+        allLessons.stream().forEach(lesson -> delete(lesson.getId()));
+
+
+//        weeks.stream().forEach(week -> week.getLessons()
+//                .stream()
+//                .filter(lesson -> lesson.getSlot().equals(slot))
+//                .filter(lesson -> lesson.getDate().isAfter(today))
+//                .forEach(lesson -> delete(lesson.getId())));
     }
 }

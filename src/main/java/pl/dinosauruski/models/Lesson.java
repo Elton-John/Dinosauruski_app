@@ -18,8 +18,8 @@ public class Lesson {
     private LocalDate date;
     @ManyToOne
     private Slot slot;
-    @ManyToOne
-    private Teacher teacher;
+//    @ManyToOne
+//    private Teacher teacher;
     @ManyToOne
     private Student student;
     private boolean completed;
@@ -29,7 +29,7 @@ public class Lesson {
     private boolean archived;
     private boolean paid;
     private BigDecimal requiredPayment;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Week week;
 
 }

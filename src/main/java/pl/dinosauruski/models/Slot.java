@@ -48,5 +48,25 @@ public class Slot {
         return this.dayOfWeek.getTranslation() + " " + this.time;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Slot slot = (Slot) o;
+
+        if (!id.equals(slot.id)) return false;
+        if (dayOfWeek != slot.dayOfWeek) return false;
+        if (!time.equals(slot.time)) return false;
+        return teacher.equals(slot.teacher);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + dayOfWeek.hashCode();
+        result = 31 * result + time.hashCode();
+        result = 31 * result + teacher.hashCode();
+        return result;
+    }
 }

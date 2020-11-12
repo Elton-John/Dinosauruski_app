@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import pl.dinosauruski.lesson.dto.LessonCompletionDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.models.Lesson;
+import pl.dinosauruski.models.Slot;
+import pl.dinosauruski.models.Student;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -39,4 +41,7 @@ public class LessonQueryService {
         return lessonRepository.findAllThisWeekLessonsByTeacher(id, thisMondayDate, thisSundayDate);
     }
 
+    public List<Lesson> getAllLessonsBySlotAndStudentInFuture(Slot slot, Student student, LocalDate today) {
+       return lessonRepository.AllLessonsBySlotAndStudentInFuture(slot,student, today);
+    }
 }
