@@ -10,6 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.temporal.ChronoField;
 import java.util.List;
 
@@ -57,5 +58,28 @@ public class WeekQueryService {
         YearWeek yw = YearWeek.of(year, week);
         return yw.atDay(DayOfWeek.valueOf(dayName));
 
+    }
+
+    public int getNumberOfWeekByDate(LocalDate date) {
+        return date.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+    }
+
+    public boolean checkMonthIsGenerated(int year, int month, Long teacherId) {
+        boolean result = true;
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstDay = ym.atDay(1);
+        LocalDate lastDay = ym.atEndOfMonth();
+        int numberOfFirstWeek = getNumberOfWeekByDate(firstDay);
+        int numberOfLastWeek = getNumberOfWeekByDate(lastDay);
+
+        for (int i = numberOfFirstWeek; i <= numberOfLastWeek; i++) {
+            Boolean isGenerated = checkIsGenerated(year, i, teacherId);
+            if (!isGenerated) {
+                return false;
+            }
+
+
+        }
+        return true;
     }
 }

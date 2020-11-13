@@ -17,9 +17,9 @@ public class WeekCommandService {
     private WeekQueryService weekQueryService;
     private TeacherQueryService teacherQueryService;
 
-    public void generateWeeksOnesInYear(Long teacherId){
-        LocalDate date = LocalDate.now();
-        int year = date.getYear();
+    public void generateWeeksOnesInYear(int year, Long teacherId){
+        LocalDate date = LocalDate.of(year,1,1);
+//        int year = date.getYear();
        int weeksInYear = (int) IsoFields.WEEK_OF_WEEK_BASED_YEAR.rangeRefinedBy(date).getMaximum();
         for (int i = 1; i <= weeksInYear ; i++) {
             Week week = new Week();

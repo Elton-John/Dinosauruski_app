@@ -11,6 +11,7 @@ import pl.dinosauruski.teacher.dto.TeacherRegistrationFormDTO;
 import pl.dinosauruski.week.WeekCommandService;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class TeacherCommandService {
 
         teacherRepository.save(teacher);
         Teacher savedTeacher = teacherQueryService.getOneByEmailOrThrow(teacher.getEmail());
-        weekCommandService.generateWeeksOnesInYear(savedTeacher.getId());
+        weekCommandService.generateWeeksOnesInYear(LocalDate.now().getYear(), savedTeacher.getId());
     }
 
     public Teacher update(TeacherEditDTO teacherEditDTO) {
@@ -64,7 +65,6 @@ public class TeacherCommandService {
                 .collect(Collectors.toSet());
         teacher.setStudents(studentSet);
         teacherRepository.save(teacher);
-
     }
 
     private String hashPassword(String password) {

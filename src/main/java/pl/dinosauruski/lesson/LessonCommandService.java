@@ -7,12 +7,12 @@ import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.models.*;
 import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.student.StudentQueryService;
-import pl.dinosauruski.teacher.TeacherQueryService;
 import pl.dinosauruski.week.WeekCommandService;
 import pl.dinosauruski.week.WeekQueryService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -72,7 +72,6 @@ public class LessonCommandService {
     public void generateFutureLessonsForStudent(Slot slot, Long studentId) {
         List<Week> weeks = weekQueryService.getAllGeneratedWeeksInFuture(slot.getTeacher());
         generateAdditionalLessons(weeks, slot, studentId);
-
     }
 
     private void generateAdditionalLessons(List<Week> weeks, Slot slot, Long studentId) {
@@ -91,7 +90,6 @@ public class LessonCommandService {
         });
     }
 
-
     public void removeGeneratedLessons(Slot slot) {
         LocalDate today = LocalDate.now();
         Student student = slot.getRegularStudent();
@@ -108,4 +106,30 @@ public class LessonCommandService {
 
     }
 
+    public void generateMonthLessonsForTeacher(int year, int month, Long teacherId) {
+
+        if (month == 12) {
+            int newYear = year + 1;
+            weekCommandService.generateWeeksOnesInYear(newYear, teacherId);
+        }
+//        if (month==1){
+//
+//        }
+
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstDay = ym.atDay(1);
+        LocalDate lastDay = ym.atEndOfMonth();
+        int numberOfFirstWeek = weekQueryService.getNumberOfWeekByDate(firstDay);
+        int numberOfLastWeek = weekQueryService.getNumberOfWeekByDate(lastDay);
+
+        for (int i = numberOfFirstWeek; i <= numberOfLastWeek; i++) {
+            Boolean isGenerated = weekQueryService.checkIsGenerated(year, i, teacherId);
+            if (!isGenerated) {
+                generateWeekLessonsForTeacher(year, i, teacherId);
+
+            }
+
+        }
+
+    }
 }

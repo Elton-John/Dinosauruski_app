@@ -3,17 +3,16 @@ package pl.dinosauruski.lesson;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 import pl.dinosauruski.week.WeekQueryService;
 
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @AllArgsConstructor
@@ -60,7 +59,8 @@ public class LessonGenerateController {
         model.addAttribute("year", year);
         model.addAttribute("nextWeek", nextNumberOfWeek);
         model.addAttribute("nextYear", nextYear);
-        model.addAttribute("index", true);
+//        model.addAttribute("index", true);
+        model.addAttribute("months");
         return "calendar/index";
     }
 
@@ -69,8 +69,57 @@ public class LessonGenerateController {
                         @PathVariable int year,
                         @PathVariable int week,
                         Model model) {
-
         lessonCommandService.generateWeekLessonsForTeacher(year, week, teacherDTO.getId());
         return "redirect:/teacher/calendar";
+    }
+
+
+    @GetMapping("/generate/month/{month}/{year}")
+    String generateMonth(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+                         @PathVariable int month,
+                         @PathVariable int year) {
+        lessonCommandService.generateMonthLessonsForTeacher(year, month, teacherDTO.getId());
+        return "redirect:/teacher/calendar/" + month + "/" + year;
+    }
+
+    @GetMapping("/{month}/{year}")
+    String showMonthYearLessons(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+                                @PathVariable int month,
+                                @PathVariable int year,
+                                Model model) {
+        boolean isGenerated = weekQueryService.checkMonthIsGenerated(year, month, teacherDTO.getId());
+        if (isGenerated) {
+            List<Lesson> lessons = lessonQueryService.getAllMonthYearLessonsByTeacher(year, month, teacherDTO.getId());
+            model.addAttribute("isGenerated", true);
+            model.addAttribute("lessons", lessons);
+            model.addAttribute("thisMonth", month);
+            model.addAttribute("thisYear", year);
+            model.addAttribute("months");
+            return "calendar/month";
+        }
+        model.addAttribute("isGenerated", false);
+        model.addAttribute("thisMonth", month);
+        model.addAttribute("thisYear", year);
+        model.addAttribute("months");
+        return "calendar/month";
+
+    }
+
+    @ModelAttribute("months")
+    private Map<Integer, String> months() {
+        Map<Integer, String> months = new HashMap<>();
+        months.put(1, "styczeń");
+        months.put(2, "luty");
+        months.put(3, "marzec");
+        months.put(4, "kwiecień");
+        months.put(5, "maj");
+        months.put(6, "czerwiec");
+        months.put(7, "lipiec");
+        months.put(8, "sierpień");
+        months.put(9, "wrzesień");
+        months.put(10, "październik");
+        months.put(11, "listopad");
+        months.put(12, "grudzień");
+        return months;
     }
 }

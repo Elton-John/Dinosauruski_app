@@ -40,7 +40,6 @@ public class Student {
         if (!id.equals(student.id)) return false;
         if (!name.equals(student.name)) return false;
         if (!surname.equals(student.surname)) return false;
-        if (!password.equals(student.password)) return false;
         return email.equals(student.email);
     }
 
@@ -49,7 +48,6 @@ public class Student {
         int result = id.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + surname.hashCode();
-        result = 31 * result + password.hashCode();
         result = 31 * result + email.hashCode();
         return result;
     }

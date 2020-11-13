@@ -12,7 +12,9 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,5 +47,19 @@ public class LessonQueryService {
     public List<Lesson> getGeneratedLessonsOfWeek(int year, int nextNumberOfWeek, Long teacherId) {
         Week week = weekQueryService.getOneOrThrow(year, nextNumberOfWeek, teacherId);
         return lessonRepository.findAllLessonByWeekAndTeacherId(week, teacherId);
+    }
+
+    public List<Lesson> getAllMonthYearLessonsByTeacher(int year, int month, Long teacherId) {
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstDay = ym.atDay(1);
+        LocalDate lastDay = ym.atEndOfMonth();
+        int numberOfFirstWeek = weekQueryService.getNumberOfWeekByDate(firstDay);
+        int numberOfLastWeek = weekQueryService.getNumberOfWeekByDate(lastDay);
+        List<Lesson> allLessons = new ArrayList<>();
+        for (int i = numberOfFirstWeek; i <= numberOfLastWeek; i++) {
+            List<Lesson> lessonsOfWeek = getGeneratedLessonsOfWeek(year, i, teacherId);
+            allLessons.addAll(lessonsOfWeek);
+        }
+        return allLessons;
     }
 }

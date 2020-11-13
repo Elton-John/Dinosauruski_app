@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<!--model.addAttribute("isGenerated", false);-->
+<!--model.addAttribute("thisMonth", month);-->
+<!--model.addAttribute("thisYear", year);-->
+<!--model.addAttribute("months");-->
+<h2 th:text="${thisYear}"></h2>
+<!--<h2 th:text="${months.get(${thisMonth})}">sfsf</h2>-->
+
+
+<div th:if="${isGenerated}==false">
+    <form th:method="GET" th:action="@{/teacher/calendar/generate/month/{month}/{year}(month=${thisMonth}, year=${thisYear})}">
+<!--        <a th:href="@{/teacher/calendar/generate/month/{month}/{year}(month=${instance.key}, year=${year})}">-->
+        <input type="submit" value="WYGENERUJ PLAN LEKCJI NA TEN MIESIĄC">
+    </form>
+</div>
+
+
+<table th:if="${isGenerated}==true">
+    <tr>
+        <th>DAY</th>
+        <th>TIME</th>
+        <th>DATE</th>
+        <th>STUDENT</th>
+    </tr>
+    <tr th:each="lesson : ${lessons}">
+        <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>
+        <td th:text="${lesson.slot.time}">day name</td>
+        <td th:text="${lesson.date}">BOOKED</td>
+        <td th:text="${lesson.student.name}">FREE</td>
+    </tr>
+</table>
+
+
+<p>
+    <a th:href="@{/teacher/calendar}">Return to calendar</a>
+</p>
+</body>
+</html>
