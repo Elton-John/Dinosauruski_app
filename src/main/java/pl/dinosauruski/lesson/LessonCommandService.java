@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import pl.dinosauruski.lesson.dto.LessonCompletionDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.models.*;
+import pl.dinosauruski.rebooking.RebookingCommandService;
 import pl.dinosauruski.slot.SlotQueryService;
-import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.week.WeekCommandService;
 import pl.dinosauruski.week.WeekQueryService;
 
@@ -24,29 +24,27 @@ public class LessonCommandService {
     private SlotQueryService slotQueryService;
     private WeekCommandService weekCommandService;
     private WeekQueryService weekQueryService;
-    private StudentQueryService studentQueryService;
+    private RebookingCommandService rebookingCommandService;
 
     public void create(LessonDTO lessonDTO) {
         Lesson lesson = new Lesson();
         lesson.setDate(lessonDTO.getDate());
         lesson.setSlot(lessonDTO.getSlot());
-        lesson.setStudent(lessonDTO.getStudent());
         lesson.setWeek(lessonDTO.getWeek());
         lesson.setCompleted(false);
-        lesson.setCancelled(false);
+        lesson.setCancelledByTeacher(false);
+        lesson.setCancelledByStudent(false);
         lesson.setLastMinuteCancelled(false);
-        lesson.setTransferred(false);
+        lesson.setRebooked(false);
         lesson.setArchived(false);
         lessonRepository.save(lesson);
     }
 
     public void updateCompletion(LessonCompletionDTO lessonCompletionDTO) {
         Lesson lesson = lessonQueryService.getOneOrThrow(lessonCompletionDTO.getId());
-        lesson.setCompleted(lessonCompletionDTO.isCompleted());
-        lesson.setCancelled(lessonCompletionDTO.isCancelled());
+        lesson.setCancelledByTeacher(lessonCompletionDTO.isCancelledByTeacher());
+        lesson.setCancelledByStudent(lessonCompletionDTO.isCancelledByStudent());
         lesson.setLastMinuteCancelled(lessonCompletionDTO.isLastMinuteCancelled());
-        lesson.setTransferred(lessonCompletionDTO.isTransferred());
-        // lesson.setArchived(false);
         lessonRepository.save(lesson);
     }
 
@@ -61,7 +59,6 @@ public class LessonCommandService {
                 LessonDTO lessonDTO = new LessonDTO();
                 lessonDTO.setDate(weekQueryService.getDateByNumberOfWeekAndDayName(year, week, slot.getDayOfWeek().name()));
                 lessonDTO.setSlot(slot);
-                lessonDTO.setStudent(slot.getRegularStudent());
                 lessonDTO.setWeek(weekQueryService.getOneOrThrow(year, week, teacherId));
                 create(lessonDTO);
             }
@@ -82,7 +79,6 @@ public class LessonCommandService {
                     week.getNumberOfWeek(),
                     slot.getDayOfWeek().name()));
             lessonDTO.setSlot(slot);
-            lessonDTO.setStudent(studentQueryService.getOneOrThrow(studentId));
             lessonDTO.setWeek(week);
             if (lessonDTO.getDate().isAfter(LocalDate.now())) {
                 create(lessonDTO);
@@ -99,8 +95,9 @@ public class LessonCommandService {
         weeks.forEach(week -> {
             week.getLessons().stream()
                     .filter(lesson -> lesson.getSlot().getId().equals(slot.getId()))
-                    .filter(lesson -> lesson.getStudent().getId().equals(slot.getRegularStudent().getId()))
+                    .filter(lesson -> lesson.getSlot().getRegularStudent().getId().equals(slot.getRegularStudent().getId()))
                     .filter(lesson -> lesson.getDate().isAfter(today))
+                    .filter(lesson -> !lesson.isRebooked())
                     .forEach(lesson -> delete(lesson.getId()));
         });
 
@@ -132,4 +129,13 @@ public class LessonCommandService {
         }
 
     }
+
+    public void cancelBookingOnceFreeLesson(Long id) {
+        Lesson lesson = lessonQueryService.getOneOrThrow(id);
+        lesson.setRebooked(false);
+        Rebooking rebooking = lesson.getRebooking();
+        rebookingCommandService.delete(rebooking);
+        lessonRepository.save(lesson);
+    }
+
 }

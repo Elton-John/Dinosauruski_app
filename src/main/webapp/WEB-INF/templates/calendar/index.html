@@ -51,19 +51,23 @@ następnie wygeneruj plan na bieżący tydzień
     </form>
 </div>
 
-<table th:if="${isNextGenerated}==true">
-    <tr>
-        <th>DAY</th>
-        <th>TIME</th>
-        <th>DATE</th>
-        <th>STUDENT</th>
-    </tr>
-    <tr th:each="lesson : ${nextWeekLessons}">
-        <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>
-        <td th:text="${lesson.slot.time}">day name</td>
-        <td th:text="${lesson.date}">BOOKED</td>
-        <td th:text="${lesson.student.name}">FREE</td>
-    </tr>
+<!--<table th:if="${isNextGenerated}==true">-->
+<!--    <tr>-->
+<!--        <th>DAY</th>-->
+<!--        <th>TIME</th>-->
+<!--        <th>DATE</th>-->
+<!--        <th>STUDENT</th>-->
+<!--    </tr>-->
+<!--    <tr th:each="lesson : ${nextWeekLessons}">-->
+<!--        <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>-->
+<!--        <td th:text="${lesson.slot.time}">day name</td>-->
+<!--        <td th:text="${lesson.date}">BOOKED</td>-->
+<!--        <td th:text="${lesson.slot.regularStudent.name}">FREE</td>-->
+
+<!--    </tr>-->
+
+
+
 </table>
 
 <h3 th:text="${year}"></h3>

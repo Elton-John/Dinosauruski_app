@@ -11,9 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LessonCompletionDTO {
     private Long id;
-    private boolean completed;
-    private boolean cancelled;
+    private boolean cancelledByTeacher;
+    private boolean cancelledByStudent;
     private boolean lastMinuteCancelled;
-    private boolean transferred;
-   // private boolean archived;
+
 }

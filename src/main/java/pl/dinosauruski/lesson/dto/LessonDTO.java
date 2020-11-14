@@ -13,18 +13,16 @@ import pl.dinosauruski.models.Week;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import java.time.LocalDate;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class LessonDTO {
     private Long id;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private Slot slot;
-   // private Teacher teacher;
-    private Student student;
-     private Week week;
+    private Week week;
 
 
 }

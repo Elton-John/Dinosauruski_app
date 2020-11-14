@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<h3 th:text="${lesson.slot.dayOfWeek.translation}"></h3>
+<h3 th:text="${lesson.slot.date}"></h3>
+<h3 th:text="${lesson.slot.time}"></h3>
+
+<form th:method="PATCH" th:action="@{/teacher/calendar/lessons/rebooking/edit/{id}(id=${lesson.id})}" th:object="${rebooking}" >
+    <div>
+        <label th:for="notRegularStudent" th:text="'Wybierz studenta:'"></label>
+        <select th:field="*{notRegularStudent}">
+            <option th:each="student : ${students}"
+                    th:value="${student.id}" th:text="${student.name}" id="notRegularStudent"></option>
+        </select>
+    </div>
+    <input type="submit" value="SAVE">
+</form>
+</body>
+</html>

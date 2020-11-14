@@ -5,17 +5,13 @@
     <title></title>
 </head>
 <body>
-<!--model.addAttribute("isGenerated", false);-->
-<!--model.addAttribute("thisMonth", month);-->
-<!--model.addAttribute("thisYear", year);-->
-<!--model.addAttribute("months");-->
+
 <h2 th:text="${thisYear}"></h2>
 <!--<h2 th:text="${months.get(${thisMonth})}">sfsf</h2>-->
 
 
 <div th:if="${isGenerated}==false">
     <form th:method="GET" th:action="@{/teacher/calendar/generate/month/{month}/{year}(month=${thisMonth}, year=${thisYear})}">
-<!--        <a th:href="@{/teacher/calendar/generate/month/{month}/{year}(month=${instance.key}, year=${year})}">-->
         <input type="submit" value="WYGENERUJ PLAN LEKCJI NA TEN MIESIĄC">
     </form>
 </div>
@@ -27,13 +23,50 @@
         <th>TIME</th>
         <th>DATE</th>
         <th>STUDENT</th>
+        <th>CANCEL AS A TEACHER</th>
+        <th>ADD A STUDENT TO ONCE FREE SLOT</th>
+        <th> IS REBOOKED </th>
     </tr>
     <tr th:each="lesson : ${lessons}">
         <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>
         <td th:text="${lesson.slot.time}">day name</td>
         <td th:text="${lesson.date}">BOOKED</td>
-        <td th:text="${lesson.student.name}">FREE</td>
+        <td>
+
+        <!-- IF CUSTOMER IS ANONYMOUS -->
+        <div th:if="${lesson.cancelledByTeacher}">
+            <div>ODWOŁANE PRZEZ NAUCZYCIELA</div>
+        </div>
+        <!-- ELSE -->
+        <div th:unless="${lesson.cancelledByTeacher}">
+            <div th:unless="${lesson.rebooked}">
+            <span th:if="${lesson.cancelledByStudent == true}">FREEE!!!!</span>
+            <span th:if="${lesson.cancelledByStudent == false}"><span th:text="${lesson.slot.regularStudent.name}"></span></span>
+            <span th:if="${lesson.lastMinuteCancelled == true}"><span th:text="'PÓŹNE ODWOŁANIE' +${lesson.slot.regularStudent.name}"></span></span>
+            </div>
+            <div th:if="${lesson.rebooked==true}">
+                <span>zarezerwowane</span>
+                <span th:text="${lesson.rebooking.notRegularStudent.name}"></span>
+            </div>
+        </div>
+        </td>
+        <td >
+            <a th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.id})}">---odwołaj jako nauczyciel---</a>
+        </td>
+        <td >
+            <div th:if="${lesson.cancelledByStudent == true}">
+                <div th:unless="${lesson.rebooked}">
+            <a th:href="@{/teacher/calendar/lessons/rebooking/{id}(id=${lesson.id})}">---dodaj studenta---</a>
+                </div>
+            </div>
+        </td>
+        <td th:if="${lesson.rebooked == true}">
+            <a th:href="@{/teacher/calendar/lessons/rebooking/edit/{id}(id=${lesson.id})}">---edytuj rebooking---</a>
+            <a th:href="@{/teacher/calendar/lessons/rebooking/delete/{id}(id=${lesson.id})}">---usuń rebooking---</a>
+        </td>
+        <span>===================================</span>
     </tr>
+
 </table>
 
 

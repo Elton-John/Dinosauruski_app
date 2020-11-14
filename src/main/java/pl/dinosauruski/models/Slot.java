@@ -2,6 +2,7 @@ package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import pl.dinosauruski.slot.DAY_OF_WEEK;
 
 import javax.persistence.*;
@@ -22,7 +23,7 @@ public class Slot {
     @ManyToOne
     private Teacher teacher;
     private Boolean isOnceFree;
-   // @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   // @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private Boolean isBooked;
     @ManyToOne(fetch = FetchType.EAGER)

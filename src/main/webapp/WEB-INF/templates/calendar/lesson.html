@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/teacher/calendar/lessons}" th:object="${lesson}">
+    <input type="hidden" th:field="*{id}"/>
+<div>
+    <label th:for="cancelledByTeacher" th:text="'cancelledByTeacher:'"></label>
+    <input type="checkbox" th:field="*{cancelledByTeacher}" />
+</div>
+    <div>
+        <label th:for="cancelledByStudent" th:text="'cancelledByStudent:'"></label>
+        <input type="checkbox" th:field="*{cancelledByStudent}" />
+    </div>
+    <div>
+        <label th:for="lastMinuteCancelled" th:text="'lastMinuteCancelled'"></label>
+        <input type="checkbox" th:field="*{lastMinuteCancelled}" />
+    </div>
+    <input type="submit" value="SAVE">
+</form>
+</body>
+</html>

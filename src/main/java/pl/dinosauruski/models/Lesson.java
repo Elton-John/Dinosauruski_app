@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Setter
@@ -18,12 +19,13 @@ public class Lesson {
     private LocalDate date;
     @ManyToOne
     private Slot slot;
-    @ManyToOne
-    private Student student;
+    @OneToOne(mappedBy = "lesson")
+    private Rebooking rebooking;
     private boolean completed;
-    private boolean cancelled;
+    private boolean cancelledByTeacher;
+    private boolean cancelledByStudent;
     private boolean lastMinuteCancelled;
-    private boolean transferred;
+    private boolean rebooked;
     private boolean archived;
     private boolean paid;
     private BigDecimal requiredPayment;
@@ -34,10 +36,8 @@ public class Lesson {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Lesson lesson = (Lesson) o;
-
-        return id != null ? id.equals(lesson.id) : lesson.id == null;
+        return Objects.equals(id, lesson.id);
     }
 
     @Override

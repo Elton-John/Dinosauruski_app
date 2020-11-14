@@ -4,7 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.dinosauruski.lesson.dto.LessonCompletionDTO;
+import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.models.Lesson;
+import pl.dinosauruski.models.Student;
+import pl.dinosauruski.rebooking.RebookingCommandService;
+import pl.dinosauruski.rebooking.RebookingQueryService;
+import pl.dinosauruski.rebooking.dto.RebookingDTO;
+import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 import pl.dinosauruski.week.WeekQueryService;
 
@@ -21,6 +28,9 @@ public class LessonGenerateController {
     private LessonCommandService lessonCommandService;
     private WeekQueryService weekQueryService;
     private LessonQueryService lessonQueryService;
+    private StudentQueryService studentQueryService;
+    private RebookingCommandService rebookingCommandService;
+    private RebookingQueryService rebookingQueryService;
 
     @GetMapping
     String index(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO, Model model) {
@@ -59,7 +69,6 @@ public class LessonGenerateController {
         model.addAttribute("year", year);
         model.addAttribute("nextWeek", nextNumberOfWeek);
         model.addAttribute("nextYear", nextYear);
-//        model.addAttribute("index", true);
         model.addAttribute("months");
         return "calendar/index";
     }
@@ -72,7 +81,6 @@ public class LessonGenerateController {
         lessonCommandService.generateWeekLessonsForTeacher(year, week, teacherDTO.getId());
         return "redirect:/teacher/calendar";
     }
-
 
     @GetMapping("/generate/month/{month}/{year}")
     String generateMonth(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
@@ -105,6 +113,78 @@ public class LessonGenerateController {
 
     }
 
+    @GetMapping("/lessons/{id}")
+    String letCancelLessonByTeacher(@PathVariable Long id,
+                                    Model model) {
+        LessonCompletionDTO lessonCompletionDto = lessonQueryService.getOneLessonCompletionDtoOrThrow(id);
+        model.addAttribute("lesson", lessonCompletionDto);
+        return "calendar/lesson";
+    }
+
+    @PatchMapping("/lessons")
+    String cancelLessonByTeacher(LessonCompletionDTO lessonCompletionDTO) {
+        lessonCommandService.updateCompletion(lessonCompletionDTO);
+        Lesson lesson = lessonQueryService.getOneOrThrow(lessonCompletionDTO.getId());
+        int month = lesson.getDate().getMonth().ordinal() + 1;
+        int year = lesson.getDate().getYear();
+        return "redirect:/teacher/calendar/" + month + "/" + year;
+    }
+
+    @GetMapping("/lessons/rebooking/{id}")
+    String letAddStudentToOnceFreeSlot(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+                                       @PathVariable Long id,
+                                       Model model) {
+        Lesson lesson = lessonQueryService.getOneOrThrow(id);
+        List<Student> students = studentQueryService.getAllByTeacherId(teacherDTO.getId());
+        model.addAttribute("lesson", lesson);
+        model.addAttribute("students", students);
+        return "calendar/rebooking";
+    }
+
+    @PostMapping("/lessons/rebooking/{id}")
+    String addStudentToOnceFreeSlot(
+            @PathVariable Long id,
+            Model model,
+            @RequestParam("notRegularStudent") Student student) {
+        rebookingCommandService.create(id, student);
+        LessonDTO lessonDTO = lessonQueryService.getOneLessonDtoOrThrow(id);
+        int month = lessonDTO.getDate().getMonth().ordinal() + 1;
+        int year = lessonDTO.getDate().getYear();
+        return "redirect:/teacher/calendar/" + month + "/" + year;
+    }
+
+    @GetMapping("/lessons/rebooking/edit/{id}")
+    String letEditOnesFreeBookedLesson(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+                                       @PathVariable Long id,
+                                       Model model) {
+        model.addAttribute("rebooking", rebookingQueryService.getOneDtoOrThrow(id));
+        model.addAttribute("lesson", lessonQueryService.getOneLessonDtoOrThrow(id));
+        List<Student> students = studentQueryService.getAllByTeacherId(teacherDTO.getId());
+        model.addAttribute("students", students);
+        return "calendar/editRebooking";
+    }
+
+    @PatchMapping("/lessons/rebooking/edit/{id}")
+    String editOnesFreeBookedLesson(@ModelAttribute("rebooking") RebookingDTO rebookingDTO,
+                                    @PathVariable Long id) {
+        rebookingCommandService.update(rebookingDTO);
+        LessonDTO lessonDTO = lessonQueryService.getOneLessonDtoOrThrow(id);
+        int month = lessonDTO.getDate().getMonth().ordinal() + 1;
+        int year = lessonDTO.getDate().getYear();
+        return "redirect:/teacher/calendar/" + month + "/" + year;
+    }
+
+    @GetMapping("/lessons/rebooking/delete/{id}")
+    String cancelBookingOnceFreeSlot(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+                                     @PathVariable Long id) {
+        lessonCommandService.cancelBookingOnceFreeLesson(id);
+        LessonDTO lessonDTO = lessonQueryService.getOneLessonDtoOrThrow(id);
+        int month = lessonDTO.getDate().getMonth().ordinal() + 1;
+        int year = lessonDTO.getDate().getYear();
+        return "redirect:/teacher/calendar/" + month + "/" + year;
+
+    }
+
     @ModelAttribute("months")
     private Map<Integer, String> months() {
         Map<Integer, String> months = new HashMap<>();
@@ -122,4 +202,5 @@ public class LessonGenerateController {
         months.put(12, "grudzień");
         return months;
     }
+
 }

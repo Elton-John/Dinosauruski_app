@@ -22,7 +22,9 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import pl.dinosauruski.lesson.LessonConverter;
 import pl.dinosauruski.slot.SlotConverter;
+import pl.dinosauruski.student.StudentConverter;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Locale;
@@ -105,12 +107,26 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
+
         registry.addConverter(getPublisherConverter());
+        registry.addConverter(getLessonConverter());
+        registry.addConverter(getStudentConverter());
+
     }
 
     @Bean
     public SlotConverter getPublisherConverter() {
         return new SlotConverter();
+    }
+
+    @Bean
+    public LessonConverter getLessonConverter() {
+        return new LessonConverter();
+    }
+
+    @Bean
+    public StudentConverter getStudentConverter() {
+        return new StudentConverter();
     }
 
 }

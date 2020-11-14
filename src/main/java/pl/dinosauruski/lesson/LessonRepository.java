@@ -15,11 +15,11 @@ import java.util.Optional;
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
 
-    @Query("SELECT new pl.dinosauruski.lesson.dto.LessonDTO(l.id,l.date, l.slot, l.student, l.week)" +
+    @Query("SELECT new pl.dinosauruski.lesson.dto.LessonDTO(l.id,l.date, l.slot, l.week)" +
             " FROM Lesson l WHERE l.id = :id")
     Optional<LessonDTO> findOneLessonDTO(@Param("id") Long id);
 
-    @Query("SELECT new pl.dinosauruski.lesson.dto.LessonCompletionDTO(l.id,l.completed, l.cancelled, l.lastMinuteCancelled, l.transferred)" +
+    @Query("SELECT new pl.dinosauruski.lesson.dto.LessonCompletionDTO(l.id, l.cancelledByTeacher, l.cancelledByStudent, l.lastMinuteCancelled)" +
             " FROM Lesson l WHERE l.id = :id")
     Optional<LessonCompletionDTO> findOneCompletionDto(@Param("id") Long id);
 
