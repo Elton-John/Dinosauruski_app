@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>DATE</th>
+        <th>STUDENT</th>
+        <th>SUM</th>
+        <th>EDIT</th>
+        <th>DELETE</th>
+
+    </tr>
+    <tr th:each="payment : ${payments}">
+        <td th:text="${payment.date}">day name</td>
+        <td th:text="${payment.student.name}">time</td>
+        <td th:text="${payment.sum}">day name</td>
+
+
+
+        <td><a th:href="@{/teacher/payments/edit/{id}(id=${payment.getId()})}"> edytuj</a></td>
+        <td><a th:href="@{/teacher/payments/submit/{id}(id=${payment.getId()})}"> usuń</a></td>
+
+    </tr>
+</table>
+<h2>
+    <a th:href="@{/teacher/payments/new}">Dodaj nową wpłatę</a>
+</h2>
+<p>
+    <a th:href="@{/teacher/cockpit}">Return to cockpit</a>
+</p>
+</body>
+</html>

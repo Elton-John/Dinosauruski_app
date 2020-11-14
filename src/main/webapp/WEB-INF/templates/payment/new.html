@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/teacher/payments/new}" th:object="${payment}">
+
+    <label for="date">Data wpłaty:</label>
+    <input type=date th:field="*{date}" id="date">
+
+    <label for="sum">Suma wpłaty:</label>
+    <input type="number" th:field="*{sum}" id="sum">
+
+
+    <label for="student">Wybierz dzień druga opcja:</label>
+    <select th:field="*{student}">
+        <option th:each="student : ${students}"
+                th:value="${student.id}" th:text="${student.name}" id="student"></option>
+    </select>
+
+    <input type="submit" value="SAVE">
+</form>
+</body>
+</html>

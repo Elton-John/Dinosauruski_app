@@ -15,10 +15,12 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    //  @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     @ManyToOne
     private Slot slot;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Week week;
     @OneToOne(mappedBy = "lesson")
     private Rebooking rebooking;
     private boolean completed;
@@ -29,8 +31,9 @@ public class Lesson {
     private boolean archived;
     private boolean paid;
     private BigDecimal requiredPayment;
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Week week;
+    @ManyToOne
+    private Payment payment;
+
 
     @Override
     public boolean equals(Object o) {
