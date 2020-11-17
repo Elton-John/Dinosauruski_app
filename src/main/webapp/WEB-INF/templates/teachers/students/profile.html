@@ -8,7 +8,7 @@
 <h1 th:text="${student.name}"></h1>
 <h1 th:text="${student.surname}"></h1>
 <p th:text="${student.email}"></p>
-<p th:text="${student.active} ? 'AKTYWNY' : 'ZAWIESZONY'" ></p>
+<p th:text="${student.active} ? 'AKTYWNY' : 'ZAWIESZONY'"></p>
 <p th:text="${student.priceForOneLesson}"></p>
 <p><a th:href="@{/teacher/students/edit/{id}(id=${student.getId()})}"> edytuj dane personalne</a></p>
 
@@ -20,6 +20,15 @@
 
 </div>
 <p><a th:href="@{/teacher/slots/booking/{studentId}(studentId=${student.getId()})}"> DODAJ LUB USUŃ STAŁY TERMIN</a></p>
+<span>--------------------------</span>
+<h3> Nieopłacone lekcje </h3>
+<div th:each="lesson : ${notPaidLessons}">
+    <p>
+        <span th:text="${lesson.date}">day</span>
+        <span th:text="${lesson.dayOfWeek.translation}">day</span>
+        <span th:text="${lesson.time}">day</span>
+    </p>
+</div>
 <span>--------------------------</span>
 <p><a th:href="@{/teacher/students/submit/{id}(id=${student.getId()})}"> usuń studenta</a></p>
 

@@ -25,6 +25,7 @@ public class RebookingCommandService {
         rebooking.setNotRegularStudent(notRegularStudent);
         lesson.setRebooked(true);
         lesson.setRebooking(rebooking);
+        lesson.setRequiredPayment(true);
         rebookingRepository.save(rebooking);
     }
 

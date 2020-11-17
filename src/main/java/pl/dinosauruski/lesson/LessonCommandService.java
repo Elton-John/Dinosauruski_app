@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.lesson.dto.LessonCompletionDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
+import pl.dinosauruski.lesson.dto.LessonPaymentDTO;
 import pl.dinosauruski.models.*;
 import pl.dinosauruski.rebooking.RebookingCommandService;
 import pl.dinosauruski.slot.SlotQueryService;
@@ -11,6 +12,8 @@ import pl.dinosauruski.week.WeekCommandService;
 import pl.dinosauruski.week.WeekQueryService;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -37,6 +40,7 @@ public class LessonCommandService {
         lesson.setLastMinuteCancelled(false);
         lesson.setRebooked(false);
         lesson.setArchived(false);
+        lesson.setRequiredPayment(true);
         lessonRepository.save(lesson);
     }
 
@@ -45,6 +49,9 @@ public class LessonCommandService {
         lesson.setCancelledByTeacher(lessonCompletionDTO.isCancelledByTeacher());
         lesson.setCancelledByStudent(lessonCompletionDTO.isCancelledByStudent());
         lesson.setLastMinuteCancelled(lessonCompletionDTO.isLastMinuteCancelled());
+        if (lesson.isCancelledByStudent() || lesson.isCancelledByTeacher()) {
+            lesson.setRequiredPayment(false);
+        }
         lessonRepository.save(lesson);
     }
 
@@ -123,11 +130,8 @@ public class LessonCommandService {
             Boolean isGenerated = weekQueryService.checkIsGenerated(year, i, teacherId);
             if (!isGenerated) {
                 generateWeekLessonsForTeacher(year, i, teacherId);
-
             }
-
         }
-
     }
 
     public void cancelBookingOnceFreeLesson(Long id) {
@@ -135,7 +139,24 @@ public class LessonCommandService {
         lesson.setRebooked(false);
         Rebooking rebooking = lesson.getRebooking();
         rebookingCommandService.delete(rebooking);
+        lesson.setRequiredPayment(false);
         lessonRepository.save(lesson);
     }
 
+    public void addPayment(Payment payment, Long teacherId) {
+        Student student = payment.getStudent();
+        BigDecimal priceForOneLesson = student.getPriceForOneLesson();
+        BigDecimal sum = payment.getSum();
+        BigDecimal countPaidLessons = sum.divide(priceForOneLesson, 2, RoundingMode.HALF_UP);
+        int count = countPaidLessons.intValue();
+        List<LessonPaymentDTO> notPaidLessons = lessonQueryService.getNotPaidLessonsByStudent(teacherId, student.getId());
+        for (int i = 0; i < count; i++) {
+            LessonPaymentDTO lessonPaymentDTO = notPaidLessons.get(i);
+            Lesson lesson = lessonQueryService.getOneOrThrow(lessonPaymentDTO.getId());
+            lesson.setPayment(payment);
+            lesson.setPaid(true);
+            lesson.setRequiredPayment(false);
+            lessonRepository.save(lesson);
+        }
+    }
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.dinosauruski.lesson.LessonQueryService;
 import pl.dinosauruski.models.Student;
 import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.student.dto.StudentDTO;
@@ -21,6 +22,7 @@ public class StudentController {
     private final StudentCommandService studentCommandService;
     private final StudentQueryService studentQueryService;
     private final SlotQueryService slotQueryService;
+    private final LessonQueryService lessonQueryService;
 
     @GetMapping
     String index(@SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
@@ -60,10 +62,14 @@ public class StudentController {
     }
 
     @GetMapping("/{id}/profile")
-    String profile(@PathVariable Long id, Model model) {
+    String profile(@SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
+                   @PathVariable Long id,
+                   Model model) {
         Student student = studentQueryService.getOneOrThrow(id);
+        Long teacherId = loggedTeacher.getId();
         model.addAttribute("student", student);
         model.addAttribute("slots", student.getSlots());
+        model.addAttribute("notPaidLessons", lessonQueryService.getNotPaidLessonsByStudent(teacherId,id) );
         return "teachers/students/profile";
     }
 

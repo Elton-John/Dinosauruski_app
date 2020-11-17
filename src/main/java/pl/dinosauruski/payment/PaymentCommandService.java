@@ -2,6 +2,7 @@ package pl.dinosauruski.payment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.dinosauruski.lesson.LessonCommandService;
 import pl.dinosauruski.models.Payment;
 import pl.dinosauruski.payment.dto.PaymentDTO;
 import pl.dinosauruski.teacher.TeacherQueryService;
@@ -15,6 +16,7 @@ public class PaymentCommandService {
     private PaymentRepository paymentRepository;
     private TeacherQueryService teacherQueryService;
     private PaymentQueryService paymentQueryService;
+    private LessonCommandService lessonCommandService;
 
     public void create(PaymentDTO paymentDTO, Long teacherId) {
         Payment payment = new Payment();
@@ -22,7 +24,8 @@ public class PaymentCommandService {
         payment.setStudent(paymentDTO.getStudent());
         payment.setSum(paymentDTO.getSum());
         payment.setTeacher(teacherQueryService.getOneOrThrow(teacherId));
-        paymentRepository.save(payment);
+        Payment savedPayment = paymentRepository.save(payment);
+        lessonCommandService.addPayment(savedPayment, teacherId);
     }
 
     public void update(PaymentDTO paymentDTO) {

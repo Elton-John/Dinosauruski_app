@@ -8,6 +8,7 @@ import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Week;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -32,4 +33,10 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     @Query("SELECT l FROM Lesson l WHERE l.week=:week AND l.slot.teacher.id = :id")
     List<Lesson> findAllLessonByWeekAndTeacherId(@Param("week") Week week,
                                                  @Param("id") Long teacherId);
+
+    @Query("SELECT l FROM Lesson l WHERE l.slot.regularStudent.id = :studentId OR l.rebooking.notRegularStudent=:studentId AND l.slot.teacher.id = :teacherId AND l.paid = false AND l.cancelledByStudent =false AND l.cancelledByTeacher=false ORDER BY l.date DESC ")
+    List<Lesson> getNextNotPaidLessons(@Param("teacherId") Long teacherId, @Param("studentId") Long studentId);
+
+    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id = :id AND l.requiredPayment=true AND l.paid = FALSE order by l.date ASC ")
+    List<Lesson> findAllByTeacherIdWherePaidIsFalseAndCancelledIsFalse(@Param("id") Long teacherId);
 }

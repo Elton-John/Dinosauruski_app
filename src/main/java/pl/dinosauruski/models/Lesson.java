@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -30,7 +29,8 @@ public class Lesson {
     private boolean rebooked;
     private boolean archived;
     private boolean paid;
-    private BigDecimal requiredPayment;
+    private boolean requiredPayment;
+    // private BigDecimal requiredPayment;
     @ManyToOne
     private Payment payment;
 

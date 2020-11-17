@@ -24,5 +24,4 @@ public class LessonDTO {
     private Slot slot;
     private Week week;
 
-
 }

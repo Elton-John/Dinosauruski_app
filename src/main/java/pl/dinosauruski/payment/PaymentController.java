@@ -71,5 +71,4 @@ public class PaymentController {
         return "redirect:/teacher/payments";
     }
 
-
 }
