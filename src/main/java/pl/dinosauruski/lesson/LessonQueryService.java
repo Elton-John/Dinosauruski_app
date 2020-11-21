@@ -22,6 +22,7 @@ import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,17 +74,26 @@ public class LessonQueryService {
     }
 
 
-    public Lesson getNextNotPaidLesson(Long teacherId, Long studentId) {
-        List<Lesson> lessons = lessonRepository.findAllByTeacherIdWherePaidIsFalseAndCancelledIsFalse(teacherId);
-        if (lessons != null) {
-            LessonPaymentDTO firstLessonPaymentDTO = lessons.stream()
-                    .map(this::createLessonPaymentDTO)
-                    .filter(lessonPaymentDTO -> lessonPaymentDTO.getStudentWhoPays().getId().equals(studentId))
-                    .collect(Collectors.toList()).get(0);
-            return getOneOrThrow(firstLessonPaymentDTO.getId());
+    public Optional<Lesson> getNextNotPaidLesson(Long teacherId, Long studentId) {
+        List<Lesson> allLessonsByTeacher = lessonRepository.findAllByTeacherIdWherePaidIsFalseAndCancelledIsFalse(teacherId);
+
+        List<LessonPaymentDTO> allLessonsByStudent = allLessonsByTeacher.stream()
+                .map(this::createLessonPaymentDTO)
+                .filter(lessonPaymentDTO -> lessonPaymentDTO.getStudentWhoPays().getId().equals(studentId))
+                .collect(Collectors.toList());
+
+
+        if (allLessonsByStudent.size() > 0) {
+            LessonPaymentDTO firstLessonPaymentDTO = allLessonsByStudent.get(0);
+            return Optional.ofNullable(getOneOrThrow(firstLessonPaymentDTO.getId()));
         }
-        return null;
+        return Optional.empty();
     }
+//    public static Optional<User> findUserByName(String name) {
+//        User user = usersByName.get(name);
+//        Optional<User> opt = Optional.ofNullable(user);
+//        return opt;
+//    }
 
     public LessonPaymentDTO createLessonPaymentDTO(Lesson lesson) {
         LessonPaymentDTO lessonPaymentDTO = new LessonPaymentDTO();

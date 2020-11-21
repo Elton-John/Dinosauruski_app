@@ -11,9 +11,11 @@ import pl.dinosauruski.week.WeekCommandService;
 import pl.dinosauruski.week.WeekQueryService;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -55,14 +57,16 @@ public class LessonCommandService {
             Long teacherId = lesson.getSlot().getTeacher().getId();
             Payment payment = lesson.getPayment();
             if (payment != null) {
-                Lesson lessonToPay = lessonQueryService.getNextNotPaidLesson(teacherId, studentId);
-                if (lessonToPay != null) {
+                Optional<Lesson> OptionalLessonToPay = lessonQueryService.getNextNotPaidLesson(teacherId, studentId);
 
+                if (OptionalLessonToPay.isPresent()) {
+                    Lesson lessonToPay = OptionalLessonToPay.get();
                     lessonToPay.setPayment(payment);
                     lessonToPay.setPaid(true);
                     lessonToPay.setRequiredPayment(false);
                 } else {
-                    payment.setOverPayment(lesson.getSlot().getRegularStudent().getPriceForOneLesson());
+                    BigDecimal overPayment = payment.getOverPayment();
+                    payment.setOverPayment(overPayment.add(lesson.getSlot().getRegularStudent().getPriceForOneLesson()));
                 }
             }
             lesson.setPayment(null);

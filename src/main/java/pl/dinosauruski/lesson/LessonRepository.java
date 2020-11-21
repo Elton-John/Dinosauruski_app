@@ -51,7 +51,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
                                                                      @Param("teacherId") Long teacherId,
                                                                      @Param("studentId") Long studentId);
 
-    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id =:teacherId AND l.cancelledByTeacher = false AND l.date < :end ORDER BY l.date ")
+    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id =:teacherId AND l.cancelledByTeacher = false AND l.date <= :end ORDER BY l.date ")
     List<Lesson> findAllByTeacherUntilLastDayOfNextMonth(
                                                @Param("end") LocalDate lastDay,
                                                @Param("teacherId") Long teacherId
