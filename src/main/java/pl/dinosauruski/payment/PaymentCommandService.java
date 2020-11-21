@@ -76,6 +76,13 @@ public class PaymentCommandService {
 
     public void delete(Long id) {
         Payment payment = paymentQueryService.getOneByIdOrThrow(id);
+        List<Lesson> paidLessons = payment.getPaidLessons();
+        paidLessons.forEach(lesson -> {
+            lesson.setPaid(false);
+            lesson.setRequiredPayment(true);
+            lesson.setPayment(null);
+
+        });
         paymentRepository.delete(payment);
     }
 

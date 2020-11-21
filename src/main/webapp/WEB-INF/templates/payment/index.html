@@ -5,6 +5,9 @@
     <title></title>
 </head>
 <body>
+<h2>
+    <a th:href="@{/teacher/payments/new}">Dodaj nową wpłatę</a>
+</h2>
 <table>
     <tr>
         <th>DATE</th>
@@ -21,13 +24,13 @@
 
 
 
-        <td><a th:href="@{/teacher/payments/edit/{id}(id=${payment.getId()})}"> edytuj</a></td>
+<!--        <td><a th:href="@{/teacher/payments/edit/{id}(id=${payment.getId()})}"> edytuj</a></td>-->
         <td><a th:href="@{/teacher/payments/submit/{id}(id=${payment.getId()})}"> usuń</a></td>
 
     </tr>
 </table>
 <h2>
-    <a th:href="@{/teacher/payments/new}">Dodaj nową wpłatę</a>
+    <a th:href="@{/teacher/payments/pdf}">generuj plik</a>
 </h2>
 <p>
     <a th:href="@{/teacher/cockpit}">Return to cockpit</a>

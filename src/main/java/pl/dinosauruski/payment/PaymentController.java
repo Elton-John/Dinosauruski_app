@@ -1,6 +1,8 @@
 package pl.dinosauruski.payment;
 
+import com.lowagie.text.DocumentException;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,9 @@ import pl.dinosauruski.payment.dto.PaymentDTO;
 import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,7 +26,7 @@ public class PaymentController {
 
     @GetMapping
     String index(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO, Model model) {
-        List<Payment> payments = paymentQueryService.getAllPaymentByTeacherId(teacherDTO.getId());
+        List<Payment> payments = paymentQueryService.getLastTenPaymentsByTeacherId(teacherDTO.getId());
         model.addAttribute("payments", payments);
         return "payment/index";
     }
@@ -70,5 +75,13 @@ public class PaymentController {
         paymentCommandService.delete(id);
         return "redirect:/teacher/payments";
     }
+
+//    @GetMapping("/pdf")
+//    @ResponseBody
+//    String generatePdf() throws IOException, DocumentException {
+//      //  paymentQueryService.generatePdfFromHtml("thymeleaf_template");
+//        paymentQueryService.generatePdfFromHtml(paymentQueryService.parseThymeleafTemplate());
+//        return "thymeleaf_template";
+//    }
 
 }
