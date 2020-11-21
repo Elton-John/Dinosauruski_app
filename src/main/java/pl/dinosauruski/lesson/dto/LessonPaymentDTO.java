@@ -3,11 +3,10 @@ package pl.dinosauruski.lesson.dto;
 import lombok.Getter;
 import lombok.Setter;
 import pl.dinosauruski.models.Student;
+import pl.dinosauruski.models.Week;
 import pl.dinosauruski.slot.DAY_OF_WEEK;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Setter
@@ -20,5 +19,6 @@ public class LessonPaymentDTO {
     private Student studentWhoPays;
     private boolean isRebooked;
     private boolean requiredPayment;
+    private Week week;
    // private BigDecimal requiredPayment;
 }

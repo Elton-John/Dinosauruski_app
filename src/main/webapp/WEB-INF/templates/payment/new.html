@@ -8,7 +8,7 @@
 <form th:method="POST" th:action="@{/teacher/payments/new}" th:object="${payment}">
 
     <label for="date">Data wpłaty:</label>
-    <input type=date th:field="*{date}" id="date">
+    <input type="date" th:field="*{date}" id="date">
 
     <label for="sum">Suma wpłaty:</label>
     <input type="number" th:field="*{sum}" id="sum">

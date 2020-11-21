@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.lesson.LessonQueryService;
 import pl.dinosauruski.models.Student;
+import pl.dinosauruski.payment.PaymentQueryService;
 import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.student.dto.StudentDTO;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
@@ -23,6 +24,7 @@ public class StudentController {
     private final StudentQueryService studentQueryService;
     private final SlotQueryService slotQueryService;
     private final LessonQueryService lessonQueryService;
+    private final PaymentQueryService paymentQueryService;
 
     @GetMapping
     String index(@SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
@@ -69,7 +71,13 @@ public class StudentController {
         Long teacherId = loggedTeacher.getId();
         model.addAttribute("student", student);
         model.addAttribute("slots", student.getSlots());
-        model.addAttribute("notPaidLessons", lessonQueryService.getNotPaidLessonsByStudent(teacherId,id) );
+        model.addAttribute("countPaidThisMonth", lessonQueryService.countPaidLessonsByStudentThisMonth(teacherId, id));
+        model.addAttribute("countPlannedThisMonth", lessonQueryService.countGeneratedLessonThisMonthByStudent(teacherId, id));
+        model.addAttribute("plannedLessonThisMonth", lessonQueryService.getGeneratedLessonInMonthByStudent(teacherId, id));
+        model.addAttribute("countNotPaidNextMonth", lessonQueryService.countNotPaidLessonsByStudentNextMonth(teacherId, id));
+        model.addAttribute("notPaidLessonsNextMonth", lessonQueryService.getNotPaidLessonsUntilLastDayOfNextMonth(teacherId, id));
+        model.addAttribute("overPayment", paymentQueryService.getOverPayment(id, teacherId));
+        model.addAttribute("requiredPayment", lessonQueryService.countRequiredPaymentAfterAddingOverPayment(id, teacherId));
         return "teachers/students/profile";
     }
 

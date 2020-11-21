@@ -21,14 +21,33 @@
 </div>
 <p><a th:href="@{/teacher/slots/booking/{studentId}(studentId=${student.getId()})}"> DODAJ LUB USUŃ STAŁY TERMIN</a></p>
 <span>--------------------------</span>
-<h3> Nieopłacone lekcje </h3>
-<div th:each="lesson : ${notPaidLessons}">
+
+<h3> Zaplaonowane lekcje w tym miesiącu: </h3>
+<p th:text="${countPlannedThisMonth}"></p>
+<div th:each="lesson : ${plannedLessonThisMonth}">
     <p>
         <span th:text="${lesson.date}">day</span>
         <span th:text="${lesson.dayOfWeek.translation}">day</span>
         <span th:text="${lesson.time}">day</span>
+        <span th:if="${lesson.requiredPayment}==false">lekcja opłacona</span>
     </p>
 </div>
+
+<h3> lekcje do opłacenia: </h3>
+<p th:text="${countNotPaidNextMonth}"></p>
+<div th:each="lesson : ${notPaidLessonsNextMonth}">
+    <p>
+        <span th:text="${lesson.date}">day</span>
+        <span th:text="${lesson.dayOfWeek.translation}">day</span>
+        <span th:text="${lesson.time}">day</span>
+
+    </p>
+</div>
+
+<h3>Twoja portmonetka:</h3>
+<p>Masz na koncie <span th:text="${overPayment}"></span> zł. Wykorzystaj je do opłaty lekcji w następnym miesiącu </p>
+<p>Do opłaty wszystkich lekcji w następnym miesiącu brakuje: <span th:text="${requiredPayment}"></span></p>
+
 <span>--------------------------</span>
 <p><a th:href="@{/teacher/students/submit/{id}(id=${student.getId()})}"> usuń studenta</a></p>
 

@@ -5,10 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Setter
@@ -24,6 +21,7 @@ public class Student {
     private String password;
     private String email;
     private BigDecimal priceForOneLesson;
+
     @ManyToMany(mappedBy = "students")
     private Set<Teacher> teachers = new HashSet<>();
     @OneToMany(mappedBy = "regularStudent", fetch = FetchType.EAGER)

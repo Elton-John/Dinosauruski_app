@@ -51,7 +51,7 @@ public class PaymentController {
 
     @PatchMapping("/edit")
     String editPayment(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO, PaymentDTO paymentDTO) {
-        paymentCommandService.update(paymentDTO);
+        paymentCommandService.updateByDto(paymentDTO);
         return "redirect:/teacher/payments";
     }
 

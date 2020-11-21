@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LessonCompletionDTO {
+public class LessonCancellingDTO {
     private Long id;
     private boolean cancelledByTeacher;
     private boolean cancelledByStudent;

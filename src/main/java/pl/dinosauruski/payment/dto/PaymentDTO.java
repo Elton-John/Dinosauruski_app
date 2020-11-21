@@ -20,4 +20,5 @@ public class PaymentDTO {
     private LocalDate date;
     private Student student;
     private BigDecimal sum;
+    private BigDecimal overPayment;
 }

@@ -2,9 +2,8 @@ package pl.dinosauruski.lesson;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.dinosauruski.lesson.dto.LessonCompletionDTO;
+import pl.dinosauruski.lesson.dto.LessonCancellingDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
-import pl.dinosauruski.lesson.dto.LessonPaymentDTO;
 import pl.dinosauruski.models.*;
 import pl.dinosauruski.rebooking.RebookingCommandService;
 import pl.dinosauruski.slot.SlotQueryService;
@@ -12,8 +11,6 @@ import pl.dinosauruski.week.WeekCommandService;
 import pl.dinosauruski.week.WeekQueryService;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -28,6 +25,7 @@ public class LessonCommandService {
     private WeekCommandService weekCommandService;
     private WeekQueryService weekQueryService;
     private RebookingCommandService rebookingCommandService;
+
 
     public void create(LessonDTO lessonDTO) {
         Lesson lesson = new Lesson();
@@ -44,13 +42,30 @@ public class LessonCommandService {
         lessonRepository.save(lesson);
     }
 
-    public void updateCompletion(LessonCompletionDTO lessonCompletionDTO) {
-        Lesson lesson = lessonQueryService.getOneOrThrow(lessonCompletionDTO.getId());
-        lesson.setCancelledByTeacher(lessonCompletionDTO.isCancelledByTeacher());
-        lesson.setCancelledByStudent(lessonCompletionDTO.isCancelledByStudent());
-        lesson.setLastMinuteCancelled(lessonCompletionDTO.isLastMinuteCancelled());
+    public void updateCancelling(LessonCancellingDTO lessonCancellingDTO) {
+        Lesson lesson = lessonQueryService.getOneOrThrow(lessonCancellingDTO.getId());
+        lesson.setCancelledByTeacher(lessonCancellingDTO.isCancelledByTeacher());
+        lesson.setCancelledByStudent(lessonCancellingDTO.isCancelledByStudent());
+        lesson.setLastMinuteCancelled(lessonCancellingDTO.isLastMinuteCancelled());
         if (lesson.isCancelledByStudent() || lesson.isCancelledByTeacher()) {
             lesson.setRequiredPayment(false);
+            lesson.setPaid(false);
+
+            Long studentId = lesson.getSlot().getRegularStudent().getId();
+            Long teacherId = lesson.getSlot().getTeacher().getId();
+            Payment payment = lesson.getPayment();
+            if (payment != null) {
+                Lesson lessonToPay = lessonQueryService.getNextNotPaidLesson(teacherId, studentId);
+                if (lessonToPay != null) {
+
+                    lessonToPay.setPayment(payment);
+                    lessonToPay.setPaid(true);
+                    lessonToPay.setRequiredPayment(false);
+                } else {
+                    payment.setOverPayment(lesson.getSlot().getRegularStudent().getPriceForOneLesson());
+                }
+            }
+            lesson.setPayment(null);
         }
         lessonRepository.save(lesson);
     }
@@ -143,20 +158,8 @@ public class LessonCommandService {
         lessonRepository.save(lesson);
     }
 
-    public void addPayment(Payment payment, Long teacherId) {
-        Student student = payment.getStudent();
-        BigDecimal priceForOneLesson = student.getPriceForOneLesson();
-        BigDecimal sum = payment.getSum();
-        BigDecimal countPaidLessons = sum.divide(priceForOneLesson, 2, RoundingMode.HALF_UP);
-        int count = countPaidLessons.intValue();
-        List<LessonPaymentDTO> notPaidLessons = lessonQueryService.getNotPaidLessonsByStudent(teacherId, student.getId());
-        for (int i = 0; i < count; i++) {
-            LessonPaymentDTO lessonPaymentDTO = notPaidLessons.get(i);
-            Lesson lesson = lessonQueryService.getOneOrThrow(lessonPaymentDTO.getId());
-            lesson.setPayment(payment);
-            lesson.setPaid(true);
-            lesson.setRequiredPayment(false);
-            lessonRepository.save(lesson);
-        }
+    public void saveLesson(Lesson lesson) {
+        lessonRepository.save(lesson);
     }
+
 }

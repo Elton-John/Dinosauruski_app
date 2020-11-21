@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.dinosauruski.lesson.dto.LessonCompletionDTO;
+import pl.dinosauruski.lesson.dto.LessonCancellingDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Student;
@@ -116,15 +116,15 @@ public class LessonGenerateController {
     @GetMapping("/lessons/{id}")
     String letCancelLessonByTeacher(@PathVariable Long id,
                                     Model model) {
-        LessonCompletionDTO lessonCompletionDto = lessonQueryService.getOneLessonCompletionDtoOrThrow(id);
-        model.addAttribute("lesson", lessonCompletionDto);
+        LessonCancellingDTO lessonCancellingDto = lessonQueryService.getOneLessonCompletionDtoOrThrow(id);
+        model.addAttribute("lesson", lessonCancellingDto);
         return "calendar/lesson";
     }
 
     @PatchMapping("/lessons")
-    String cancelLessonByTeacher(LessonCompletionDTO lessonCompletionDTO) {
-        lessonCommandService.updateCompletion(lessonCompletionDTO);
-        Lesson lesson = lessonQueryService.getOneOrThrow(lessonCompletionDTO.getId());
+    String cancelLessonByTeacher(LessonCancellingDTO lessonCancellingDTO) {
+        lessonCommandService.updateCancelling(lessonCancellingDTO);
+        Lesson lesson = lessonQueryService.getOneOrThrow(lessonCancellingDTO.getId());
         int month = lesson.getDate().getMonth().ordinal() + 1;
         int year = lesson.getDate().getYear();
         return "redirect:/teacher/calendar/" + month + "/" + year;

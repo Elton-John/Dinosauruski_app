@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class Payment {
     @ManyToOne
     private Teacher teacher;
     private BigDecimal sum;
+    private BigDecimal overPayment;
     @OneToMany(mappedBy = "payment")
     private List<Lesson> paidLessons = new ArrayList<>();
 
