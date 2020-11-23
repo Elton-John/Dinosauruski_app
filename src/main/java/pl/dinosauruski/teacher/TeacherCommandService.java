@@ -35,7 +35,7 @@ public class TeacherCommandService {
         teacher.setPassword(registrationForm.getPassword());
 
         teacherRepository.save(teacher);
-        Teacher savedTeacher = teacherQueryService.getOneByEmailOrThrow(teacher.getEmail());
+        Teacher savedTeacher = teacherQueryService.getOneByEmail(teacher.getEmail());
         weekCommandService.generateWeeksOnesInYear(LocalDate.now().getYear(), savedTeacher.getId());
     }
 

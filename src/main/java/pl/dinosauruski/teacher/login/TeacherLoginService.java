@@ -16,21 +16,21 @@ public class TeacherLoginService {
     private final TeacherQueryService teacherQueryService;
 
     public boolean validate(String email, String password) {
-        Teacher teacher = teacherQueryService.getOneByEmailOrThrow(email);
-//        if (BCrypt.checkpw(password, teacher.getPassword())) {
-//            return true;
-//        }
-        if (password.equals(teacher.getPassword())) {
-            return true;
+        Teacher teacher = teacherQueryService.getOneByEmail(email);
+        if (teacher == null) {
+            return false;
         }
-        return false;
+
+//        return BCrypt.checkpw(password, teacher.getPassword()));
+        return password.equals(teacher.getPassword());
     }
 
     public TeacherDTO doLogin(String email) {
-        Teacher teacher = teacherQueryService.getOneByEmailOrThrow(email);
+        Teacher teacher = teacherQueryService.getOneByEmail(email);
         TeacherDTO teacherDTO = new TeacherDTO();
         teacherDTO.setEmail(teacher.getEmail());
         teacherDTO.setId(teacher.getId());
+        teacherDTO.setNickname(teacher.getNickname());
         return teacherDTO;
     }
 }

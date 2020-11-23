@@ -12,9 +12,9 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeacherLoginFormDTO {
-    @NotBlank(message = "Pole nie może być puste powiada TeacherLoginForm")
+    @NotBlank(message = "Pole nie może być puste")
     private String email;
-    @NotBlank(message = "Pole nie może być puste powiada TeacherLoginForm")
+    @NotBlank(message = "Pole nie może być puste")
     private String password;
 
     @Override

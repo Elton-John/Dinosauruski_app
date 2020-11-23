@@ -7,7 +7,6 @@ import pl.dinosauruski.teacher.dto.TeacherEditDTO;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -25,8 +24,7 @@ public class TeacherQueryService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    public Teacher getOneByEmailOrThrow(String email) {
-        return teacherRepository.findByEmail(email).
-                orElseThrow(EntityNotFoundException::new);
+    public Teacher getOneByEmail(String email) {
+        return teacherRepository.findByEmail(email);
     }
 }

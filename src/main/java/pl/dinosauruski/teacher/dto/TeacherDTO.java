@@ -8,6 +8,7 @@ import lombok.Setter;
 public class TeacherDTO {
     private Long id;
     private String email;
+    private String nickname;
 
     @Override
     public boolean equals(Object o) {
