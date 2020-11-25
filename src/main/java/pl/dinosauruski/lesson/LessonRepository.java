@@ -60,4 +60,8 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     List<Lesson> findAllByTeacherInMonth(@Param("start") LocalDate firstDay,
                                          @Param("end") LocalDate lastDay,
                                          @Param("teacherId") Long teacherId);
+
+    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id = :id AND l.date = :date")
+    List<Lesson> findAllByDateAndTeacherId(@Param("date") LocalDate localDate,
+                                     @Param("id") Long teacherId);
 }

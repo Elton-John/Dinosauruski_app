@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.lesson.dto.LessonCancellingDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
+import pl.dinosauruski.lesson.dto.LessonsOfWeekDTO;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Student;
 import pl.dinosauruski.rebooking.RebookingCommandService;
@@ -90,16 +91,42 @@ public class LessonGenerateController {
         return "redirect:/teacher/calendar/" + month + "/" + year;
     }
 
+//    @GetMapping("/{month}/{year}")
+//    String showMonthYearLessons(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+//                                @PathVariable int month,
+//                                @PathVariable int year,
+//                                Model model) {
+//        boolean isGenerated = weekQueryService.checkMonthIsGenerated(year, month, teacherDTO.getId());
+//        if (isGenerated) {
+//            List<Lesson> lessons = lessonQueryService.getAllMonthYearLessonsByTeacher(year, month, teacherDTO.getId());
+//            model.addAttribute("isGenerated", true);
+//            model.addAttribute("lessons", lessons);
+//            model.addAttribute("thisMonth", month);
+//            model.addAttribute("thisYear", year);
+//            model.addAttribute("months");
+//            return "calendar/month";
+//        }
+//        model.addAttribute("isGenerated", false);
+//        model.addAttribute("thisMonth", month);
+//        model.addAttribute("thisYear", year);
+//        model.addAttribute("months");
+//        return "calendar/month";
+//
+//    }
+
+
     @GetMapping("/{month}/{year}")
     String showMonthYearLessons(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
                                 @PathVariable int month,
                                 @PathVariable int year,
                                 Model model) {
+
+        model.addAttribute("teacher", teacherDTO);
         boolean isGenerated = weekQueryService.checkMonthIsGenerated(year, month, teacherDTO.getId());
         if (isGenerated) {
-            List<Lesson> lessons = lessonQueryService.getAllMonthYearLessonsByTeacher(year, month, teacherDTO.getId());
+            List<LessonsOfWeekDTO> weeks = lessonQueryService.getAllLessonsOfAllWeeksOfMonth(year, month, teacherDTO.getId());
             model.addAttribute("isGenerated", true);
-            model.addAttribute("lessons", lessons);
+            model.addAttribute("weeks", weeks);
             model.addAttribute("thisMonth", month);
             model.addAttribute("thisYear", year);
             model.addAttribute("months");
@@ -112,6 +139,7 @@ public class LessonGenerateController {
         return "calendar/month";
 
     }
+
 
     @GetMapping("/lessons/{id}")
     String letCancelLessonByTeacher(@PathVariable Long id,

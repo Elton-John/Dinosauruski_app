@@ -7,9 +7,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.lesson.LessonQueryService;
 import pl.dinosauruski.models.Student;
+import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.payment.PaymentQueryService;
 import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.student.dto.StudentDTO;
+import pl.dinosauruski.teacher.TeacherQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
 import javax.validation.Valid;
@@ -25,12 +27,14 @@ public class StudentController {
     private final SlotQueryService slotQueryService;
     private final LessonQueryService lessonQueryService;
     private final PaymentQueryService paymentQueryService;
+    private final TeacherQueryService teacherQueryService;
 
     @GetMapping
     String index(@SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
                  Model model) {
         List<Student> students = studentQueryService.getAllByTeacherId(loggedTeacher.getId());
         model.addAttribute("students", students);
+        model.addAttribute("teacher", loggedTeacher);
         return "teachers/students/index";
     }
 
@@ -39,6 +43,7 @@ public class StudentController {
                           Model model) {
         List<Student> students = studentQueryService.
                 findAllIfActiveStudentsByTeacherId(loggedTeacher.getId());
+        model.addAttribute("teacher", loggedTeacher);
         model.addAttribute("students", students);
         model.addAttribute("onlyActive", true);
         return "teachers/students/index";
@@ -69,6 +74,7 @@ public class StudentController {
                    Model model) {
         Student student = studentQueryService.getOneOrThrow(id);
         Long teacherId = loggedTeacher.getId();
+        model.addAttribute("teacher", loggedTeacher);
         model.addAttribute("student", student);
         model.addAttribute("slots", student.getSlots());
         model.addAttribute("countPaidThisMonth", lessonQueryService.countPaidLessonsByStudentThisMonth(teacherId, id));

@@ -93,7 +93,7 @@ class TeacherController {
     @GetMapping("/submit/{id}")
     public String submitDeleting(@PathVariable Long id, Model model) {
         Teacher teacher = teacherQueryService.getOneOrThrow(id);
-        model.addAttribute("name", teacher.getName());
+        model.addAttribute("name", teacher.getNickname());
         model.addAttribute("id", id);
         return "/teachers/submit";
     }

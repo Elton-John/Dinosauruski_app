@@ -31,13 +31,12 @@
                     <div class="text-danger" th:errors="*{password}"></div>
                 </div>
                 <div class="text-danger" th:if="${foul}==true">
-                    <span >Login i/lub hasło są niepoprawne</span>
+                    <span>Login i/lub hasło są niepoprawne</span>
                 </div>
-
                 <button type="submit" class="btn btn-success">Zaloguj się</button>
             </form>
 
-            <a class="link-info mt-5" th:href="@{/new}">Nie masz konta? Zarejestruj się</a>
+            <a class="link-info my-5" th:href="@{/new}">Nie masz konta? Zarejestruj się</a>
             <!--            <a class="dropdown-item" href="#">Forgot password?</a>-->
         </div>
     </div>

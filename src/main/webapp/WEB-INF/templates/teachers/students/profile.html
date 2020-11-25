@@ -1,57 +1,109 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
+head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+<title>Cockpit nauczyciela</title>
 </head>
+
+<body class="bg-dark">
+
+<header th:insert="fragments/general.html :: header"></header>
+
+<div class="container-fluid pl-0">
+    <div class="row">
+
+        <div class="col-sm-3 px-0">
+            <nav class="nav flex-column nav-pills list-group  ml-0">
+                <a class="nav-link  list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/cockpit}"><h3>
+                    AKTUALNY PLAN</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/calendar}"><h3>KALENDARZ</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/payments}"><h3>OPŁATY</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white bg-dark py-5 px-5"
+                   th:href="@{/teacher/students}"><h3>STUDENCI</h3>
+                </a>
+                <a class="nav-link  disabled text-dark  bg-secondary  py-5 px-5" href="#" tabindex="-1"
+                   aria-disabled="true">MATERIAŁY</a>
+                <a class="nav-link disabled text-dark bg-secondary py-5 px-5" href="#" tabindex="-1"
+                   aria-disabled="true">STATYSTYKI</a>
+
+            </nav>
+        </div>
+
+
+        <div class="col-sm-9 text-white bg-dark pl-5 pb-5">
+            <a class="btn btn-info text-uppercase mb-5" th:href="@{/teacher/students}"> Wróć do listy</a>
+            <h1 th:text="${student.name}+' '+${student.surname}">Imię i nazwisko</h1>
+<!--            <h1 th:text="${student.surname}">Nazwisko</h1>-->
+            <p th:text="${student.email}">email</p>
+            <p th:text="${student.active} ? 'AKTYWNY' : 'ZAWIESZONY'"></p>
+            <p th:text="${student.priceForOneLesson}+' zł'">cena</p>
+            <a th:href="@{/teacher/students/edit/{id}(id=${student.getId()})}" class="btn btn-warning text-uppercase">
+                edytuj dane personalne</a>
+
+
+            <div th:each="slot : ${slots}">
+                <p th:text="${slot.dayOfWeek.translation} + ' ' + ${slot.time}">dzień tygodnia</p>
+<!--                <p th:text="${slot.time}">godzina</p>-->
+
+            </div>
+            <p><a th:href="@{/teacher/slots/booking/{studentId}(studentId=${student.getId()})}"
+                  class="btn btn-warning text-uppercase"> Edytuj stały termin </a></p>
+
+
+            <h5 class="text-uppercase"> Zaplaonowane lekcje w tym miesiącu: <span th:text="${countPlannedThisMonth}">X</span> </h5>
+<!--            <p th:text="${countPlannedThisMonth}">ilość</p>-->
+            <div th:each="lesson : ${plannedLessonThisMonth}">
+                <p>
+                    <span th:text="${lesson.date}">data</span>
+                    <span th:text="${lesson.dayOfWeek.translation}">day</span>
+                    <span th:text="${lesson.time}">time</span>
+                    <span class="text-success" th:if="${lesson.requiredPayment}==false">lekcja opłacona</span>
+                </p>
+            </div>
+
+            <h5 class="text-uppercase"> lekcje do opłacenia: <span></span> </h5>
+            <p th:text="${countNotPaidNextMonth}"></p>
+            <div th:each="lesson : ${notPaidLessonsNextMonth}">
+                <p>
+                    <span th:text="${lesson.date}">data</span>
+                    <span th:text="${lesson.dayOfWeek.translation}">day</span>
+                    <span th:text="${lesson.time}">time</span>
+
+                </p>
+            </div>
+
+            <h6>Twoja portmonetka:</h6>
+            <p>Masz na koncie <span th:text="${overPayment}">x </span> zł. Wykorzystaj je do opłaty lekcji w następnym
+                miesiącu </p>
+            <p>Do opłaty wszystkich lekcji w następnym miesiącu brakuje: <span th:text="${requiredPayment}">x </span>
+            </p>
+
+            <a class="btn btn-danger text-uppercase" th:href="@{/teacher/students/submit/{id}(id=${student.getId()})}"> Zawieś studenta</a>
+
+
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/general.html :: footer"></footer>
+</body>
+</html>
+
+
 <body>
-<h1 th:text="${student.name}"></h1>
-<h1 th:text="${student.surname}"></h1>
-<p th:text="${student.email}"></p>
-<p th:text="${student.active} ? 'AKTYWNY' : 'ZAWIESZONY'"></p>
-<p th:text="${student.priceForOneLesson}"></p>
-<p><a th:href="@{/teacher/students/edit/{id}(id=${student.getId()})}"> edytuj dane personalne</a></p>
 
-<span>--------------------------</span>
-
-<div th:each="slot : ${slots}">
-    <p th:text="${slot.dayOfWeek.translation}">day</p>
-    <p th:text="${slot.time}">day</p>
-
-</div>
-<p><a th:href="@{/teacher/slots/booking/{studentId}(studentId=${student.getId()})}"> DODAJ LUB USUŃ STAŁY TERMIN</a></p>
-<span>--------------------------</span>
-
-<h3> Zaplaonowane lekcje w tym miesiącu: </h3>
-<p th:text="${countPlannedThisMonth}"></p>
-<div th:each="lesson : ${plannedLessonThisMonth}">
-    <p>
-        <span th:text="${lesson.date}">day</span>
-        <span th:text="${lesson.dayOfWeek.translation}">day</span>
-        <span th:text="${lesson.time}">day</span>
-        <span th:if="${lesson.requiredPayment}==false">lekcja opłacona</span>
-    </p>
-</div>
-
-<h3> lekcje do opłacenia: </h3>
-<p th:text="${countNotPaidNextMonth}"></p>
-<div th:each="lesson : ${notPaidLessonsNextMonth}">
-    <p>
-        <span th:text="${lesson.date}">day</span>
-        <span th:text="${lesson.dayOfWeek.translation}">day</span>
-        <span th:text="${lesson.time}">day</span>
-
-    </p>
-</div>
-
-<h3>Twoja portmonetka:</h3>
-<p>Masz na koncie <span th:text="${overPayment}"></span> zł. Wykorzystaj je do opłaty lekcji w następnym miesiącu </p>
-<p>Do opłaty wszystkich lekcji w następnym miesiącu brakuje: <span th:text="${requiredPayment}"></span></p>
-
-<span>--------------------------</span>
-<p><a th:href="@{/teacher/students/submit/{id}(id=${student.getId()})}"> usuń studenta</a></p>
-
-<span>--------------------------</span>
-<p><a th:href="@{/teacher/students}"> WRÓĆ</a></p>
 </body>
 </html>

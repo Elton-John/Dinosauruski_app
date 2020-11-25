@@ -15,12 +15,12 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class TeacherRegistrationFormDTO {
     private Long id;
-    @NotBlank(message = "Pole nie możeeee być puste.")
+    @NotBlank(message = "Pole nie może być puste.")
     private String name;
-    @NotBlank(message = "Pole nie możeee być puste.")
+    @NotBlank(message = "Pole nie może być puste.")
     private String surname;
     private String nickname;
-    @NotBlank(message = "Pole nie możeeee być puste.")
+    @NotBlank(message = "Pole nie może być puste.")
     @Size(min = 3, message = "Minimum 8 znaków.")
     private String password;
     @NotBlank(message = "Pole nie może być puste.")

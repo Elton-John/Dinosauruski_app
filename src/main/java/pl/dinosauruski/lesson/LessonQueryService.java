@@ -1,10 +1,10 @@
 package pl.dinosauruski.lesson;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.dinosauruski.lesson.dto.LessonCancellingDTO;
-import pl.dinosauruski.lesson.dto.LessonDTO;
-import pl.dinosauruski.lesson.dto.LessonPaymentDTO;
+import pl.dinosauruski.lesson.dto.*;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Week;
 import pl.dinosauruski.payment.PaymentQueryService;
@@ -15,14 +15,9 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.YearMonth;
+import java.time.*;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,11 +84,6 @@ public class LessonQueryService {
         }
         return Optional.empty();
     }
-//    public static Optional<User> findUserByName(String name) {
-//        User user = usersByName.get(name);
-//        Optional<User> opt = Optional.ofNullable(user);
-//        return opt;
-//    }
 
     public LessonPaymentDTO createLessonPaymentDTO(Lesson lesson) {
         LessonPaymentDTO lessonPaymentDTO = new LessonPaymentDTO();
@@ -207,4 +197,120 @@ public class LessonQueryService {
         List<LessonPaymentDTO> lessons = getGeneratedLessonInMonthByStudent(teacherId, studentId);
         return lessons.size();
     }
+
+    private LessonViewDTO createLessonViewDTO(Lesson lesson) {
+        LessonViewDTO lessonViewDTO = new LessonViewDTO();
+        lessonViewDTO.setId(lesson.getId());
+        lessonViewDTO.setDate(lesson.getDate());
+        lessonViewDTO.setTime(lesson.getSlot().getTime());
+        lessonViewDTO.setDayOfWeek(DayOfWeek.of(lesson.getSlot().getDayOfWeek().ordinal() + 1));
+        lessonViewDTO.setWeek(lesson.getWeek());
+        lessonViewDTO.setStudent(createLessonPaymentDTO(lesson).getStudentWhoPays());
+        lessonViewDTO.setCompleted(lesson.isCompleted());
+        lessonViewDTO.setCancelledByTeacher(lesson.isCancelledByTeacher());
+        lessonViewDTO.setCancelledByStudent(lesson.isCancelledByStudent());
+        lessonViewDTO.setLastMinuteCancelled(lesson.isLastMinuteCancelled());
+        lessonViewDTO.setRebooked(lesson.isRebooked());
+        lessonViewDTO.setRequiredPayment(lesson.isRequiredPayment());
+        return lessonViewDTO;
+    }
+
+    public List<LessonsOfWeekDTO> getAllLessonsOfAllWeeksOfMonth(int year, int month, Long teacherId) {
+        List<LocalDate> allMondaysOfMonth = getAllMondaysOfMonth(year, month);
+        List<LessonsOfWeekDTO> result = new ArrayList<>();
+        allMondaysOfMonth.forEach(localDate -> {
+            LessonsOfWeekDTO lessonsOfWeekDTO = createLessonsOfWeekDTO(year, month, localDate, teacherId);
+            result.add(lessonsOfWeekDTO);
+        });
+        return result;
+    }
+
+    private List<LocalDate> getAllMondaysOfMonth(int year, int month) {
+        List<LocalDate> datesOfMonth = getDatesOfMonth(year, month);
+        return datesOfMonth.stream()
+                .filter(localDate -> localDate.getDayOfWeek().equals(DayOfWeek.MONDAY))
+                .collect(Collectors.toList());
+    }
+
+    public LessonsOfWeekDTO createLessonsOfWeekDTO(int year, int month, LocalDate monday, Long teacherId) {
+        LessonsOfWeekDTO lessonsOfWeekDTO = new LessonsOfWeekDTO();
+        List<LocalDate> dates = new ArrayList<>();
+        LocalDate day = monday;
+        for (int i = 0; i < 7; i++) {
+            dates.add(day);
+            day = day.plusDays(1);
+        }
+        lessonsOfWeekDTO.setDates(dates);   //sort
+        List<LessonsOfDayDTO> lessonsOfDayDTOs = getLessonsOfDayDTOS(dates, teacherId);
+        lessonsOfWeekDTO.setLessonsOfDayDTOS(lessonsOfDayDTOs);
+        return lessonsOfWeekDTO;
+    }
+
+    private List<LessonsOfDayDTO> getLessonsOfDayDTOS(List<LocalDate> dates, Long teacherId) {
+        return dates.stream().filter(localDate -> hasLesson(localDate, teacherId)).
+                map(localDate -> createLessonsDayDTO(localDate, teacherId)
+                ).collect(Collectors.toList());
+    }
+
+    private LessonsOfDayDTO createLessonsDayDTO(LocalDate localDate, Long teacherId) {
+        LessonsOfDayDTO lessonsOfDayDTO = new LessonsOfDayDTO();
+        lessonsOfDayDTO.setDate(localDate);
+        lessonsOfDayDTO.setDayOfWeek(localDate.getDayOfWeek().ordinal());
+        List<LessonViewDTO> lessonViewDTOS = new ArrayList<>();
+        List<Lesson> lessons = lessonRepository.findAllByDateAndTeacherId(localDate, teacherId);
+        lessons.forEach(lesson -> {
+            lessonViewDTOS.add(createLessonViewDTO(lesson));
+        });
+
+        lessonsOfDayDTO.setLessonViewDTOS(lessonViewDTOS);
+        return lessonsOfDayDTO;
+    }
+
+    private boolean hasLesson(LocalDate localDate, Long teacherId) {
+        List<Lesson> lessons = lessonRepository.findAllByDateAndTeacherId(localDate, teacherId);
+        return lessons != null;
+    }
+
+    public Table<Long, LocalDate, LessonViewDTO> createOneMonthSchedule(int year, Month month, Long teacherId) {
+        Table<Long, LocalDate, LessonViewDTO> schedule = TreeBasedTable.create();
+        List<Lesson> allMonthLessons = getAllMonthYearLessonsByTeacher(year, month.ordinal(), teacherId);
+        allMonthLessons.forEach(lesson -> {
+            LessonViewDTO lessonViewDTO = createLessonViewDTO(lesson);
+            schedule.put(lessonViewDTO.getWeek().getId(), lessonViewDTO.getDate(), lessonViewDTO);
+        });
+        return schedule;
+    }
+
+    public List<LocalDate> getDatesOfMonth(int year, int month) {
+        boolean isLeap = Year.isLeap(year);
+        int length = Month.of(month).length(isLeap);
+        List<LocalDate> dates = new ArrayList<>();
+        for (int i = 1; i <= length; i++) {
+            LocalDate date = LocalDate.of(year, month, i);
+            dates.add(date);
+            date = date.plusDays(1);
+        }
+        return dates;
+    }
+
+
+//    private Set<Long > getAllWeeksIdByTeacher(int year, Month month, Long teacherId) {
+//       // List<Lesson> lessons = lessonRepository.findAllLessonByWeekAndTeacherId(week, teacherId);
+//        return createOneMonthSchedule(year, month, teacherId).columnKeySet();
+//
+//    }
+//
+//
+//    public Map<String, String> getWeekDaysForLessonViewDTO(int year, int month, Long teacherId) {
+//        Table< LocalTime, LocalDate,LessonViewDTO> schedule = createSchedule(year, month, teacherId);
+//        Map<LocalDate, Map<LocalTime, LessonViewDTO>> courseKeyUniversitySeatMap
+//                = schedule.columnMap();
+//
+//
+//        //Table, String, Integer > universityCourseSeatTable = TreeBasedTable.create();
+//
+//        lessonRepository.findAllLessonByWeekAndTeacherId(teacherId);
+//    }
+
+
 }

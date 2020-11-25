@@ -1,47 +1,123 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
 </head>
-<body>
-<h1>Students list</h1>
-<h3>
-    <a th:href="@{/teacher/students/active}"> Pokaż tylko aktywnych</a>
-</h3>
-<h3>
-    <a th:href="@{/teacher/students}"> Pokaż wszystkich </a>
-</h3>
-<span th:text="${onlyActive} ? 'TYLKO AKTYWNI' : 'WSZYSCY'"></span>
-<table>
-    <tr>
-        <th> NAME</th>
-        <th> SURNAME</th>
-        <th>EMAIL</th>
-        <th>PRICE FOR ONE LESSON</th>
-        <th>STATUS</th>
-        <th>PROFILE</th>
+<body class="bg-dark">
+
+<header th:insert="fragments/general.html :: header"></header>
 
 
-    </tr>
-    <tr th:each="student : ${students}">
-        <td th:text="${student.name}"> name</td>
-        <td th:text="${student.surname}"> name</td>
-        <td th:text="${student.email}">email</td>
+<div class="container-fluid pl-0">
+    <div class="row">
 
-        <td th:text="${student.priceForOneLesson}">price</td>
-        <td th:if="${student.priceForOneLesson}==null">0.0</td>
-        <td th:text="${student.active} ? 'ACTIVE' : 'RETIRED'"></td>
+        <div class="col-sm-3 px-0">
+            <!--            list-group-item-action-->
+            <nav class="nav flex-column nav-pills list-group bg-dark ml-0">
 
-        <td><a th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}"> ZOBACZ PROFIL</a></td>
-    </tr>
-</table>
+                <a class="nav-link  list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/cockpit}"><h3> AKTUALNY PLAN</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/calendar}"><h3>KALENDARZ</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/payments}"><h3>OPŁATY</h3>
+                </a>
+                <a class="nav-link  list-group-item  text-white bg-dark py-5 px-5"
+                   th:href="@{/teacher/students}"><h3>STUDENCI</h3>
+                </a>
+                <a class="nav-link  disabled text-dark  bg-secondary  py-5 px-5" href="#" tabindex="-1"
+                   aria-disabled="true">MATERIAŁY</a>
+                <a class="nav-link disabled text-dark bg-secondary py-5 px-5" href="#" tabindex="-1"
+                   aria-disabled="true">STATYSTYKI</a>
 
-<h2>
-    <a th:href="@{/teacher/students/new}">Dodaj nowego studenta</a>
-</h2>
-<p>
-    <a th:href="@{/teacher/cockpit}">Return to cockpit</a>
-</p>
+            </nav>
+        </div>
+
+
+        <div class="col-sm-9 text-white bg-dark pl-5 py-5">
+
+                <a th:href="@{/teacher/students/active}"class="btn btn-info text-uppercase"> Pokaż tylko aktywnych</a>
+                <a th:href="@{/teacher/students}" class="btn btn-info text-uppercase"> Pokaż wszystkich </a>
+            <span th:text="${onlyActive} ? 'TYLKO AKTYWNI' : 'WSZYSCY'"></span>
+
+
+            <table class="table table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">IMIĘ</th>
+                    <th scope="col">NAZWISKO</th>
+                    <th scope="col">EMAIL</th>
+                    <th scope="col">CENA ZA LEKCJĘ</th>
+                    <th scope="col">STATUS</th>
+                    <th scope="col">PROFIL</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="student : ${students}">
+                    <td th:text="${student.name}"> name</td>
+                    <td th:text="${student.surname}"> name</td>
+                    <td th:text="${student.email}">email</td>
+
+                    <td th:text="${student.priceForOneLesson}">price</td>
+                    <td th:if="${student.priceForOneLesson}==null">0.0</td>
+                    <td th:text="${student.active} ? 'ACTIVE' : 'RETIRED'"></td>
+
+                    <td><a th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}" class="btn btn-info text-uppercase"> ZOBACZ PROFIL</a></td>
+                </tr>
+
+
+                </tbody>
+            </table>
+
+
+            <!--            -->
+            <!--            -->
+            <!--            <table>-->
+            <!--                <tr>-->
+            <!--                    <th> NAME</th>-->
+            <!--                    <th> SURNAME</th>-->
+            <!--                    <th>EMAIL</th>-->
+            <!--                    <th>PRICE FOR ONE LESSON</th>-->
+            <!--                    <th>STATUS</th>-->
+            <!--                    <th>PROFILE</th>-->
+
+
+            <!--                </tr>-->
+            <!--                <tr th:each="student : ${students}">-->
+            <!--                    <td th:text="${student.name}"> name</td>-->
+            <!--                    <td th:text="${student.surname}"> name</td>-->
+            <!--                    <td th:text="${student.email}">email</td>-->
+
+            <!--                    <td th:text="${student.priceForOneLesson}">price</td>-->
+            <!--                    <td th:if="${student.priceForOneLesson}==null">0.0</td>-->
+            <!--                    <td th:text="${student.active} ? 'ACTIVE' : 'RETIRED'"></td>-->
+
+            <!--                    <td><a th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}"> ZOBACZ PROFIL</a></td>-->
+            <!--                </tr>-->
+            <!--            </table>-->
+            <div class="text-center">
+                <a th:href="@{/teacher/students/new}" class="btn btn-success text-uppercase">Dodaj studenta</a>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+<footer th:replace="fragments/general.html :: footer"></footer>
 </body>
 </html>

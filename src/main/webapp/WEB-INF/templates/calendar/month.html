@@ -1,77 +1,122 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
 </head>
-<body>
-
-<h2 th:text="${thisYear}"></h2>
-<!--<h2 th:text="${months.get(${thisMonth})}">sfsf</h2>-->
+<body class="bg-dark">
+<header th:insert="fragments/general.html :: header"></header>
 
 
-<div th:if="${isGenerated}==false">
-    <form th:method="GET" th:action="@{/teacher/calendar/generate/month/{month}/{year}(month=${thisMonth}, year=${thisYear})}">
-        <input type="submit" value="WYGENERUJ PLAN LEKCJI NA TEN MIESIĄC">
-    </form>
+<div class="container-fluid pl-0">
+    <div class="row">
+
+        <div class="col-sm-3 px-0">
+            <!--            list-group-item-action-->
+            <nav class="nav flex-column nav-pills list-group bg-dark ml-0">
+                <a class="nav-link  list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/cockpit}"><h3>
+                    AKTUALNY PLAN</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white  bg-dark  py-5 px-5"
+                   th:href="@{/teacher/calendar}"><h3>KALENDARZ</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/payments}"><h3>OPŁATY</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/students}"><h3>STUDENCI</h3>
+                </a>
+                <a class="nav-link  disabled text-dark  bg-secondary  py-5 px-5" href="#" tabindex="-1"
+                   aria-disabled="true">MATERIAŁY</a>
+                <a class="nav-link disabled text-dark bg-secondary py-5 px-5" href="#" tabindex="-1"
+                   aria-disabled="true">STATYSTYKI</a>
+
+            </nav>
+        </div>
+
+
+        <div class="col-sm-9 text-white bg-dark pl-5 py-5">
+
+            <h2 th:text="${thisYear}+' / '+ ${thisMonth}"></h2>
+
+
+            <div th:if="${isGenerated}==false">
+                <form th:method="GET"
+                      th:action="@{/teacher/calendar/generate/month/{month}/{year}(month=${thisMonth}, year=${thisYear})}">
+                    <input type="submit" class="btn btn-success text-uppercase"
+                           value="WYGENERUJ PLAN LEKCJI NA TEN MIESIĄC">
+                </form>
+            </div>
+
+
+            <!--                wszystkie tygodnie aktualnego miesiąca-->
+            <div th:each="week : ${weeks}">
+
+
+                <table th:if="${isGenerated}==true" class="table">
+                    <thead class="thead-light text-uppercase">
+                    <!--                dni tygonia for eahce-->
+                    <tr>
+                        <th scope="col">pn</th>
+                        <th scope="col">wt</th>
+                        <th scope="col">śr</th>
+                        <th scope="col">czw</th>
+                        <th scope="col">pt</th>
+                        <th scope="col">sb</th>
+                        <th scope="col">nd</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <div th:each="day : ${week.lessonsOfDayDTOS}">
+                            <td class="py-0 px-0">
+
+                                <table>
+                                    <thead class="thead-dark text-uppercase text-info">
+                                    <tr>
+                                        <th class="text-uppercase text-info" th:text="${day.date}"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <div th:each="lesson : ${day.lessonViewDTOS}">
+                                        <tr class="text-white">
+                                            <td th:text="${lesson.time} + ' ' + ${lesson.student.name}"></td>
+                                            <!--                                        <td th:text="${lesson.student.name}"></td>-->
+                                            <!--                                        <td th:text="${lesson.dayOfWeek}"></td>-->
+                                            <!--                                        <td th:text="${lesson.date}"></td>-->
+                                        </tr>
+                                    </div>
+                                    </tbody>
+                                </table>
+
+
+                            </td>
+                        </div>
+
+                    </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+            <!--koniec jednego tygodnia w piętli-->
+        </div>
+
+
+    </div>
 </div>
 
 
-<table th:if="${isGenerated}==true">
-    <tr>
-        <th>DAY</th>
-        <th>TIME</th>
-        <th>DATE</th>
-        <th>STUDENT</th>
-        <th>CANCEL AS A TEACHER</th>
-        <th>ADD A STUDENT TO ONCE FREE SLOT</th>
-        <th> IS REBOOKED </th>
-    </tr>
-    <tr th:each="lesson : ${lessons}">
-        <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>
-        <td th:text="${lesson.slot.time}">day name</td>
-        <td th:text="${lesson.date}">BOOKED</td>
-        <td>
-
-        <!-- IF CUSTOMER IS ANONYMOUS -->
-        <div th:if="${lesson.cancelledByTeacher}">
-            <div>ODWOŁANE PRZEZ NAUCZYCIELA</div>
-        </div>
-        <!-- ELSE -->
-        <div th:unless="${lesson.cancelledByTeacher}">
-            <div th:unless="${lesson.rebooked}">
-            <span th:if="${lesson.cancelledByStudent == true}">FREEE!!!!</span>
-            <span th:if="${lesson.cancelledByStudent == false}"><span th:text="${lesson.slot.regularStudent.name}"></span></span>
-            <span th:if="${lesson.lastMinuteCancelled == true}"><span th:text="'PÓŹNE ODWOŁANIE' +${lesson.slot.regularStudent.name}"></span></span>
-            </div>
-            <div th:if="${lesson.rebooked==true}">
-                <span>zarezerwowane</span>
-                <span th:text="${lesson.rebooking.notRegularStudent.name}"></span>
-            </div>
-        </div>
-        </td>
-        <td >
-            <a th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.id})}">---odwołaj jako nauczyciel---</a>
-        </td>
-        <td >
-            <div th:if="${lesson.cancelledByStudent == true}">
-                <div th:unless="${lesson.rebooked}">
-            <a th:href="@{/teacher/calendar/lessons/rebooking/{id}(id=${lesson.id})}">---dodaj studenta---</a>
-                </div>
-            </div>
-        </td>
-        <td th:if="${lesson.rebooked == true}">
-            <a th:href="@{/teacher/calendar/lessons/rebooking/edit/{id}(id=${lesson.id})}">---edytuj rebooking---</a>
-            <a th:href="@{/teacher/calendar/lessons/rebooking/delete/{id}(id=${lesson.id})}">---usuń rebooking---</a>
-        </td>
-        <span>===================================</span>
-    </tr>
-
-</table>
-
-
-<p>
-    <a th:href="@{/teacher/calendar}">Return to calendar</a>
-</p>
+<footer th:replace="fragments/general.html :: footer"></footer>
 </body>
 </html>
+
