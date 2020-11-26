@@ -1,19 +1,16 @@
 package pl.dinosauruski.payment;
 
-import com.lowagie.text.DocumentException;
 import lombok.AllArgsConstructor;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.models.Payment;
 import pl.dinosauruski.payment.dto.PaymentDTO;
 import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.validation.Valid;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,6 +24,7 @@ public class PaymentController {
     @GetMapping
     String index(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO, Model model) {
         List<Payment> payments = paymentQueryService.getLastTenPaymentsByTeacherId(teacherDTO.getId());
+        model.addAttribute("teacher", teacherDTO);
         model.addAttribute("payments", payments);
         return "payment/index";
     }
@@ -39,7 +37,14 @@ public class PaymentController {
     }
 
     @PostMapping("/new")
-    String newPayment(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO, PaymentDTO paymentDTO) {
+    String newPayment(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+                      @Valid @ModelAttribute("payment") PaymentDTO paymentDTO,
+                      BindingResult result,
+                      Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("students", studentQueryService.getAllByTeacherId(teacherDTO.getId()));
+            return "payment/new";
+        }
         paymentCommandService.create(paymentDTO, teacherDTO.getId());
         return "redirect:/teacher/payments";
     }
@@ -47,6 +52,7 @@ public class PaymentController {
     @GetMapping("/edit/{id}")
     String editPaymentForm(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
                            @PathVariable Long id,
+
                            Model model) {
         PaymentDTO paymentDTO = paymentQueryService.getOneDtoByIdOrThrow(id);
         model.addAttribute("students", studentQueryService.getAllByTeacherId(teacherDTO.getId()));
@@ -55,7 +61,12 @@ public class PaymentController {
     }
 
     @PatchMapping("/edit")
-    String editPayment(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO, PaymentDTO paymentDTO) {
+    String editPayment(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+                       @Valid @ModelAttribute("payment") PaymentDTO paymentDTO,
+                       BindingResult result) {
+        if (result.hasErrors()) {
+            return "payment/edit";
+        }
         paymentCommandService.updateByDto(paymentDTO);
         return "redirect:/teacher/payments";
     }

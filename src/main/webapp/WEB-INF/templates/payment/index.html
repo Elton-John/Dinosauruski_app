@@ -14,39 +14,68 @@
 <body class="bg-dark">
 
 <header th:insert="fragments/general.html :: header"></header>
+<div class="container-fluid pl-0">
+    <div class="row">
 
+        <div class="col-sm-3 px-0">
+            <nav class="nav flex-column nav-pills list-group ml-0">
+                <a class="nav-link  list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/cockpit}"><h3>
+                    AKTUALNY PLAN</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/calendar}"><h3>KALENDARZ</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white  bg-dark py-5 px-5"
+                   th:href="@{/teacher/payments}"><h3>OPŁATY</h3>
+                </a>
+                <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
+                   th:href="@{/teacher/students}"><h3>STUDENCI</h3>
+                </a>
+                <a class="nav-link  disabled text-dark  bg-secondary  py-5 px-5" href="#" tabindex="-1"
+                   aria-disabled="true">MATERIAŁY</a>
+                <a class="nav-link disabled text-dark bg-secondary py-5 px-5" href="#" tabindex="-1"
+                   aria-disabled="true">STATYSTYKI</a>
+            </nav>
+        </div>
 
+        <div class="col-sm-9 text-white bg-dark pl-5 py-5">
 
-<h2>
-    <a th:href="@{/teacher/payments/new}">Dodaj nową wpłatę</a>
-</h2>
-<table>
-    <tr>
-        <th>DATE</th>
-        <th>STUDENT</th>
-        <th>SUM</th>
-        <th>EDIT</th>
-        <th>DELETE</th>
+            <h5 class="text-success"> OSTATNIE DODANE WPŁATY:</h5>
+            <table class="table table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">DATA</th>
+                    <th scope="col">STUDENT</th>
+                    <th scope="col">SUMA</th>
+                    <th scope="col">EDYTUJ</th>
+                    <th scope="col">USUŃ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="payment : ${payments}">
+                    <td th:text="${payment.date}">day name</td>
+                    <td th:text="${payment.student.name}">time</td>
+                    <td th:text="${payment.sum}">day name</td>
+                    <td><a th:href="@{/teacher/payments/edit/{id}(id=${payment.getId()})}" class="text-warning">
+                        edytuj</a></td>
+                    <td><a th:href="@{/teacher/payments/submit/{id}(id=${payment.getId()})}" class="text-danger">
+                        usuń</a></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="text-center">
+                <a th:href="@{/teacher/payments/new}" class="btn btn-success text-uppercase">Dodaj wpłatę</a>
+            </div>
 
-    </tr>
-    <tr th:each="payment : ${payments}">
-        <td th:text="${payment.date}">day name</td>
-        <td th:text="${payment.student.name}">time</td>
-        <td th:text="${payment.sum}">day name</td>
+            <h2>
+                <a th:href="@{/teacher/payments/pdf}" class="btn btn-success text-uppercase">generuj plik</a>
+            </h2>
 
+        </div>
+    </div>
+</div>
 
-
-<!--        <td><a th:href="@{/teacher/payments/edit/{id}(id=${payment.getId()})}"> edytuj</a></td>-->
-        <td><a th:href="@{/teacher/payments/submit/{id}(id=${payment.getId()})}"> usuń</a></td>
-
-    </tr>
-</table>
-<h2>
-    <a th:href="@{/teacher/payments/pdf}">generuj plik</a>
-</h2>
-<p>
-    <a th:href="@{/teacher/cockpit}">Return to cockpit</a>
-</p>
 <footer th:replace="fragments/general.html :: footer"></footer>
 </body>
 

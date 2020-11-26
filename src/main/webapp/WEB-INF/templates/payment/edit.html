@@ -1,26 +1,47 @@
-<!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <title>Edycja wpłaty</title>
 </head>
-<body>
-<form th:method="PATCH" th:action="@{/teacher/payments/edit}" th:object="${payment}">
-    <input type="hidden" th:field="*{id}">
-    <label for="date">Data wpłaty:</label>
-    <input type=date th:field="*{date}" id="date">
+<body class="bg-dark">
 
-    <label for="sum">Suma wpłaty:</label>
-    <input type="number" th:field="*{sum}" id="sum">
+<div class="container-fluid">
+    <div class="row  my-5">
 
+        <div class="col-sm-4 text-white offset-md-4 ">
+            <form th:method="PATCH" th:action="@{/teacher/payments/edit}" th:object="${payment}">
 
-    <label for="student">Wybierz dzień druga opcja:</label>
-    <select th:field="*{student}">
-        <option th:each="student : ${students}"
-                th:value="${student.id}" th:text="${student.name}" id="student"></option>
-    </select>
-
-    <input type="submit" value="SAVE">
-</form>
+                <input type="hidden" th:field="*{id}">
+                <div class="form-group">
+                    <label for="date">Data wpłaty:</label>
+                    <input type=date class="form-control" th:field="*{date}" id="date">
+                    <p class="text-danger" th:errors="*{date}"></p>
+                </div>
+                <div class="form-group">
+                    <label for="sum">Suma wpłaty:</label>
+                    <input type="number" class="form-control" th:field="*{sum}" id="sum">
+                    <p class="text-danger" th:errors="*{sum}"></p>
+                </div>
+                <div class="form-group">
+                    <label for="student">Wybierz studenta:</label>
+                    <select class="form-control" th:field="*{student}">
+                        <option th:each="student : ${students}"
+                                th:value="${student.id}" th:text="${student.name}" id="student"></option>
+                    </select>
+                    <p class="text-danger" th:errors="*{student}"></p>
+                </div>
+                <button type="submit" class="btn btn-warning px-5">Zapisz</button>
+            </form>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/general.html :: footer"></footer>
 </body>
 </html>

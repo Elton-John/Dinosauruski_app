@@ -3,6 +3,7 @@ package pl.dinosauruski.slot;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.models.Slot;
 import pl.dinosauruski.slot.dto.SlotDTO;
@@ -11,6 +12,7 @@ import pl.dinosauruski.student.dto.StudentDTO;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -38,7 +40,10 @@ class SlotController {
 
     @PostMapping("/new")
     String create(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
-                  SlotDTO addSlotForm) {
+                  @Valid @ModelAttribute("slot") SlotDTO addSlotForm, BindingResult result) {
+        if (result.hasErrors()){
+            return "slots/new";
+        }
         slotCommandService.createNewRegularFreeSlot(loggedTeacher, addSlotForm);
         return "redirect:/teacher/slots";
     }

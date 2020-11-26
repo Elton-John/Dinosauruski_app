@@ -25,7 +25,7 @@ public class StudentDTO {
     private String email;
     @DecimalMin(value = "0.0", inclusive = false, message = "Cena nie może być liczbą ujemną")
     @Digits(integer = 3, fraction = 2)
-    @NotNull
+    @NotNull(message = "Pole nie może być puste")
     private BigDecimal priceForOneLesson;
 
     public String getFullName() {

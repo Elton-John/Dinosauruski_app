@@ -2,6 +2,8 @@ package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -27,6 +29,9 @@ public class Student {
     @OneToMany(mappedBy = "regularStudent", fetch = FetchType.EAGER)
     private List<Slot> slots = new ArrayList<>();
     private Boolean active;
+    @OneToMany(mappedBy = "student")
+
+    private Set<Payment> payments;
 
     @Override
     public boolean equals(Object o) {
