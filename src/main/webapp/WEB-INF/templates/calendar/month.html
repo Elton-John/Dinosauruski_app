@@ -17,7 +17,6 @@
 
 <div class="container-fluid pl-0">
     <div class="row">
-
         <div class="col-sm-3 px-0">
             <!--            list-group-item-action-->
             <nav class="nav flex-column nav-pills list-group bg-dark ml-0">
@@ -41,13 +40,8 @@
 
             </nav>
         </div>
-
-
         <div class="col-sm-9 text-white bg-dark pl-5 py-5">
-
             <h2 th:text="${thisYear}+' / '+ ${thisMonth}"></h2>
-
-
             <div th:if="${isGenerated}==false">
                 <form th:method="GET"
                       th:action="@{/teacher/calendar/generate/month/{month}/{year}(month=${thisMonth}, year=${thisYear})}">
@@ -56,14 +50,10 @@
                 </form>
             </div>
 
-
             <!--                wszystkie tygodnie aktualnego miesiąca-->
             <div th:each="week : ${weeks}">
-
-
                 <table th:if="${isGenerated}==true" class="table">
                     <thead class="thead-light text-uppercase">
-                    <!--                dni tygonia for eahce-->
                     <tr>
                         <th scope="col">pn</th>
                         <th scope="col">wt</th>
@@ -80,7 +70,7 @@
                         <div th:each="day : ${week.lessonsOfDayDTOS}">
                             <td class="py-0 px-0">
 
-                                <table>
+                                <table class="table-hover">
                                     <thead class="thead-dark text-uppercase text-info">
                                     <tr>
                                         <th class="text-uppercase text-info" th:text="${day.date}"></th>
@@ -88,34 +78,89 @@
                                     </thead>
                                     <tbody>
                                     <div th:each="lesson : ${day.lessonViewDTOS}">
+
                                         <tr class="text-white">
-                                            <td th:text="${lesson.time} + ' ' + ${lesson.student.name}"></td>
-                                            <!--                                        <td th:text="${lesson.student.name}"></td>-->
-                                            <!--                                        <td th:text="${lesson.dayOfWeek}"></td>-->
-                                            <!--                                        <td th:text="${lesson.date}"></td>-->
+                                            <div class="bg.light" th:if="${lesson.cancelledByTeacher}==true">
+                                                <td class="bg-danger">
+                                                    <a class="badge badge-secondary"
+                                                       th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                                                        <span th:text="${lesson.time} + ' ' + ${lesson.student.name} +' '+ ${lesson.student.surname}"></span>
+                                                    </a>
+                                                    <br>
+                                                    <p class="badge badge-pill badge-danger">odwołano przez
+                                                        nauczyciela</p>
+                                                </td>
+                                            </div>
+
+                                            <div class="bg.light" th:if="${lesson.cancelledByStudent}==true">
+                                                <div th:unless="${lesson.rebooked}">
+                                                    <td class="bg-success">
+                                                        <a class="badge badge-secondary"
+                                                           th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                                                            <span th:text="${lesson.time} + ' ' + ${lesson.student.name} +' '+ ${lesson.student.surname}"></span>
+                                                        </a>
+                                                        <br>
+                                                        <p class="badge badge-pill badge-danger">odwołano przez
+                                                            studenta</p>
+                                                        <br>
+                                                        <a class="badge badge-info"
+                                                           th:href="@{/teacher/calendar/lessons/rebooking/{id}(id=${lesson.id})}">Dodaj
+                                                            studenta</a>
+
+                                                    </td>
+                                                </div>
+                                                <div th:if="${lesson.rebooked}==true">
+                                                    <td class="bg-info">
+                                                        <a class="badge badge-dark"
+                                                           th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                                                            <span th:text="${lesson.time} + ' ' + ${lesson.student.name} +' '+ ${lesson.student.surname}"></span>
+                                                        </a>
+                                                        <br>
+                                                        <a class="badge badge-warning"
+                                                           th:href="@{/teacher/calendar/lessons/rebooking/edit/{id}(id=${lesson.id})}">edytuj
+                                                            rebooking</a>
+                                                        <br>
+                                                        <a class="badge badge-warning"
+                                                           th:href="@{/teacher/calendar/lessons/rebooking/delete/{id}(id=${lesson.id})}">usuń
+                                                            rebooking</a>
+                                                    </td>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="bg.light" th:if="${lesson.lastMinuteCancelled}==true">
+                                                <td>
+                                                    <a class="badge badge-secondary"
+                                                       th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                                                        <span th:text="${lesson.time} + ' ' + ${lesson.student.name} +' '+ ${lesson.student.surname}"></span>
+                                                    </a>
+                                                    <p class="badge badge-pill badge-danger">późne odwołanie</p>
+                                                </td>
+                                            </div>
+
+                                            <div th:if="${lesson.cancelledByStudent}==false and ${lesson.cancelledByTeacher}==false and ${lesson.lastMinuteCancelled}==false">
+                                                <td>
+                                                    <a class="badge badge-dark"
+                                                       th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                                                        <span th:text="${lesson.time} + ' ' + ${lesson.student.name} +' '+ ${lesson.student.surname}"></span>
+                                                    </a>
+                                                </td>
+                                            </div>
+
                                         </tr>
                                     </div>
                                     </tbody>
                                 </table>
-
-
                             </td>
                         </div>
-
                     </tr>
-
-
                     </tbody>
                 </table>
             </div>
             <!--koniec jednego tygodnia w piętli-->
         </div>
-
-
     </div>
 </div>
-
-
 <footer th:replace="fragments/general.html :: footer"></footer>
 </body>
 </html>

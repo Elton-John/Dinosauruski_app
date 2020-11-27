@@ -1,24 +1,45 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <title>Rebooking</title>
 </head>
-
-<body>
-<h3 th:text="${lesson.slot.dayOfWeek.translation}"></h3>
-<h3 th:text="${lesson.slot.date}"></h3>
-<h3 th:text="${lesson.slot.time}"></h3>
-
-<form th:method="POST" th:action="@{/teacher/calendar/lessons/rebooking/{id}(id=${lesson.id})}" >
-    <div>
-        <label th:for="notRegularStudent" th:text="'Wybierz studenta:'"></label>
-        <select th:name="notRegularStudent">
-            <option th:each="student : ${students}"
-                    th:value="${student.id}" th:text="${student.name}" id="notRegularStudent"></option>
-        </select>
+<body class="bg-dark">
+<div class="container-fluid">
+    <div class="row  my-5">
+        <div class="col-sm-4 text-white offset-md-4 ">
+            <div class="text-white text-center">
+                <h3 th:text="${lesson.slot.dayOfWeek.translation}"></h3>
+                <h3 th:text="${lesson.slot.date}"></h3>
+                <h3 th:text="${lesson.slot.time}"></h3>
+            </div>
+        </div>
     </div>
-    <input type="submit" value="SAVE">
-</form>
+    <div class="row">
+        <div class="col-sm-2 text-white offset-md-4 ">
+            <a class="btn btn-info text-uppercase px-5" href="/teacher/calendar" role="button">Wróć</a>
+        </div>
+        <div class="col-sm-2 text-white ">
+            <form th:method="POST" th:action="@{/teacher/calendar/lessons/rebooking/{id}(id=${lesson.id})}">
+                <div class="form-group">
+                    <label th:for="notRegularStudent" th:text="'Wybierz studenta:'"></label>
+                    <select class="form-control" th:name="notRegularStudent">
+                        <option th:each="student : ${students}"
+                                th:value="${student.id}" th:text="${student.name}" id="notRegularStudent"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-warning text-uppercase px-5">Zapisz</button>
+            </form>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/general.html :: footer"></footer>
 </body>
 </html>
