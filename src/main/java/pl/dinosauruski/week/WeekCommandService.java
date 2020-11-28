@@ -33,8 +33,8 @@ public class WeekCommandService {
 
     }
 
-    public void setGenerated(int weekOfYear, int year, Long id) {
-        Week week = weekQueryService.getOneOrThrow(year, weekOfYear, id);
+    public void setGenerated(Week week) {
+       // Week week = weekQueryService.getOneOrThrow(year, weekOfYear, id);
         week.setGenerated(true);
         weekRepository.save(week);
     }

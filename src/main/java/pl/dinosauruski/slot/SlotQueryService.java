@@ -3,8 +3,8 @@ package pl.dinosauruski.slot;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.models.Slot;
-import pl.dinosauruski.slot.dto.SlotDTO;
-import pl.dinosauruski.slot.dto.SlotInfoDTO;
+import pl.dinosauruski.slot.dto.BookedSlotDTO;
+import pl.dinosauruski.slot.dto.FreeSlotDTO;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -29,15 +29,16 @@ public class SlotQueryService {
         return slotRepository.findAllByTeacherWhereIsBookedIsFalse(id);
     }
 
-    public SlotDTO getOneSlotDtoOrThrow(Long id) {
-        return slotRepository.findOneSlotDtoById(id).orElseThrow(EntityNotFoundException::new);
+    public FreeSlotDTO getOneFreeSlotDtoOrThrow(Long id) {
+        return slotRepository.findOneFreeSlotDtoById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     public List<Slot> getSlots(Long teacherId, Long studentId) {
         return slotRepository.findAllByTeacherIdAndStudentId(teacherId, studentId);
     }
 
-    public List<SlotInfoDTO> getAllBookedSlotInfoDtoByTeacher(Long id) {
-        return slotRepository.findAllBookedSlotInfoByTeacherId(id);
+    public BookedSlotDTO getOneBookedSlotDtoOrThrow(Long id) {
+        return slotRepository.findOneBookedSlotDtoById(id).orElseThrow(EntityNotFoundException::new);
     }
+
 }

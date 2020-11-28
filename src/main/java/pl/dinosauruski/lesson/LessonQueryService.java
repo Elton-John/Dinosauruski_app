@@ -1,13 +1,12 @@
 package pl.dinosauruski.lesson;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.lesson.dto.*;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Week;
 import pl.dinosauruski.payment.PaymentQueryService;
+import pl.dinosauruski.slot.dto.BookedSlotDTO;
 import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.week.WeekQueryService;
 
@@ -41,12 +40,15 @@ public class LessonQueryService {
         return lessonRepository.findOneCompletionDto(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    public List<Lesson> getAllThisWeekLessonsByTeacher(Long id) {
-        //  ZoneId zoneId = ZoneId.of("Europe/Warsaw" );
-        LocalDate today = LocalDate.now();
+    public LessonsOfWeekDTO getAllThisWeekLessonsByTeacher(Long id) {
+        ZoneId zoneId = ZoneId.of("Europe/Warsaw");
+        LocalDate today = LocalDate.now(zoneId);
         LocalDate thisMondayDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate thisSundayDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-        return lessonRepository.findAllThisWeekLessonsByTeacher(id, thisMondayDate, thisSundayDate);
+//        List<Lesson> lessons = lessonRepository.findAllThisWeekLessonsByTeacher(id, thisMondayDate, thisSundayDate);
+//       lessons.stream().map(lesson -> c)
+        LessonsOfWeekDTO lessonsOfWeekDTO = createLessonsOfWeekDTO(thisMondayDate, id);
+        return lessonsOfWeekDTO;
     }
 
     public List<Lesson> getGeneratedLessonsOfWeek(int year, int nextNumberOfWeek, Long teacherId) {
@@ -54,19 +56,19 @@ public class LessonQueryService {
         return lessonRepository.findAllLessonByWeekAndTeacherId(week, teacherId);
     }
 
-    public List<Lesson> getAllMonthYearLessonsByTeacher(int year, int month, Long teacherId) {
-        YearMonth ym = YearMonth.of(year, month);
-        LocalDate firstDay = ym.atDay(1);
-        LocalDate lastDay = ym.atEndOfMonth();
-        int numberOfFirstWeek = weekQueryService.getNumberOfWeekByDate(firstDay);
-        int numberOfLastWeek = weekQueryService.getNumberOfWeekByDate(lastDay);
-        List<Lesson> allLessons = new ArrayList<>();
-        for (int i = numberOfFirstWeek; i <= numberOfLastWeek; i++) {
-            List<Lesson> lessonsOfWeek = getGeneratedLessonsOfWeek(year, i, teacherId);
-            allLessons.addAll(lessonsOfWeek);
-        }
-        return allLessons;
-    }
+//    public List<Lesson> getAllMonthYearLessonsByTeacher(int year, int month, Long teacherId) {
+//        YearMonth ym = YearMonth.of(year, month);
+//        LocalDate firstDay = ym.atDay(1);
+//        LocalDate lastDay = ym.atEndOfMonth();
+//        int numberOfFirstWeek = weekQueryService.getIdOfWeekByDate(firstDay,teacherId);
+//        int numberOfLastWeek = weekQueryService.getIdOfWeekByDate(lastDay,teacherId);
+//        List<Lesson> allLessons = new ArrayList<>();
+//        for (int i = numberOfFirstWeek; i <= numberOfLastWeek; i++) {
+//            List<Lesson> lessonsOfWeek = getGeneratedLessonsOfWeek(year, i, teacherId);
+//            allLessons.addAll(lessonsOfWeek);
+//        }
+//        return allLessons;
+//    }
 
 
     public Optional<Lesson> getNextNotPaidLesson(Long teacherId, Long studentId) {
@@ -216,23 +218,17 @@ public class LessonQueryService {
     }
 
     public List<LessonsOfWeekDTO> getAllLessonsOfAllWeeksOfMonth(int year, int month, Long teacherId) {
-        List<LocalDate> allMondaysOfMonth = getAllMondaysOfMonth(year, month);
+        List<LocalDate> allMondaysOfMonth = weekQueryService.getAllMondaysOfMonth(year, month);
         List<LessonsOfWeekDTO> result = new ArrayList<>();
         allMondaysOfMonth.forEach(localDate -> {
-            LessonsOfWeekDTO lessonsOfWeekDTO = createLessonsOfWeekDTO(year, month, localDate, teacherId);
+            LessonsOfWeekDTO lessonsOfWeekDTO = createLessonsOfWeekDTO(localDate, teacherId);
             result.add(lessonsOfWeekDTO);
         });
         return result;
     }
 
-    private List<LocalDate> getAllMondaysOfMonth(int year, int month) {
-        List<LocalDate> datesOfMonth = getDatesOfMonth(year, month);
-        return datesOfMonth.stream()
-                .filter(localDate -> localDate.getDayOfWeek().equals(DayOfWeek.MONDAY))
-                .collect(Collectors.toList());
-    }
 
-    public LessonsOfWeekDTO createLessonsOfWeekDTO(int year, int month, LocalDate monday, Long teacherId) {
+    public LessonsOfWeekDTO createLessonsOfWeekDTO(LocalDate monday, Long teacherId) {
         LessonsOfWeekDTO lessonsOfWeekDTO = new LessonsOfWeekDTO();
         List<LocalDate> dates = new ArrayList<>();
         LocalDate day = monday;
@@ -240,16 +236,18 @@ public class LessonQueryService {
             dates.add(day);
             day = day.plusDays(1);
         }
+
         lessonsOfWeekDTO.setDates(dates);   //sort
+
         List<LessonsOfDayDTO> lessonsOfDayDTOs = getLessonsOfDayDTOS(dates, teacherId);
         lessonsOfWeekDTO.setLessonsOfDayDTOS(lessonsOfDayDTOs);
         return lessonsOfWeekDTO;
     }
 
     private List<LessonsOfDayDTO> getLessonsOfDayDTOS(List<LocalDate> dates, Long teacherId) {
-        return dates.stream().filter(localDate -> hasLesson(localDate, teacherId)).
-                map(localDate -> createLessonsDayDTO(localDate, teacherId)
-                ).collect(Collectors.toList());
+        return dates.stream().filter(localDate -> hasLesson(localDate, teacherId))
+                .map(localDate -> createLessonsDayDTO(localDate, teacherId))
+                .collect(Collectors.toList());
     }
 
     private LessonsOfDayDTO createLessonsDayDTO(LocalDate localDate, Long teacherId) {
@@ -261,7 +259,7 @@ public class LessonQueryService {
         lessons.forEach(lesson -> {
             lessonViewDTOS.add(createLessonViewDTO(lesson));
         });
-
+        lessonViewDTOS.sort(new LessonTimeComparator());
         lessonsOfDayDTO.setLessonViewDTOS(lessonViewDTOS);
         return lessonsOfDayDTO;
     }
@@ -271,27 +269,31 @@ public class LessonQueryService {
         return lessons != null;
     }
 
-    public Table<Long, LocalDate, LessonViewDTO> createOneMonthSchedule(int year, Month month, Long teacherId) {
-        Table<Long, LocalDate, LessonViewDTO> schedule = TreeBasedTable.create();
-        List<Lesson> allMonthLessons = getAllMonthYearLessonsByTeacher(year, month.ordinal(), teacherId);
-        allMonthLessons.forEach(lesson -> {
-            LessonViewDTO lessonViewDTO = createLessonViewDTO(lesson);
-            schedule.put(lessonViewDTO.getWeek().getId(), lessonViewDTO.getDate(), lessonViewDTO);
-        });
-        return schedule;
+    public boolean generatedLessonsWereRebookedOrCancelByTeacher(BookedSlotDTO bookedSlotDTO, LocalDate date) {
+        List<Optional<Lesson>> lessons = getAllGeneratedLessonsBySlotAfterDate(bookedSlotDTO.getId(), date);
+
+        List<Lesson> changedLessons = lessons.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(lesson -> lesson.isCancelledByTeacher() || lesson.isRebooked())
+                .collect(Collectors.toList());
+
+        return changedLessons.size() > 0;
     }
 
-    public List<LocalDate> getDatesOfMonth(int year, int month) {
-        boolean isLeap = Year.isLeap(year);
-        int length = Month.of(month).length(isLeap);
-        List<LocalDate> dates = new ArrayList<>();
-        for (int i = 1; i <= length; i++) {
-            LocalDate date = LocalDate.of(year, month, i);
-            dates.add(date);
-            date = date.plusDays(1);
-        }
-        return dates;
+    public List<Optional<Lesson>> getAllGeneratedLessonsBySlotAfterDate(Long slotId, LocalDate date) {
+        return lessonRepository.findAllGeneratedLessonsBySlotWhereDateIsAfter( date, slotId);
     }
+
+//    public Table<Long, LocalDate, LessonViewDTO> createOneMonthSchedule(int year, Month month, Long teacherId) {
+//        Table<Long, LocalDate, LessonViewDTO> schedule = TreeBasedTable.create();
+//        List<Lesson> allMonthLessons = getAllMonthYearLessonsByTeacher(year, month.ordinal(), teacherId);
+//        allMonthLessons.forEach(lesson -> {
+//            LessonViewDTO lessonViewDTO = createLessonViewDTO(lesson);
+//            schedule.put(lessonViewDTO.getWeek().getId(), lessonViewDTO.getDate(), lessonViewDTO);
+//        });
+//        return schedule;
+//    }
 
 
 //    private Set<Long > getAllWeeksIdByTeacher(int year, Month month, Long teacherId) {

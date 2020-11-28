@@ -74,14 +74,14 @@ public class LessonGenerateController {
         return "calendar/index";
     }
 
-    @GetMapping("/generate/{year}/{week}")
-    String generateWeek(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
-                        @PathVariable int year,
-                        @PathVariable int week,
-                        Model model) {
-        lessonCommandService.generateWeekLessonsForTeacher(year, week, teacherDTO.getId());
-        return "redirect:/teacher/calendar";
-    }
+//    @GetMapping("/generate/{year}/{week}")
+//    String generateWeek(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+//                        @PathVariable int year,
+//                        @PathVariable int week,
+//                        Model model) {
+//        lessonCommandService.generateWeekLessonsForTeacher(year, week, teacherDTO.getId());
+//        return "redirect:/teacher/calendar";
+//    }
 
     @GetMapping("/generate/month/{month}/{year}")
     String generateMonth(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
@@ -153,7 +153,7 @@ public class LessonGenerateController {
     String cancelLessonByTeacher(LessonCancellingDTO lessonCancellingDTO) {
         lessonCommandService.updateCancelling(lessonCancellingDTO);
         Lesson lesson = lessonQueryService.getOneOrThrow(lessonCancellingDTO.getId());
-        int month = lesson.getDate().getMonth().ordinal() + 1;
+        int month = lesson.getDate().getMonth().getValue();
         int year = lesson.getDate().getYear();
         return "redirect:/teacher/calendar/" + month + "/" + year;
     }

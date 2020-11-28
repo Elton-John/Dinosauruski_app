@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.lesson.LessonQueryService;
+import pl.dinosauruski.lesson.dto.LessonsOfWeekDTO;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.slot.SlotQueryService;
@@ -47,8 +48,10 @@ class TeacherController {
         Boolean isGenerated = weekQueryService.checkCurrentWeekIsGenerated(id);
         if (isGenerated) {
             model.addAttribute("isGenerated", true);
-            List<Lesson> lessons = lessonQueryService.getAllThisWeekLessonsByTeacher(id);
-            model.addAttribute("thisWeekLessons", lessons);
+          //  List<Lesson> lessons = lessonQueryService.getAllThisWeekLessonsByTeacher(id);
+           LessonsOfWeekDTO lessons = lessonQueryService.getAllThisWeekLessonsByTeacher(id);
+          //  model.addAttribute("thisWeekLessons", lessons);
+            model.addAttribute("week", lessons);
         } else {
             model.addAttribute("isGenerated", false);
         }

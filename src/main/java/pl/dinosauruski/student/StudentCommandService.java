@@ -12,6 +12,7 @@ import pl.dinosauruski.teacher.TeacherCommandService;
 import pl.dinosauruski.teacher.TeacherQueryService;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,8 @@ public class StudentCommandService {
         student.setName(studentDTO.getName());
         student.setSurname(studentDTO.getSurname());
         student.setEmail(studentDTO.getEmail());
-        student.setPriceForOneLesson(studentDTO.getPriceForOneLesson());
+        //student.setPriceForOneLesson(studentDTO.getPriceForOneLesson());
+        student.setOverpayment(studentDTO.getOverpayment());
         studentRepository.save(student);
     }
 
@@ -43,6 +45,7 @@ public class StudentCommandService {
         student.setSurname(studentDTO.getSurname());
         student.setEmail(studentDTO.getEmail());
         student.setPriceForOneLesson(studentDTO.getPriceForOneLesson());
+        student.setOverpayment(BigDecimal.valueOf(0));
         Set<Teacher> teachers = new HashSet<>();
         Teacher teacher = teacherQueryService.getOneOrThrow(teacherId);
         teachers.add(teacher);

@@ -27,6 +27,7 @@ public class StudentDTO {
     @Digits(integer = 3, fraction = 2)
     @NotNull(message = "Pole nie może być puste")
     private BigDecimal priceForOneLesson;
+    private BigDecimal overpayment;
 
     public String getFullName() {
         return this.name + " " + this.surname;

@@ -2,12 +2,13 @@ package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Setter
@@ -32,6 +33,7 @@ public class Student {
     @OneToMany(mappedBy = "student")
 
     private Set<Payment> payments;
+    private BigDecimal overpayment;
 
     @Override
     public boolean equals(Object o) {

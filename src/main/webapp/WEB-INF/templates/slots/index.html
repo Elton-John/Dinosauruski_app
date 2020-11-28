@@ -33,12 +33,28 @@
                 <tr th:each="slot : ${slots}">
                     <td th:text="${slot.dayOfWeek.translation}">day name</td>
                     <td th:text="${slot.time}">time</td>
-                    <td class="text-warning" th:if="${slot.getBooked()} == true">BOOKED</td>
-                    <td class="text-success" th:if="${slot.getBooked()} == false">FREE</td>
-                    <td><a class="btn btn-warning text-uppercase"
-                           th:href="@{/teacher/slots/edit/{id}(id=${slot.getId()})}"> edytuj</a></td>
-                    <td><a class="btn btn-danger text-uppercase"
-                           th:href="@{/teacher/slots/submit/{id}(id=${slot.getId()})}"> usuń</a></td>
+                    <td class="text-warning" th:if="${slot.booked} == true">BOOKED</td>
+                    <td class="text-success" th:if="${slot.booked} == false">FREE</td>
+                    <td>
+                        <div th:if="${slot.booked}==true">
+                            <a class="btn btn-warning text-uppercase"
+                               th:href="@{/teacher/slots/booked/edit/{id}(id=${slot.getId()})}"> edytuj</a>
+                        </div>
+                        <div th:if="${slot.booked}==false">
+                            <a class="btn btn-warning text-uppercase"
+                               th:href="@{/teacher/slots/free/edit/{id}(id=${slot.getId()})}"> edytuj</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div th:if="${slot.booked}==true">
+                            <a class="btn btn-danger text-uppercase"
+                               th:href="@{/teacher/slots/booked/submit/{id}(id=${slot.getId()})}"> usuń</a>
+                        </div>
+                        <div th:if="${slot.booked}==false">
+                            <a class="btn btn-danger text-uppercase"
+                               th:href="@{/teacher/slots/free/submit/{id}(id=${slot.getId()})}"> usuń</a>
+                        </div>
+                    </td>
                 </tr>
             </table>
             <div class="text-center">

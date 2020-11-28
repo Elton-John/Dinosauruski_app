@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -19,7 +18,7 @@
         <div class="col-sm-4 text-white offset-md-4 ">
             <div class="text-white text-center">
 
-                <p >Chcesz usunąć ten termin z dostępnych?</p>
+                <p>Chcesz usunąć ten termin z dostępnych?</p>
                 <h3 class="text-danger text-uppercase" th:text="${slot.getDayAndTime()}"></h3>
             </div>
         </div>
@@ -32,7 +31,11 @@
         </div>
 
         <div class="col-sm-2 text-white ">
-            <form th:method="DELETE" th:action="@{/teacher/slots/delete/{id}(id=${id})}">
+            <form th:method="DELETE" th:action="@{/teacher/slots/booked/delete/{id}(id=${id})}">
+                <div class="form-group">
+                    <label for="date">Data z przyszłości, od której termin będzie zmieniony:</label>
+                    <input type="date" class="form-control" name="date" id="date"/>
+                </div>
                 <button type="submit" class="btn btn-danger text-uppercase px-5">Usuń</button>
             </form>
         </div>

@@ -5,14 +5,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.dinosauruski.lesson.LessonQueryService;
 import pl.dinosauruski.models.Slot;
-import pl.dinosauruski.slot.dto.SlotDTO;
+import pl.dinosauruski.slot.dto.BookedSlotDTO;
+import pl.dinosauruski.slot.dto.FreeSlotDTO;
 import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.student.dto.StudentDTO;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -22,6 +26,7 @@ class SlotController {
     private final SlotCommandService slotCommandService;
     private final SlotQueryService slotQueryService;
     private final StudentQueryService studentQueryService;
+    private final LessonQueryService lessonQueryService;
 
 
     @GetMapping
@@ -34,43 +39,89 @@ class SlotController {
 
     @GetMapping("/new")
     String newSlot(Model model) {
-        model.addAttribute("slot", new SlotDTO());
+        model.addAttribute("slot", new FreeSlotDTO());
         return "slots/new";
     }
 
     @PostMapping("/new")
     String create(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
-                  @Valid @ModelAttribute("slot") SlotDTO addSlotForm, BindingResult result) {
-        if (result.hasErrors()){
+                  @Valid @ModelAttribute("slot") FreeSlotDTO freeSlotDto, BindingResult result) {
+        if (result.hasErrors()) {
             return "slots/new";
         }
-        slotCommandService.createNewRegularFreeSlot(loggedTeacher, addSlotForm);
+        slotCommandService.create(loggedTeacher, freeSlotDto);
         return "redirect:/teacher/slots";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/free/edit/{id}")
     String editForm(@PathVariable Long id, Model model) {
-        model.addAttribute("slot", slotQueryService.getOneSlotDtoOrThrow(id));
+        model.addAttribute("slot", slotQueryService.getOneFreeSlotDtoOrThrow(id));
         model.addAttribute("days");
-        return "slots/edit";
+        return "slots/freeSlotEdit";
     }
 
-    @PatchMapping("/edit")
-    String edit(SlotDTO slotDTO) {
-        slotCommandService.update(slotDTO);
+    @PatchMapping("/free/edit")
+    String edit(@Valid @ModelAttribute("slot") FreeSlotDTO freeSlotDTO, BindingResult result) {
+        if (result.hasErrors()) {
+            return "slots/freeSlotEdit";
+        }
+        slotCommandService.updateFreeSlot(freeSlotDTO);
         return "redirect:/teacher/slots";
     }
 
-    @GetMapping("/submit/{id}")
-    String submitDeleting(@PathVariable Long id, Model model) {
-        SlotDTO slotDTO = slotQueryService.getOneSlotDtoOrThrow(id);
-        model.addAttribute("slot", slotDTO);
-        return "slots/submit";
+    @GetMapping("/booked/edit/{id}")
+    String editBookedSlotForm(@PathVariable Long id, Model model) {
+        model.addAttribute("slot", slotQueryService.getOneBookedSlotDtoOrThrow(id));
+        model.addAttribute("days");
+        return "slots/bookedSlotEdit";
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PatchMapping("/booked/edit")
+    String editBookedSlot(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
+                          @Valid @ModelAttribute("slot") BookedSlotDTO bookedSlotDTO,
+                          BindingResult result,
+                          Model model,
+                          HttpServletRequest request) {
+        if (result.hasErrors()) {
+            return "slots/bookedSlotEdit";
+        }
+        LocalDate date = LocalDate.parse(request.getParameter("date"));
+        if (lessonQueryService.generatedLessonsWereRebookedOrCancelByTeacher(bookedSlotDTO, date)) {
+            //List<Week> weeksToChangedManual = slotQueryService.getWeeksWhereGeneratedLessonsWereChanged(bookedSlotDTO, date);
+            return "redirect:/teacher/slots";
+        } else {
+            slotCommandService.updateBookedSlot(bookedSlotDTO, date, loggedTeacher.getId());
+            return "redirect:/teacher/slots";
+        }
+
+
+    }
+
+    @GetMapping("/free/submit/{id}")
+    String submitDeleting(@PathVariable Long id, Model model) {
+        FreeSlotDTO freeSlotDTO = slotQueryService.getOneFreeSlotDtoOrThrow(id);
+        model.addAttribute("slot", freeSlotDTO);
+        return "slots/freeSlotSubmit";
+    }
+
+    @DeleteMapping("free/delete/{id}")
     String delete(@PathVariable Long id) {
-        slotCommandService.delete(id);
+        slotCommandService.deleteFreeSlot(id);
+        return "redirect:/teacher/slots";
+    }
+
+    @GetMapping("/booked/submit/{id}")
+    String submitDeletingBookedSlot(@PathVariable Long id, Model model) {
+        BookedSlotDTO bookedSlotDTO = slotQueryService.getOneBookedSlotDtoOrThrow(id);
+        model.addAttribute("slot", bookedSlotDTO);
+        return "slots/bookedSlotSubmit";
+    }
+
+    @DeleteMapping("booked/delete/{id}")
+    String deleteBookedSlot(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
+                            @PathVariable Long id, HttpServletRequest request) {
+        LocalDate date = LocalDate.parse(request.getParameter("date"));
+        slotCommandService.deleteBookedSlot(id, date, loggedTeacher.getId());
         return "redirect:/teacher/slots";
     }
 

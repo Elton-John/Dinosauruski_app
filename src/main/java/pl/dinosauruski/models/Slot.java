@@ -2,11 +2,9 @@ package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 import pl.dinosauruski.slot.DAY_OF_WEEK;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
@@ -22,32 +20,11 @@ public class Slot {
     private LocalTime time;
     @ManyToOne
     private Teacher teacher;
-    private Boolean isOnceFree;
-   // @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
-    private Boolean isBooked;
+    private boolean booked;
     @ManyToOne(fetch = FetchType.EAGER)
     private Student regularStudent;
+    private boolean archived;
 
-    public Boolean getOnceFree() {
-        return isOnceFree;
-    }
-
-    public void setOnceFree(Boolean onceFree) {
-        isOnceFree = onceFree;
-    }
-
-    public Boolean getBooked() {
-        return isBooked;
-    }
-
-    public void setBooked(Boolean booked) {
-        isBooked = booked;
-    }
-
-    public String getDayAndTime() {
-        return this.dayOfWeek.getTranslation() + " " + this.time;
-    }
 
     @Override
     public boolean equals(Object o) {

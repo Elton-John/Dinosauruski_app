@@ -7,6 +7,7 @@ import pl.dinosauruski.lesson.dto.LessonCancellingDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Week;
+import pl.dinosauruski.slot.dto.BookedSlotDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -64,4 +65,8 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id = :id AND l.date = :date")
     List<Lesson> findAllByDateAndTeacherId(@Param("date") LocalDate localDate,
                                      @Param("id") Long teacherId);
+
+    @Query("SELECT l FROM Lesson l WHERE l.slot.id = :id AND l.date >= :date")
+    List<Optional<Lesson>> findAllGeneratedLessonsBySlotWhereDateIsAfter(@Param("date") LocalDate date,
+                                                                         @Param("id") Long slotId);
 }
