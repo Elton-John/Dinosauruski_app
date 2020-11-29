@@ -7,14 +7,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.lesson.LessonQueryService;
 import pl.dinosauruski.models.Student;
-import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.payment.PaymentQueryService;
 import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.student.dto.StudentDTO;
 import pl.dinosauruski.teacher.TeacherQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -42,7 +43,7 @@ public class StudentController {
     String showOnlyActive(@SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
                           Model model) {
         List<Student> students = studentQueryService.
-                findAllIfActiveStudentsByTeacherId(loggedTeacher.getId());
+                getAllActiveStudentsByTeacherId(loggedTeacher.getId());
         model.addAttribute("teacher", loggedTeacher);
         model.addAttribute("students", students);
         model.addAttribute("onlyActive", true);
@@ -114,9 +115,17 @@ public class StudentController {
 
     @DeleteMapping("/delete/{id}")
     String delete(@PathVariable("id") Long studentId,
-                  @SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher) {
-        studentCommandService.delete(loggedTeacher.getId(), studentId);
+                  @SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
+                  HttpServletRequest request) {
+        LocalDate date = LocalDate.parse(request.getParameter("date"));
+        studentCommandService.suspend(loggedTeacher.getId(), studentId, date);
         return "redirect:/teacher/students";
+    }
+
+    @GetMapping("/activate/{id}")
+    String activate(@PathVariable Long id, Model model) {
+        studentCommandService.activate(id);
+        return "redirect:/teacher/students/" + id.toString() + "/profile";
     }
 
 }

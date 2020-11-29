@@ -2,7 +2,6 @@ package pl.dinosauruski.student;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.dinosauruski.models.Slot;
 import pl.dinosauruski.models.Student;
 import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.slot.SlotCommandService;
@@ -13,8 +12,8 @@ import pl.dinosauruski.teacher.TeacherQueryService;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -57,16 +56,25 @@ public class StudentCommandService {
         return savedStudent;
     }
 
-    public void delete(Long teacherId, Long studentId) {
-        teacherCommandService.updateAfterDeletingStudent(teacherId, studentId);
-        cancelBookedSlots(teacherId, studentId);
-        studentRepository.deleteById(studentId);
+    public void suspend(Long teacherId, Long studentId, LocalDate date) {
+        Student student = studentQueryService.getOneOrThrow(studentId);
+        student.getSlots().forEach(slot -> slotCommandService.makeSlotFree(slot.getId(), studentId, date));
+        updateStudentStatus(studentId);
     }
 
-    private void cancelBookedSlots(Long teacherId, Long studentId) {
-        List<Slot> slots = slotQueryService.getSlots(teacherId, studentId);
-       // slots.forEach(slotId -> slotCommandService.makeSlotFree(slotId));
+    private void updateStudentStatus(Long studentId) {
+        Student student = studentQueryService.getOneOrThrow(studentId);
+        int count = slotQueryService.getAllSlotsByStudent(studentId);
+        if (count == 0) {
+            student.setActive(false);
+        } else {
+            student.setActive(true);
+        }
+    }
 
+    public void activate(Long studentId) {
+        Student student = studentQueryService.getOneOrThrow(studentId);
+        student.setActive(true);
     }
 
 }

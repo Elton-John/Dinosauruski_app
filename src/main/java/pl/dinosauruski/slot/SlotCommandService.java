@@ -31,7 +31,6 @@ public class SlotCommandService {
     private final LessonQueryService lessonQueryService;
     private final WeekQueryService weekQueryService;
 
-
     public Slot create(Long teacherId, FreeSlotDTO freeSlotDTO) {
         Teacher teacher = teacherQueryService.getOneOrThrow(teacherId);
         Slot slot = new Slot();
@@ -150,10 +149,13 @@ public class SlotCommandService {
             slot.setBooked(false);
             slotRepository.save(slot);
         }
+
     }
+
 
     private void deleteStudentReference(Slot slot) {
         slot.setRegularStudent(null);
+
     }
 
     public void makeSlotBooked(Long slotId, Long studentId, LocalDate date) {

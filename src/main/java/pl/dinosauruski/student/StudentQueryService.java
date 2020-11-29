@@ -33,7 +33,7 @@ public class StudentQueryService {
         return studentRepository.findAllByTeachersContainsTeacher(id);
     }
 
-    public List<Student> findAllIfActiveStudentsByTeacherId(Long id) {
+    public List<Student> getAllActiveStudentsByTeacherId(Long id) {
         List<Student> studentList = getAllByTeacherId(id);
         return studentList.stream()
                 .filter(Student::getActive)

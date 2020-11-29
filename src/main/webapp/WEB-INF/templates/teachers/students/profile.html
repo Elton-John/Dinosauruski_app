@@ -46,43 +46,61 @@ head>
         <div class="col-sm-9 text-white bg-dark pl-5 pb-5">
             <a class="btn btn-info text-uppercase mb-5" th:href="@{/teacher/students}"> Wróć do listy</a>
             <h1 th:text="${student.name}+' '+${student.surname}">Imię i nazwisko</h1>
-<!--            <h1 th:text="${student.surname}">Nazwisko</h1>-->
+            <!--            <h1 th:text="${student.surname}">Nazwisko</h1>-->
             <p th:text="${student.email}">email</p>
-            <p th:text="${student.active} ? 'AKTYWNY' : 'ZAWIESZONY'"></p>
+            <!--            <p th:text="${student.active} ? 'AKTYWNY' : 'ZAWIESZONY'"></p>-->
+            <div th:if="${student.active}==true">
+                <span class="badge badge-success text-uppercase px-5 ">Aktywny</span>
+            </div>
+
+            <div th:if="${student.active}==false">
+                <span class="badge badge-danger text-uppercase px-5 ">Zawieszony</span>
+            </div>
+
+
             <p th:text="${student.priceForOneLesson}+' zł'">cena</p>
             <a th:href="@{/teacher/students/edit/{id}(id=${student.getId()})}" class="btn btn-warning text-uppercase">
                 edytuj dane personalne</a>
 
 
             <div th:each="slot : ${slots}">
-                <p th:text="${slot.dayOfWeek.translation} + ' ' + ${slot.time}">dzień tygodnia</p>
-<!--                <p th:text="${slot.time}">godzina</p>-->
-
+                <div th:if="${slot.archived}==true">
+                    <span class="badge badge-secondary" th:text="${slot.dayOfWeek.translation} + ' ' + ${slot.time}">dzień tygodnia</span>
+                    <span class="text-secondary">archive</span>
+                </div>
+                <div th:if="${slot.archived}==false">
+                    <span class="badge badge-info" th:text="${slot.dayOfWeek.translation} + ' ' + ${slot.time}">dzień tygodnia</span>
+                </div>
             </div>
-            <p><a th:href="@{/teacher/slots/booking/{studentId}(studentId=${student.getId()})}"
-                  class="btn btn-warning text-uppercase"> Edytuj stały termin </a></p>
+
+            <div th:if="${student.active} == true"><a
+                    th:href="@{/teacher/slots/booking/{studentId}(studentId=${student.getId()})}"
+                    class="btn btn-warning text-uppercase"> Edytuj stały termin </a>
+            </div>
 
 
-            <h5 class="text-uppercase"> Zaplaonowane lekcje w tym miesiącu: <span th:text="${countPlannedThisMonth}">X</span> </h5>
-<!--            <p th:text="${countPlannedThisMonth}">ilość</p>-->
+            <h5 class="text-uppercase"> Zaplaonowane lekcje w tym miesiącu: <span
+                    th:text="${countPlannedThisMonth}">X</span></h5>
+            <!--            <p th:text="${countPlannedThisMonth}">ilość</p>-->
             <div th:each="lesson : ${plannedLessonThisMonth}">
-                <p>
-                    <span th:text="${lesson.date}">data</span>
-                    <span th:text="${lesson.dayOfWeek.translation}">day</span>
-                    <span th:text="${lesson.time}">time</span>
-                    <span class="text-success" th:if="${lesson.requiredPayment}==false">lekcja opłacona</span>
-                </p>
+                <div th:if="${lesson.requiredPayment}==false">
+                    <span class="badge badge-pill badge-success"
+                          th:text="${lesson.date} + ' ' +${lesson.dayOfWeek.translation} + ' '+ ${lesson.time}">data</span>
+                    <span class="text-success">lekcja opłacona</span>
+                </div>
+                <div th:if="${lesson.requiredPayment}==true">
+                    <span class="badge badge-pill badge-danger"
+                          th:text="${lesson.date} + ' ' +${lesson.dayOfWeek.translation} + ' '+ ${lesson.time}">data</span>
+                </div>
             </div>
 
-            <h5 class="text-uppercase"> lekcje do opłacenia: <span></span> </h5>
-            <p th:text="${countNotPaidNextMonth}"></p>
+            <h5 class="text-uppercase"> lekcje do opłacenia: <span></span>
+            <span th:text="${countNotPaidNextMonth}"></span></h5>
             <div th:each="lesson : ${notPaidLessonsNextMonth}">
-                <p>
-                    <span th:text="${lesson.date}">data</span>
-                    <span th:text="${lesson.dayOfWeek.translation}">day</span>
-                    <span th:text="${lesson.time}">time</span>
-
-                </p>
+                <div>
+                     <span class="badge badge-pill badge-danger"
+                           th:text="${lesson.date} + ' ' +${lesson.dayOfWeek.translation} + ' '+ ${lesson.time}">data</span>
+                </div>
             </div>
 
             <h6>Twoja portmonetka:</h6>
@@ -91,8 +109,15 @@ head>
             <p>Do opłaty wszystkich lekcji w następnym miesiącu brakuje: <span th:text="${requiredPayment}">x </span>
             </p>
 
-            <a class="btn btn-danger text-uppercase" th:href="@{/teacher/students/submit/{id}(id=${student.getId()})}"> Zawieś studenta</a>
+            <div th:if="${student.active}==true">
+                <a class="btn btn-danger text-uppercase"
+                   th:href="@{/teacher/students/submit/{id}(id=${student.getId()})}"> Zawieś studenta</a>
+            </div>
 
+            <div th:if="${student.active}==false">
+                <a class="btn btn-danger text-uppercase"
+                   th:href="@{/teacher/students/activate/{id}(id=${student.getId()})}"> Aktywuj studenta</a>
+            </div>
 
         </div>
     </div>

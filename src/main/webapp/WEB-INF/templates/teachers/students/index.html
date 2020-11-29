@@ -71,7 +71,7 @@
 
                     <td th:text="${student.priceForOneLesson}">price</td>
                     <td th:if="${student.priceForOneLesson}==null">0.0</td>
-                    <td th:text="${student.active} ? 'ACTIVE' : 'RETIRED'"></td>
+                    <td th:text="${student.active} ? 'ACTIVE' : 'ZAWIESZONY'"></td>
 
                     <td><a th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}" class="btn btn-info text-uppercase"> ZOBACZ PROFIL</a></td>
                 </tr>

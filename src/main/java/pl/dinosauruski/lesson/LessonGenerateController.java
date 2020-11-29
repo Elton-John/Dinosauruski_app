@@ -163,7 +163,7 @@ public class LessonGenerateController {
                                        @PathVariable Long id,
                                        Model model) {
         Lesson lesson = lessonQueryService.getOneOrThrow(id);
-        List<Student> students = studentQueryService.getAllByTeacherId(teacherDTO.getId());
+        List<Student> students = studentQueryService.getAllActiveStudentsByTeacherId(teacherDTO.getId());
         model.addAttribute("lesson", lesson);
         model.addAttribute("students", students);
         return "calendar/rebooking";
@@ -187,7 +187,7 @@ public class LessonGenerateController {
                                        Model model) {
         model.addAttribute("rebooking", rebookingQueryService.getOneDtoOrThrow(id));
         model.addAttribute("lesson", lessonQueryService.getOneLessonDtoOrThrow(id));
-        List<Student> students = studentQueryService.getAllByTeacherId(teacherDTO.getId());
+        List<Student> students = studentQueryService.getAllActiveStudentsByTeacherId(teacherDTO.getId());
         model.addAttribute("students", students);
         return "calendar/editRebooking";
     }

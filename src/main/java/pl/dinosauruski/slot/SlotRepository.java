@@ -39,4 +39,7 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
 
     @Query("SELECT new pl.dinosauruski.slot.dto.FreeSlotDTO(s.id, s.time, s.dayOfWeek) FROM Slot s WHERE s.teacher.id = :id AND s.archived = false ")
     List<FreeSlotDTO> findAllFreeSlotDTOByTeacherWhereBookedIsFalse(@Param("id") Long teacherId);
+
+    @Query("SELECT COUNT (s) FROM Slot s where s.regularStudent.id = :id AND s.archived = false")
+    int findAllByStudent(@Param("id") Long studentId);
 }

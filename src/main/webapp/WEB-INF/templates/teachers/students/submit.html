@@ -18,8 +18,9 @@
         <div class="col-sm-4 text-white offset-md-4 ">
             <div class="text-white">
 
-                <p th:text="'Chcesz usunąć studenta ' + ${student.name} + ' ' + ${student.surname}+'?'"></p>
+                <p th:text="'Chcesz zawiesić studenta ' + ${student.name} + ' ' + ${student.surname}+'?'"></p>
             </div>
+
         </div>
     </div>
 
@@ -31,7 +32,11 @@
 
         <div class="col-sm-2 text-white ">
             <form th:method="DELETE" th:action="@{/teacher/students/delete/{id}(id=${id})}">
-                <button type="submit" class="btn btn-danger text-uppercase px-5">Usuń</button>
+                <div class="form-group">
+                    <label for="date">Data, od której student będzie zawieszony:</label>
+                    <input type="date" class="form-control" name="date" id="date"/>
+                </div>
+                <button type="submit" class="btn btn-danger text-uppercase px-5">Zawieś</button>
             </form>
         </div>
     </div>

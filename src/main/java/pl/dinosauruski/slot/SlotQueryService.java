@@ -45,4 +45,8 @@ public class SlotQueryService {
         return slotRepository.findAllFreeSlotDTOByTeacherWhereBookedIsFalse(teacherId);
     }
 
+
+    public int getAllSlotsByStudent(Long studentId) {
+        return slotRepository.findAllByStudent(studentId);
+    }
 }
