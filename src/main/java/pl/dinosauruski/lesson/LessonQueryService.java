@@ -269,8 +269,8 @@ public class LessonQueryService {
         return lessons != null;
     }
 
-    public boolean generatedLessonsWereRebookedOrCancelByTeacher(BookedSlotDTO bookedSlotDTO, LocalDate date) {
-        List<Optional<Lesson>> lessons = getAllGeneratedLessonsBySlotAfterDate(bookedSlotDTO.getId(), date);
+    public boolean generatedLessonsWereRebookedOrCancelByTeacherAfterDate(Long slotId, LocalDate date) {
+        List<Optional<Lesson>> lessons = getAllGeneratedLessonsBySlotAfterDate(slotId, date);
 
         List<Lesson> changedLessons = lessons.stream()
                 .filter(Optional::isPresent)
@@ -283,6 +283,11 @@ public class LessonQueryService {
 
     public List<Optional<Lesson>> getAllGeneratedLessonsBySlotAfterDate(Long slotId, LocalDate date) {
         return lessonRepository.findAllGeneratedLessonsBySlotWhereDateIsAfter( date, slotId);
+    }
+
+    public boolean checkSlotHasGeneratedLessons(Long slotId) {
+       int count =  lessonRepository.findAllGeneratedLessonsBySlot(slotId);
+        return count > 0;
     }
 
 //    public Table<Long, LocalDate, LessonViewDTO> createOneMonthSchedule(int year, Month month, Long teacherId) {

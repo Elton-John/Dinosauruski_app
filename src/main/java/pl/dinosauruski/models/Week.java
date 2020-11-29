@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class Week {
     private Teacher teacher;
     private Integer numberOfWeek;
     private Integer year;
+    private LocalDate mondayDate;
     @org.hibernate.annotations.Type(type = "true_false")
     private Boolean isGenerated;
     @org.hibernate.annotations.Type(type = "true_false")

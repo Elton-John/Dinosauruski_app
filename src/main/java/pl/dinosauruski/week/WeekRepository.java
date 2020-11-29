@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.dinosauruski.models.Week;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +29,8 @@ public interface WeekRepository extends JpaRepository<Week, Long> {
             @Param("week") int weekOfYear,
             @Param("year") int year,
             @Param("id") Long teacherId);
+
+    @Query("SELECT w FROM Week w WHERE w.mondayDate >= :monday and w.teacher.id = :id AND w.isGenerated = true")
+    List<Week> findAllGeneratedWeeksAfterDate(@Param("monday") LocalDate monday,
+                                              @Param("id") Long teacherId);
 }

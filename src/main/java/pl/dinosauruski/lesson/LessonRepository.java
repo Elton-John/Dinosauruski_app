@@ -54,9 +54,10 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id =:teacherId AND l.cancelledByTeacher = false AND l.date <= :end ORDER BY l.date ")
     List<Lesson> findAllByTeacherUntilLastDayOfNextMonth(
-                                               @Param("end") LocalDate lastDay,
-                                               @Param("teacherId") Long teacherId
-                                             );
+            @Param("end") LocalDate lastDay,
+            @Param("teacherId") Long teacherId
+    );
+
     @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id =:teacherId AND l.cancelledByTeacher = false AND l.date BETWEEN :start AND :end ORDER BY l.date")
     List<Lesson> findAllByTeacherInMonth(@Param("start") LocalDate firstDay,
                                          @Param("end") LocalDate lastDay,
@@ -64,9 +65,12 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id = :id AND l.date = :date")
     List<Lesson> findAllByDateAndTeacherId(@Param("date") LocalDate localDate,
-                                     @Param("id") Long teacherId);
+                                           @Param("id") Long teacherId);
 
     @Query("SELECT l FROM Lesson l WHERE l.slot.id = :id AND l.date >= :date")
     List<Optional<Lesson>> findAllGeneratedLessonsBySlotWhereDateIsAfter(@Param("date") LocalDate date,
                                                                          @Param("id") Long slotId);
+
+    @Query("SELECT COUNT(l) FROM Lesson l WHERE l.slot.id = :id")
+    int findAllGeneratedLessonsBySlot(@Param("id") Long slotId);
 }

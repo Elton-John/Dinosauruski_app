@@ -25,6 +25,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import pl.dinosauruski.lesson.LessonConverter;
 import pl.dinosauruski.slot.SlotConverter;
 import pl.dinosauruski.student.StudentConverter;
+import pl.dinosauruski.week.WeekConverter;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Locale;
@@ -111,6 +112,7 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addConverter(getPublisherConverter());
         registry.addConverter(getLessonConverter());
         registry.addConverter(getStudentConverter());
+        registry.addConverter(getWeekConverter());
 
     }
 
@@ -127,6 +129,11 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean
     public StudentConverter getStudentConverter() {
         return new StudentConverter();
+    }
+
+    @Bean
+    public WeekConverter getWeekConverter() {
+        return new WeekConverter();
     }
 
 }

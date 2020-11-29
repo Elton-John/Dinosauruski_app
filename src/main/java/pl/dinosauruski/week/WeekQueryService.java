@@ -35,8 +35,12 @@ public class WeekQueryService {
         return checkIsGenerated(year, weekOfYear, teacherId);
     }
 
-    public List<Week> getAllGeneratedWeeksInFuture(Teacher teacher) {
-        return weekRepository.findAllGeneratedInFuture(getCurrentYear(), getCurrentNumberOfWeek(), teacher.getId());
+    public List<Week> getAllGeneratedWeeksAfterDate(Long teacherId, LocalDate date) {
+        YearWeek yw = YearWeek.from(date);
+        int numberOfWeek = yw.getWeek();
+        int year = yw.getYear();
+        LocalDate mondayDate = getDateByNumberOfWeekAndDayName(year, numberOfWeek, DayOfWeek.MONDAY.name());
+        return weekRepository.findAllGeneratedWeeksAfterDate(mondayDate, teacherId);
     }
 
     public int getCurrentNumberOfWeek() {
@@ -55,7 +59,8 @@ public class WeekQueryService {
 
     public LocalDate getDateByNumberOfWeekAndDayName(int year, int week, String dayName) {
         YearWeek yw = YearWeek.of(year, week);
-        return yw.atDay(DayOfWeek.valueOf(dayName));
+       LocalDate date = yw.atDay(DayOfWeek.valueOf(dayName));
+        return date;
 
     }
 
@@ -139,7 +144,7 @@ public class WeekQueryService {
 
         Set<Week> weeks = getAllWeeksOfMonthYear(Month.of(month), year, teacherId);
         for (Week week : weeks) {
-            if (!week.getIsGenerated()) {
+            if (!week.getGenerated()) {
                 return false;
             }
         }

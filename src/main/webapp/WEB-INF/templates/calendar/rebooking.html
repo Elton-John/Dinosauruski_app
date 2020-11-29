@@ -16,8 +16,9 @@
     <div class="row  my-5">
         <div class="col-sm-4 text-white offset-md-4 ">
             <div class="text-white text-center">
+                <h3 th:text="${lesson.date}"></h3>
                 <h3 th:text="${lesson.slot.dayOfWeek.translation}"></h3>
-                <h3 th:text="${lesson.slot.date}"></h3>
+
                 <h3 th:text="${lesson.slot.time}"></h3>
             </div>
         </div>

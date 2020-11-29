@@ -9,7 +9,7 @@ import pl.dinosauruski.slot.dto.BookedSlotDTO;
 import pl.dinosauruski.slot.dto.FreeSlotDTO;
 import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.teacher.TeacherQueryService;
-import pl.dinosauruski.teacher.dto.TeacherDTO;
+import pl.dinosauruski.week.WeekQueryService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -29,10 +29,11 @@ public class SlotCommandService {
     private final TeacherQueryService teacherQueryService;
     private final LessonCommandService lessonCommandService;
     private final LessonQueryService lessonQueryService;
+    private final WeekQueryService weekQueryService;
 
 
-    public Slot create(TeacherDTO teacherDTO, FreeSlotDTO freeSlotDTO) {
-        Teacher teacher = teacherQueryService.getOneOrThrow(teacherDTO.getId());
+    public Slot create(Long teacherId, FreeSlotDTO freeSlotDTO) {
+        Teacher teacher = teacherQueryService.getOneOrThrow(teacherId);
         Slot slot = new Slot();
         slot.setDayOfWeek(freeSlotDTO.getDayOfWeek());
         slot.setTime(freeSlotDTO.getTime());
@@ -126,25 +127,42 @@ public class SlotCommandService {
     }
 
 
-    public void makeSlotFree(Slot slot) {
-        lessonCommandService.removeGeneratedLessons(slot);
-        deleteStudentReference(slot);
-        slot.setBooked(false);
-        slotRepository.save(slot);
+    public void makeSlotFree(Long slotId, Long studentId, LocalDate date) {
+        Slot slot = slotQueryService.getOneOrThrow(slotId);
+        boolean hasLessons = lessonQueryService.checkSlotHasGeneratedLessons(slotId);
+        if (hasLessons) {
+            List<Optional<Lesson>> allLessons = lessonQueryService.getAllGeneratedLessonsBySlotAfterDate(slotId, date);
 
+            allLessons.stream()
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .forEach(lesson -> {
+                        lessonCommandService.savePaymentForStudentBeforeDeleteOrUpdateLesson(lesson);
+                        lessonCommandService.delete(lesson.getId());
+                    });
+            slot.setArchived(true);
+            FreeSlotDTO newSlot = new FreeSlotDTO();
+            newSlot.setDayOfWeek(slot.getDayOfWeek());
+            newSlot.setTime(slot.getTime());
+            create(slot.getTeacher().getId(), newSlot);
+        } else {
+            deleteStudentReference(slot);
+            slot.setBooked(false);
+            slotRepository.save(slot);
+        }
     }
 
     private void deleteStudentReference(Slot slot) {
         slot.setRegularStudent(null);
     }
 
-    public void makeSlotBooked(Long bookedSlotId, Long studentId) {
-        Slot slot = slotQueryService.getOneOrThrow(bookedSlotId);
+    public void makeSlotBooked(Long slotId, Long studentId, LocalDate date) {
+        Slot slot = slotQueryService.getOneOrThrow(slotId);
         slot.setBooked(true);
         slot.setRegularStudent(studentQueryService.getOneOrThrow(studentId));
-        slotRepository.save(slot);
-        lessonCommandService.generateFutureLessonsForStudent(slot, studentId);
+        Slot bookedSlot = slotRepository.save(slot);
+        Long teacherId = slot.getTeacher().getId();
+        List<Week> weeks = weekQueryService.getAllGeneratedWeeksAfterDate(teacherId, date);
+        lessonCommandService.generateLessonsBySlotForWeeks(bookedSlot.getId(), weeks, teacherId);
     }
-
-
 }

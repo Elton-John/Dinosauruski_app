@@ -83,7 +83,7 @@ public class LessonCommandService {
     }
 
     public void generateWeekLessonsForTeacher(Week week, Long teacherId) {
-        List<Slot> slots = slotQueryService.showAllSlotsByTeacherId(teacherId);
+        List<Slot> slots = slotQueryService.getAllSlotsByTeacherId(teacherId);
         slots.forEach(slot -> {
             if (slot.isBooked()) {
                 LessonDTO lessonDTO = new LessonDTO();
@@ -96,10 +96,10 @@ public class LessonCommandService {
         weekCommandService.setGenerated(week);
     }
 
-    public void generateFutureLessonsForStudent(Slot slot, Long studentId) {
-        List<Week> weeks = weekQueryService.getAllGeneratedWeeksInFuture(slot.getTeacher());
-        generateAdditionalLessons(weeks, slot, studentId);
-    }
+//    public void generateFutureLessonsForStudent(Slot slot, Long studentId) {
+//        List<Week> weeks = weekQueryService.getAllGeneratedWeeksInFuture(slot.getTeacher());
+//        generateAdditionalLessons(weeks, slot, studentId);
+//    }
 
     private void generateAdditionalLessons(List<Week> weeks, Slot slot, Long studentId) {
         weeks.forEach(week -> {
@@ -116,22 +116,22 @@ public class LessonCommandService {
         });
     }
 
-    public void removeGeneratedLessons(Slot slot) {
-        LocalDate today = LocalDate.now();
-        Student student = slot.getRegularStudent();
-        Teacher teacher = slot.getTeacher();
-        List<Week> weeks = weekQueryService.getAllGeneratedWeeksInFuture(teacher);
-
-        weeks.forEach(week -> {
-            week.getLessons().stream()
-                    .filter(lesson -> lesson.getSlot().getId().equals(slot.getId()))
-                    .filter(lesson -> lesson.getSlot().getRegularStudent().getId().equals(slot.getRegularStudent().getId()))
-                    .filter(lesson -> lesson.getDate().isAfter(today))
-                    .filter(lesson -> !lesson.isRebooked())
-                    .forEach(lesson -> delete(lesson.getId()));
-        });
-
-    }
+//    public void removeGeneratedLessons(Slot slot) {
+//        LocalDate today = LocalDate.now();
+//        Student student = slot.getRegularStudent();
+//        Teacher teacher = slot.getTeacher();
+//        List<Week> weeks = weekQueryService.getAllGeneratedWeeksInFuture(teacher);
+//
+//        weeks.forEach(week -> {
+//            week.getLessons().stream()
+//                    .filter(lesson -> lesson.getSlot().getId().equals(slot.getId()))
+//                    .filter(lesson -> lesson.getSlot().getRegularStudent().getId().equals(slot.getRegularStudent().getId()))
+//                    .filter(lesson -> lesson.getDate().isAfter(today))
+//                    .filter(lesson -> !lesson.isRebooked())
+//                    .forEach(lesson -> delete(lesson.getId()));
+//        });
+//
+//    }
 
     public void generateMonthLessonsForTeacher(int year, int month, Long teacherId) {
 
@@ -144,7 +144,7 @@ public class LessonCommandService {
 //        }
         Set<Week> weeks = weekQueryService.getAllWeeksOfMonthYear(Month.of(month), year, teacherId);
         for (Week week : weeks) {
-            if (!week.getIsGenerated()) {
+            if (!week.getGenerated()) {
                 generateWeekLessonsForTeacher(week, teacherId);
             }
         }

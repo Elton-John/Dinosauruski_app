@@ -37,7 +37,12 @@
                     <td th:text="${slot.time}"> time</td>
                     <td>
                         <form th:method="DELETE" th:action="@{/teacher/slots/cancel/{id}(id=${slot.getId()})}">
+                            <div class="form-group">
+                                <label for="date">Data z przyszłości, od której termin będzie wolny:</label>
+                                <input type="date" class="form-control" name="date" id="date"/>
+                            </div>
                             <button type="submit" class="btn btn-danger text-uppercase px-5">Usuń</button>
+                        </form>
                     </td>
                 </tr>
             </table>
@@ -45,12 +50,16 @@
             <form th:method="POST" th:action="@{/teacher/slots/booking}">
                 <div class="form-group">
                     <label for="freeSlot">Wybierz inną godzinę z dostępnych:</label>
-                    <select class="form-control" th:name="bookedSlotId">
+                    <select class="form-control" th:name="slotId">
                         <option th:each="freeSlot : ${freeSlots}" th:value="${freeSlot.id}"
                                 th:text="${freeSlot.getDayAndTime()}"
                                 id="freeSlot">
                         </option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="date">Data z przyszłości, od której termin będzie zajęty:</label>
+                    <input type="date" class="form-control" name="date" id="date"/>
                 </div>
                 <button type="submit" class="btn btn-success  text-uppercase px-5">Zapisz</button>
             </form>

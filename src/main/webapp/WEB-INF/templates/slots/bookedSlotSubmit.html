@@ -33,7 +33,7 @@
         <div class="col-sm-2 text-white ">
             <form th:method="DELETE" th:action="@{/teacher/slots/booked/delete/{id}(id=${id})}">
                 <div class="form-group">
-                    <label for="date">Data z przyszłości, od której termin będzie zmieniony:</label>
+                    <label for="date">Data z przyszłości, od której termin będzie usunięty:</label>
                     <input type="date" class="form-control" name="date" id="date"/>
                 </div>
                 <button type="submit" class="btn btn-danger text-uppercase px-5">Usuń</button>

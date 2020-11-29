@@ -32,7 +32,7 @@ class SlotController {
     @GetMapping
     String index(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
                  Model model) {
-        List<Slot> slots = slotQueryService.showAllSlotsByTeacherId(loggedTeacher.getId());
+        List<Slot> slots = slotQueryService.getAllSlotsByTeacherId(loggedTeacher.getId());
         model.addAttribute("slots", slots);
         return "slots/index";
     }
@@ -49,7 +49,7 @@ class SlotController {
         if (result.hasErrors()) {
             return "slots/new";
         }
-        slotCommandService.create(loggedTeacher, freeSlotDto);
+        slotCommandService.create(loggedTeacher.getId(), freeSlotDto);
         return "redirect:/teacher/slots";
     }
 
@@ -86,14 +86,13 @@ class SlotController {
             return "slots/bookedSlotEdit";
         }
         LocalDate date = LocalDate.parse(request.getParameter("date"));
-        if (lessonQueryService.generatedLessonsWereRebookedOrCancelByTeacher(bookedSlotDTO, date)) {
+        if (lessonQueryService.generatedLessonsWereRebookedOrCancelByTeacherAfterDate(bookedSlotDTO.getId(), date)) {
             //List<Week> weeksToChangedManual = slotQueryService.getWeeksWhereGeneratedLessonsWereChanged(bookedSlotDTO, date);
             return "redirect:/teacher/slots";
         } else {
             slotCommandService.updateBookedSlot(bookedSlotDTO, date, loggedTeacher.getId());
             return "redirect:/teacher/slots";
         }
-
 
     }
 
@@ -129,10 +128,11 @@ class SlotController {
     String editSlot(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
                     @PathVariable Long studentId,
                     Model model,
+
                     HttpSession session) {
         Long teacherId = loggedTeacher.getId();
         List<Slot> slots = slotQueryService.getSlots(teacherId, studentId);
-        List<Slot> freeSlots = slotQueryService.getAllFreeSlotsByTeacher(teacherId);
+        List<FreeSlotDTO> freeSlots = slotQueryService.getAllFreeSlotDTOsByTeacher(teacherId);
         StudentDTO studentDTO = studentQueryService.getOneStudentDTOOrThrow(studentId);
         model.addAttribute("studentSlots", slots);
         model.addAttribute("freeSlots", freeSlots);
@@ -143,20 +143,21 @@ class SlotController {
 
     @PostMapping("/booking")
     String bookSlot(@SessionAttribute("student") StudentDTO studentDTO,
+                    @RequestParam("date") String dateAsString,
+                    @RequestParam("slotId") Long slotId) {
 
-                    @RequestParam("bookedSlotId") Long bookedSlotId) {
 
-        Long studentId = studentDTO.getId();
-        slotCommandService.makeSlotBooked(bookedSlotId, studentId);
+        LocalDate date = LocalDate.parse(dateAsString);
+        slotCommandService.makeSlotBooked(slotId, studentDTO.getId(),date);
         return "redirect:/teacher/slots/booking/" + studentDTO.getId();
     }
 
     @DeleteMapping("/cancel/{id}")
     String cancelSlot(@SessionAttribute("student") StudentDTO studentDTO,
                       @PathVariable Long id,
-                      Model model) {
-        Slot slot = slotQueryService.getOneOrThrow(id);
-        slotCommandService.makeSlotFree(slot);
+                      HttpServletRequest request) {
+        LocalDate date = LocalDate.parse(request.getParameter("date"));
+        slotCommandService.makeSlotFree(id, studentDTO.getId(), date);
         return "redirect:/teacher/slots/booking/" + studentDTO.getId();
     }
 
