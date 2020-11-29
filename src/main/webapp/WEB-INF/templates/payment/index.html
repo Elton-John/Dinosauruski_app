@@ -48,7 +48,7 @@
                     <th scope="col">DATA</th>
                     <th scope="col">STUDENT</th>
                     <th scope="col">SUMA</th>
-                    <th scope="col">EDYTUJ</th>
+<!--                    <th scope="col">EDYTUJ</th>-->
                     <th scope="col">USUŃ</th>
                 </tr>
                 </thead>
@@ -57,8 +57,8 @@
                     <td th:text="${payment.date}">day name</td>
                     <td th:text="${payment.student.name}">time</td>
                     <td th:text="${payment.sum}">day name</td>
-                    <td><a th:href="@{/teacher/payments/edit/{id}(id=${payment.getId()})}" class="text-warning">
-                        edytuj</a></td>
+<!--                    <td><a th:href="@{/teacher/payments/edit/{id}(id=${payment.getId()})}" class="text-warning">-->
+<!--                        edytuj</a></td>-->
                     <td><a th:href="@{/teacher/payments/submit/{id}(id=${payment.getId()})}" class="text-danger">
                         usuń</a></td>
                 </tr>
@@ -68,9 +68,9 @@
                 <a th:href="@{/teacher/payments/new}" class="btn btn-success text-uppercase">Dodaj wpłatę</a>
             </div>
 
-            <h2>
-                <a th:href="@{/teacher/payments/pdf}" class="btn btn-success text-uppercase">generuj plik</a>
-            </h2>
+<!--            <h2>-->
+<!--                <a th:href="@{/teacher/payments/pdf}" class="btn btn-success text-uppercase">generuj plik</a>-->
+<!--            </h2>-->
 
         </div>
     </div>

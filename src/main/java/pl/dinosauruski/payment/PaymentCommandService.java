@@ -9,6 +9,7 @@ import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Payment;
 import pl.dinosauruski.models.Student;
 import pl.dinosauruski.payment.dto.PaymentDTO;
+import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.teacher.TeacherQueryService;
 
 import javax.transaction.Transactional;
@@ -25,10 +26,11 @@ public class PaymentCommandService {
     private PaymentQueryService paymentQueryService;
     private LessonCommandService lessonCommandService;
     private LessonQueryService lessonQueryService;
+    private StudentQueryService studentQueryService;
 
     public void create(PaymentDTO paymentDTO, Long teacherId) {
         Payment payment = new Payment();
-        payment.setDate(paymentDTO.getDate().plusDays((long) 1));
+        payment.setDate(paymentDTO.getDate());
         payment.setStudent(paymentDTO.getStudent());
         payment.setSum(paymentDTO.getSum());
         payment.setTeacher(teacherQueryService.getOneOrThrow(teacherId));
@@ -39,32 +41,34 @@ public class PaymentCommandService {
     public void addPayment(Payment payment, Long teacherId) {
         Student student = payment.getStudent();
         BigDecimal priceForOneLesson = student.getPriceForOneLesson();
-        BigDecimal sum = payment.getSum();//
-        BigDecimal overPaymentByStudent = paymentQueryService.getOverPayment(student.getId(), teacherId);
-        setOverPaymentZero(student.getId(), teacherId);
+        BigDecimal sum = payment.getSum();
+        BigDecimal overPaymentByStudent = student.getOverpayment();
+
         sum = sum.add(overPaymentByStudent);
-        BigDecimal countPaidLessons = sum.divide(priceForOneLesson, 2, RoundingMode.HALF_UP);
-        int quantityLessonsCanBePaid = countPaidLessons.intValue();
+
+        int countLessonsCanBePaid = sum.divide(priceForOneLesson, 2, RoundingMode.HALF_DOWN).intValue();
+        BigDecimal rest = sum.subtract(priceForOneLesson.multiply(BigDecimal.valueOf(countLessonsCanBePaid)));
+        student.setOverpayment(rest);
+
         List<LessonPaymentDTO> notPaidLessons = lessonQueryService.getNotPaidLessonsByStudent(teacherId, student.getId());
-        if (notPaidLessons.size() < quantityLessonsCanBePaid) {
-            int difference = quantityLessonsCanBePaid - notPaidLessons.size();
+
+        if (notPaidLessons.size() < countLessonsCanBePaid) {
+            int difference = countLessonsCanBePaid - notPaidLessons.size();
             BigDecimal overPayment = priceForOneLesson.multiply(BigDecimal.valueOf(difference));
-            payment.setOverPayment(overPayment);
-            quantityLessonsCanBePaid = quantityLessonsCanBePaid - difference;
+            student.setOverpayment(overPayment);
+            countLessonsCanBePaid = countLessonsCanBePaid - difference;
         }
-        for (int i = 0; i < quantityLessonsCanBePaid; i++) {
+        for (int i = 0; i < countLessonsCanBePaid; i++) {
             LessonPaymentDTO lessonPaymentDTO = notPaidLessons.get(i);
             Lesson lesson = lessonQueryService.getOneOrThrow(lessonPaymentDTO.getId());
             lesson.setPayment(payment);
             lesson.setPaid(true);
             lesson.setRequiredPayment(false);
+            lesson.setAddedPayment(priceForOneLesson);
             lessonCommandService.saveLesson(lesson);
         }
     }
 
-    public void update(Payment payment) {
-        paymentRepository.save(payment);
-    }
 
     public void updateByDto(PaymentDTO paymentDTO) {
         Payment payment = paymentQueryService.getOneByIdOrThrow(paymentDTO.getId());
@@ -76,18 +80,26 @@ public class PaymentCommandService {
 
     public void delete(Long id) {
         Payment payment = paymentQueryService.getOneByIdOrThrow(id);
-        List<Lesson> paidLessons = payment.getPaidLessons();
-        paidLessons.forEach(lesson -> {
-            lesson.setPaid(false);
-            lesson.setRequiredPayment(true);
-            lesson.setPayment(null);
+        Long teacherId = payment.getTeacher().getId();
+        Long studentId = payment.getStudent().getId();
+        List<Lesson> paidLessons = lessonQueryService.getPaidLessonsByStudent(teacherId, studentId);
+        BigDecimal sum = payment.getSum();
 
-        });
+        BigDecimal addedPayment = BigDecimal.valueOf(0);
+        while (sum.compareTo(addedPayment) > 0) {
+            for (Lesson lesson : paidLessons) {
+                addedPayment = lesson.getAddedPayment();
+                lesson.setAddedPayment(BigDecimal.valueOf(0));
+                lesson.setPaid(false);
+                lesson.setRequiredPayment(true);
+                lesson.setPayment(null);
+                sum = sum.subtract(addedPayment);
+            }
+        }
+        Student student = studentQueryService.getOneOrThrow(studentId);
+        BigDecimal overpayment = student.getOverpayment();
+        student.setOverpayment(overpayment.subtract(sum));
         paymentRepository.delete(payment);
     }
 
-    public void setOverPaymentZero(Long studentId, Long teacherId) {
-        List<Payment> overPayments = paymentRepository.findPaymentWhereOverPaymentByStudentAndTeacher(studentId, teacherId);
-        overPayments.forEach(payment -> payment.setOverPayment(BigDecimal.valueOf(0)));
-    }
 }

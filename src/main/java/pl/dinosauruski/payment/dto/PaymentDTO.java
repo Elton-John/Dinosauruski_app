@@ -7,7 +7,10 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.dinosauruski.models.Student;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -27,5 +30,5 @@ public class PaymentDTO {
     @Digits(integer = 3, fraction = 2)
     @NotNull(message = "Pole nie może być puste")
     private BigDecimal sum;
-    private BigDecimal overPayment;
+
 }

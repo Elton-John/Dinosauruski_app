@@ -19,9 +19,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("SELECT p FROM Payment p WHERE p.teacher.id = :id ORDER BY p.date DESC ")
     List<Payment> findAllByTeacherId(@Param("id") Long id);
 
-    @Query("SELECT new pl.dinosauruski.payment.dto.PaymentDTO(p.id, p.date, p.student, p.sum, p.overPayment) FROM Payment p WHERE p.id = :id")
+    @Query("SELECT new pl.dinosauruski.payment.dto.PaymentDTO(p.id, p.date, p.student, p.sum) FROM Payment p WHERE p.id = :id")
     Optional<PaymentDTO> findOneDtoById(@Param("id") Long id);
 
-    @Query("SELECT p FROM Payment p WHERE p.overPayment is not null AND p.student.id = :studentId AND p.teacher.id = :teacherId")
-    List<Payment> findPaymentWhereOverPaymentByStudentAndTeacher(@Param("studentId")Long studentId,@Param("teacherId") Long teacherId);
+//
 }
