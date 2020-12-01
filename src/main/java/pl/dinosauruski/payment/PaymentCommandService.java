@@ -15,6 +15,7 @@ import pl.dinosauruski.teacher.TeacherQueryService;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -70,30 +71,33 @@ public class PaymentCommandService {
     }
 
 
-    public void updateByDto(PaymentDTO paymentDTO) {
-        Payment payment = paymentQueryService.getOneByIdOrThrow(paymentDTO.getId());
-        payment.setDate(paymentDTO.getDate());
-        payment.setStudent(paymentDTO.getStudent());
-        payment.setSum(paymentDTO.getSum());
-        paymentRepository.save(payment);
-    }
+//    public void updateByDto(PaymentDTO paymentDTO) {
+//        Payment payment = paymentQueryService.getOneByIdOrThrow(paymentDTO.getId());
+//        payment.setDate(paymentDTO.getDate());
+//        payment.setStudent(paymentDTO.getStudent());
+//        payment.setSum(paymentDTO.getSum());
+//        paymentRepository.save(payment);
+//    }
 
     public void delete(Long id) {
         Payment payment = paymentQueryService.getOneByIdOrThrow(id);
         Long teacherId = payment.getTeacher().getId();
         Long studentId = payment.getStudent().getId();
         List<Lesson> paidLessons = lessonQueryService.getPaidLessonsByStudent(teacherId, studentId);
+        paidLessons.sort(Comparator.comparing(Lesson::getAddedPayment));
         BigDecimal sum = payment.getSum();
-
-        BigDecimal addedPayment = BigDecimal.valueOf(0);
-        while (sum.compareTo(addedPayment) > 0) {
-            for (Lesson lesson : paidLessons) {
-                addedPayment = lesson.getAddedPayment();
-                lesson.setAddedPayment(BigDecimal.valueOf(0));
-                lesson.setPaid(false);
-                lesson.setRequiredPayment(true);
-                lesson.setPayment(null);
-                sum = sum.subtract(addedPayment);
+        int i = 0;
+        BigDecimal addedPayment = paidLessons.get(i).getAddedPayment();
+        while (sum.compareTo(addedPayment) >= 0) {
+            Lesson lesson = paidLessons.get(i);
+            lesson.setAddedPayment(BigDecimal.valueOf(0));
+            lesson.setPaid(false);
+            lesson.setRequiredPayment(true);
+            lesson.setPayment(null);
+            sum = sum.subtract(addedPayment);
+            i++;
+            if (paidLessons.size() < i) {
+                addedPayment = paidLessons.get(i).getAddedPayment();
             }
         }
         Student student = studentQueryService.getOneOrThrow(studentId);

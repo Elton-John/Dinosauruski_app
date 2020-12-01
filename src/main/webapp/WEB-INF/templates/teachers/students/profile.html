@@ -9,7 +9,7 @@ head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
       integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
-<title>Cockpit nauczyciela</title>
+<title>Profil studenta</title>
 </head>
 
 <body class="bg-dark">
@@ -79,7 +79,7 @@ head>
             </div>
 
 
-            <h5 class="text-uppercase"> Zaplaonowane lekcje w tym miesiącu: <span
+            <h5 class="text-uppercase"> Zaplanowane lekcje w tym miesiącu: <span
                     th:text="${countPlannedThisMonth}">X</span></h5>
             <!--            <p th:text="${countPlannedThisMonth}">ilość</p>-->
             <div th:each="lesson : ${plannedLessonThisMonth}">
@@ -94,7 +94,7 @@ head>
                 </div>
             </div>
 
-            <h5 class="text-uppercase"> lekcje do opłacenia: <span></span>
+            <h5 class="text-uppercase"> lekcje do opłacenia do końca nastepnego miesiąca: <span></span>
             <span th:text="${countNotPaidNextMonth}"></span></h5>
             <div th:each="lesson : ${notPaidLessonsNextMonth}">
                 <div>

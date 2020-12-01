@@ -19,13 +19,8 @@ public interface WeekRepository extends JpaRepository<Week, Long> {
                                                    @Param("id") Long id);
 
 
-    @Query("SELECT w FROM Week w WHERE w.year >= :thisYear AND w.numberOfWeek >= :thisWeek and w.teacher.id = :id AND w.isGenerated = true")
-    List<Week> findAllGeneratedInFuture(@Param("thisYear") Integer year,
-                                        @Param("thisWeek") Integer thisWeek,
-                                        @Param("id") Long id);
-
     @Query("SELECT w FROM Week w WHERE w.numberOfWeek=:week AND w.year=:year AND w.teacher.id = :id")
-    Week findByNumberAndByYearAndByTeacherId(
+   Optional< Week> findByNumberAndByYearAndByTeacherId(
             @Param("week") int weekOfYear,
             @Param("year") int year,
             @Param("id") Long teacherId);

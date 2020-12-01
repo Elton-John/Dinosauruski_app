@@ -3,7 +3,6 @@ package pl.dinosauruski.week;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.threeten.extra.YearWeek;
-import pl.dinosauruski.models.Teacher;
 import pl.dinosauruski.models.Week;
 
 import javax.persistence.EntityNotFoundException;
@@ -48,18 +47,10 @@ public class WeekQueryService {
         return now.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
     }
 
-    public Boolean checkWeekIsGenerated(int year, int nextNumberOfWeek, Long teacherId) {
-        Week week = getOneOrThrow(year, nextNumberOfWeek, teacherId);
-        return week.getGenerated();
-    }
-
-    public int getCurrentYear() {
-        return LocalDate.now().getYear();
-    }
 
     public LocalDate getDateByNumberOfWeekAndDayName(int year, int week, String dayName) {
         YearWeek yw = YearWeek.of(year, week);
-       LocalDate date = yw.atDay(DayOfWeek.valueOf(dayName));
+        LocalDate date = yw.atDay(DayOfWeek.valueOf(dayName));
         return date;
 
     }
@@ -83,13 +74,6 @@ public class WeekQueryService {
         return dates;
     }
 
-//    public int getIdOfWeekByDate(LocalDate date, Long teacherId) {
-//        YearWeek yw = YearWeek.from(date);
-//        int weekOfYear = yw.getWeek();
-//        int year = yw.getYear();
-//        return weekRepository.findByNumberAndByYearAndByTeacherId(weekOfYear, year, teacherId);
-//
-//    }
 
     public Set<Week> getAllWeeksOfMonthYear(Month month, int year, Long teacherId) {
         YearMonth ym = YearMonth.of(year, month);
@@ -97,52 +81,28 @@ public class WeekQueryService {
         YearWeek fyw = YearWeek.from(firstDay);
         int numberOfFirstWeek = fyw.getWeek();
         int yearOfFirstWeek = fyw.getYear();
-        Week firstWeek = weekRepository.findByNumberAndByYearAndByTeacherId(numberOfFirstWeek, yearOfFirstWeek, teacherId);
+        Optional<Week> firstWeek = weekRepository.findByNumberAndByYearAndByTeacherId(numberOfFirstWeek, yearOfFirstWeek, teacherId);
         Set<Week> weeks = new HashSet<>();
-        weeks.add(firstWeek);
-
+        firstWeek.ifPresent(weeks::add);
 
         List<LocalDate> allMondaysOfMonth = getAllMondaysOfMonth(year, month.getValue());
         allMondaysOfMonth.forEach(localDate -> {
             YearWeek yw = YearWeek.from(localDate);
             int foundNumberOfWeek = yw.getWeek();
             int foundYear = yw.getYear();
-            Week foundWeek = weekRepository.findByNumberAndByYearAndByTeacherId(foundNumberOfWeek, foundYear, teacherId);
-            weeks.add(foundWeek);
+            Optional<Week> foundWeek = weekRepository.findByNumberAndByYearAndByTeacherId(foundNumberOfWeek, foundYear, teacherId);
+            foundWeek.ifPresent(weeks::add);
         });
 
         return weeks;
 
-//        YearMonth ym = YearMonth.of(year, month);
-//        LocalDate firstDay = ym.atDay(1);
-//        YearWeek fyw = YearWeek.from(firstDay);
-//        int firstWeek = fyw.getWeek();
-//        int year = yw.getYear();
-//
-//        LocalDate lastDay = ym.atEndOfMonth();
-//        weekRepository.findAllWhere
-
     }
 
     public boolean checkMonthIsGenerated(int year, int month, Long teacherId) {
-        //boolean result = true;
-//        YearMonth ym = YearMonth.of(year, month);
-//        LocalDate firstDay = ym.atDay(1);
-//        LocalDate lastDay = ym.atEndOfMonth();
-//        int numberOfFirstWeek = getIdOfWeekByDate(firstDay, teacherId);
-//        int numberOfLastWeek = getIdOfWeekByDate(lastDay, teacherId);
-//
-//        for (int i = numberOfFirstWeek; i <= numberOfLastWeek; i++) {
-//            Boolean isGenerated = checkIsGenerated(year, i, teacherId);
-//            if (!isGenerated) {
-//                return false;
-//            }
-//
-//
-//        }
-//        return true;
-
         Set<Week> weeks = getAllWeeksOfMonthYear(Month.of(month), year, teacherId);
+        if (weeks.size() == 0) {
+            return false;
+        }
         for (Week week : weeks) {
             if (!week.getGenerated()) {
                 return false;

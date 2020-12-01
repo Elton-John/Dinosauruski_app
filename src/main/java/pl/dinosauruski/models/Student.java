@@ -28,11 +28,10 @@ public class Student {
     @ManyToMany(mappedBy = "students")
     private Set<Teacher> teachers = new HashSet<>();
     @OneToMany(mappedBy = "regularStudent", fetch = FetchType.EAGER)
-    private List<Slot> slots = new ArrayList<>();
+    private List <Slot> slots = new ArrayList<>();
     private Boolean active;
-    @OneToMany(mappedBy = "student")
-
-    private Set<Payment> payments;
+    @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
+    private Set<Payment> payments = new HashSet<>();
     private BigDecimal overpayment;
 
     @Override

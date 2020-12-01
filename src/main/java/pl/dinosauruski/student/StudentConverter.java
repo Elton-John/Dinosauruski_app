@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import pl.dinosauruski.models.Student;
 
-public class StudentConverter implements Converter<String, Student> {
+public class StudentConverter implements Converter<String, Student>  {
     @Autowired
     private StudentRepository studentRepository;
 

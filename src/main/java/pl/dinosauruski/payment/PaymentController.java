@@ -38,9 +38,10 @@ public class PaymentController {
 
     @PostMapping("/new")
     String newPayment(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+                      Model model,
                       @Valid @ModelAttribute("payment") PaymentDTO paymentDTO,
-                      BindingResult result,
-                      Model model) {
+                      BindingResult result
+                      ) {
         if (result.hasErrors()) {
             model.addAttribute("students", studentQueryService.getAllByTeacherId(teacherDTO.getId()));
             return "payment/new";

@@ -6,14 +6,11 @@ import pl.dinosauruski.lesson.dto.*;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Week;
 import pl.dinosauruski.payment.PaymentQueryService;
-import pl.dinosauruski.slot.dto.BookedSlotDTO;
 import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.week.WeekQueryService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
@@ -36,25 +33,23 @@ public class LessonQueryService {
         return lessonRepository.findOneLessonDTO(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    public LessonCancellingDTO getOneLessonCompletionDtoOrThrow(Long id) {
-        return lessonRepository.findOneCompletionDto(id).orElseThrow(EntityNotFoundException::new);
-    }
+//    public LessonCancellingDTO getOneLessonCompletionDtoOrThrow(Long id) {
+//        return lessonRepository.findOneCompletionDto(id).orElseThrow(EntityNotFoundException::new);
+//    }
 
     public LessonsOfWeekDTO getAllThisWeekLessonsByTeacher(Long id) {
         ZoneId zoneId = ZoneId.of("Europe/Warsaw");
         LocalDate today = LocalDate.now(zoneId);
         LocalDate thisMondayDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate thisSundayDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-//        List<Lesson> lessons = lessonRepository.findAllThisWeekLessonsByTeacher(id, thisMondayDate, thisSundayDate);
-//       lessons.stream().map(lesson -> c)
         LessonsOfWeekDTO lessonsOfWeekDTO = createLessonsOfWeekDTO(thisMondayDate, id);
         return lessonsOfWeekDTO;
     }
 
-    public List<Lesson> getGeneratedLessonsOfWeek(int year, int nextNumberOfWeek, Long teacherId) {
-        Week week = weekQueryService.getOneOrThrow(year, nextNumberOfWeek, teacherId);
-        return lessonRepository.findAllLessonByWeekAndTeacherId(week, teacherId);
-    }
+//    public List<Lesson> getGeneratedLessonsOfWeek(int year, int nextNumberOfWeek, Long teacherId) {
+//        Week week = weekQueryService.getOneOrThrow(year, nextNumberOfWeek, teacherId);
+//        return lessonRepository.findAllLessonByWeekAndTeacherId(week, teacherId);
+//    }
 
 //    public List<Lesson> getAllMonthYearLessonsByTeacher(int year, int month, Long teacherId) {
 //        YearMonth ym = YearMonth.of(year, month);
@@ -71,21 +66,21 @@ public class LessonQueryService {
 //    }
 
 
-    public Optional<Lesson> getNextNotPaidLesson(Long teacherId, Long studentId) {
-        List<Lesson> allLessonsByTeacher = lessonRepository.findAllByTeacherIdWherePaidIsFalseAndCancelledIsFalse(teacherId);
-
-        List<LessonPaymentDTO> allLessonsByStudent = allLessonsByTeacher.stream()
-                .map(this::createLessonPaymentDTO)
-                .filter(lessonPaymentDTO -> lessonPaymentDTO.getStudentWhoPays().getId().equals(studentId))
-                .collect(Collectors.toList());
-
-
-        if (allLessonsByStudent.size() > 0) {
-            LessonPaymentDTO firstLessonPaymentDTO = allLessonsByStudent.get(0);
-            return Optional.ofNullable(getOneOrThrow(firstLessonPaymentDTO.getId()));
-        }
-        return Optional.empty();
-    }
+//    public Optional<Lesson> getNextNotPaidLesson(Long teacherId, Long studentId) {
+//        List<Lesson> allLessonsByTeacher = lessonRepository.findAllByTeacherIdWherePaidIsFalseAndCancelledIsFalse(teacherId);
+//
+//        List<LessonPaymentDTO> allLessonsByStudent = allLessonsByTeacher.stream()
+//                .map(this::createLessonPaymentDTO)
+//                .filter(lessonPaymentDTO -> lessonPaymentDTO.getStudentWhoPays().getId().equals(studentId))
+//                .collect(Collectors.toList());
+//
+//
+//        if (allLessonsByStudent.size() > 0) {
+//            LessonPaymentDTO firstLessonPaymentDTO = allLessonsByStudent.get(0);
+//            return Optional.ofNullable(getOneOrThrow(firstLessonPaymentDTO.getId()));
+//        }
+//        return Optional.empty();
+//    }
 
     public LessonPaymentDTO createLessonPaymentDTO(Lesson lesson) {
         LessonPaymentDTO lessonPaymentDTO = new LessonPaymentDTO();
@@ -158,22 +153,22 @@ public class LessonQueryService {
 
     }
 
-    public BigDecimal countRequiredPaymentAfterAddingOverPayment(Long studentId, Long teacherId) {
-        List<LessonPaymentDTO> notPaidLessons = getNotPaidLessonsUntilLastDayOfNextMonth(teacherId, studentId);
-        BigDecimal overPaymentByStudent = paymentQueryService.getOverPayment(studentId, teacherId);
-        BigDecimal priceForOneLesson = studentQueryService.getOneOrThrow(studentId).getPriceForOneLesson();
-        int quantityLessonsCanBePaid = overPaymentByStudent.divide(priceForOneLesson, 2, RoundingMode.HALF_UP).intValue();
-        if (overPaymentByStudent.equals(BigDecimal.valueOf(0))) {
-            return priceForOneLesson.multiply(BigDecimal.valueOf(notPaidLessons.size()));
-        } else if (quantityLessonsCanBePaid < notPaidLessons.size()) {
-            int difference = notPaidLessons.size() - quantityLessonsCanBePaid;
-            int lessonsRequiredPayment = notPaidLessons.size() - difference;
-            return priceForOneLesson.multiply(BigDecimal.valueOf(lessonsRequiredPayment));
-        } else {
-            return BigDecimal.valueOf(0);
-
-        }
-    }
+//    public BigDecimal countRequiredPaymentAfterAddingOverPayment(Long studentId, Long teacherId) {
+//        List<LessonPaymentDTO> notPaidLessons = getNotPaidLessonsUntilLastDayOfNextMonth(teacherId, studentId);
+//        BigDecimal overPaymentByStudent = paymentQueryService.getOverPayment(studentId, teacherId);
+//        BigDecimal priceForOneLesson = studentQueryService.getOneOrThrow(studentId).getPriceForOneLesson();
+//        int quantityLessonsCanBePaid = overPaymentByStudent.divide(priceForOneLesson, 2, RoundingMode.HALF_UP).intValue();
+//        if (overPaymentByStudent.equals(BigDecimal.valueOf(0))) {
+//            return priceForOneLesson.multiply(BigDecimal.valueOf(notPaidLessons.size()));
+//        } else if (quantityLessonsCanBePaid < notPaidLessons.size()) {
+//            int difference = notPaidLessons.size() - quantityLessonsCanBePaid;
+//            int lessonsRequiredPayment = notPaidLessons.size() - difference;
+//            return priceForOneLesson.multiply(BigDecimal.valueOf(lessonsRequiredPayment));
+//        } else {
+//            return BigDecimal.valueOf(0);
+//
+//        }
+//    }
 
     public int countNotPaidLessonsByStudentNextMonth(Long teacherId, Long studentId) {
         List<LessonPaymentDTO> lessons = getNotPaidLessonsUntilLastDayOfNextMonth(teacherId, studentId);
@@ -282,12 +277,20 @@ public class LessonQueryService {
     }
 
     public List<Optional<Lesson>> getAllGeneratedLessonsBySlotAfterDate(Long slotId, LocalDate date) {
-        return lessonRepository.findAllGeneratedLessonsBySlotWhereDateIsAfter( date, slotId);
+        return lessonRepository.findAllGeneratedLessonsBySlotWhereDateIsAfter(date, slotId);
     }
 
     public boolean checkSlotHasGeneratedLessons(Long slotId) {
-       int count =  lessonRepository.findAllGeneratedLessonsBySlot(slotId);
+        int count = lessonRepository.findAllGeneratedLessonsBySlot(slotId);
         return count > 0;
+    }
+
+    public List<Lesson> getPaidLessonsByStudent(Long teacherId, Long studentId) {
+        List<Lesson> paidLessonsByRegularStudent = lessonRepository.findAllPaidLessonsByRegularStudent(teacherId, studentId);
+        List<Lesson> paidLessonsByNotRegularStudent = lessonRepository.findAllPaidLessonsByNotRegularStudent(teacherId, studentId);
+        List<Lesson> result = new ArrayList<>(paidLessonsByRegularStudent);
+        result.addAll(paidLessonsByNotRegularStudent);
+        return result;
     }
 
 //    public Table<Long, LocalDate, LessonViewDTO> createOneMonthSchedule(int year, Month month, Long teacherId) {

@@ -16,17 +16,8 @@ import java.util.stream.Collectors;
 public class StudentQueryService {
     private final StudentRepository studentRepository;
 
-
-//    public List<Student> findAll() {
-//        return studentRepository.findAll();
-//    }
-
     public Student getOneOrThrow(Long id) {
         return studentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-    }
-
-    public List<Student> findAllIfActive() {
-        return studentRepository.findAllIfActive();
     }
 
     public List<Student> getAllByTeacherId(Long id) {
@@ -43,4 +34,6 @@ public class StudentQueryService {
     public StudentDTO getOneStudentDTOOrThrow(Long id) {
         return studentRepository.findOneStudentDtoById(id).orElseThrow(EntityNotFoundException::new);
     }
+
+
 }

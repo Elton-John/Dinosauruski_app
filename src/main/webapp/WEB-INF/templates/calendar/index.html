@@ -118,30 +118,32 @@
 
 
 
-            <p>
-<!--                Witaj, <span th:text="${teacher.nickName}"></span>-->
-                Tutaj możesz zobaczyć swój kalendarz i wygenerować plany lekcji.
-                <!--<a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>-->
+<!--            <p>-->
+<!--&lt;!&ndash;                Witaj, <span th:text="${teacher.nickName}"></span>&ndash;&gt;-->
+<!--                Tutaj możesz zobaczyć swój kalendarz i wygenerować plany lekcji.-->
+<!--                &lt;!&ndash;<a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>&ndash;&gt;-->
 
 
-            <h3>AKTUALNY PLAN</h3>
+<!--            <h3>AKTUALNY PLAN</h3>-->
 
-            <!--<p th:if="${isGenerated}==false">-->
-            <!--    Dodaj wolne terminy, przypisz do nich studentów,-->
-            <!--    następnie wygeneruj plan na bieżący tydzień-->
-            <!--    <br>-->
-            <!--    <a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>-->
-            <!--</p>-->
-            Dodaj wolne terminy, przypisz do nich studentów,-->
-            następnie wygeneruj plan na bieżący tydzień
-            <br>
-            <div th:if="${isGenerated}==false">
-                <form th:method="GET"
-                      th:action="@{/teacher/calendar/generate/{year}/{week}(week=${week}, year=${year})}">
-                    <input type="hidden" th:name="index" th:value="true">
-                    <input type="submit" value="WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ">
-                </form>
-            </div>
+<!--            &lt;!&ndash;<p th:if="${isGenerated}==false">&ndash;&gt;-->
+<!--            &lt;!&ndash;    Dodaj wolne terminy, przypisz do nich studentów,&ndash;&gt;-->
+<!--            &lt;!&ndash;    następnie wygeneruj plan na bieżący tydzień&ndash;&gt;-->
+<!--            &lt;!&ndash;    <br>&ndash;&gt;-->
+<!--            &lt;!&ndash;    <a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>&ndash;&gt;-->
+<!--            &lt;!&ndash;</p>&ndash;&gt;-->
+<!--            Dodaj wolne terminy, przypisz do nich studentów,&ndash;&gt;-->
+<!--            następnie wygeneruj plan na bieżący tydzień-->
+<!--            <br>-->
+
+
+<!--            <div th:if="${isGenerated}==false">-->
+<!--                <form th:method="GET"-->
+<!--                      th:action="@{/teacher/calendar/generate/{year}/{week}(week=${week}, year=${year})}">-->
+<!--                    <input type="hidden" th:name="index" th:value="true">-->
+<!--                    <input type="submit" value="WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ">-->
+<!--                </form>-->
+<!--            </div>-->
 
 
             <!--<table th:if="${isGenerated}==true">-->
@@ -191,6 +193,8 @@
                         th:text="${instance.value}"></span></a>
             </div>
 
+            <a th:href="@{/teacher/calendar/{year}(year=${previousYear})}">previousYear</a>
+            <a th:href="@{/teacher/calendar/{year}(year=${nextYear})}">nextYear</a>
 
         </div>
     </div>

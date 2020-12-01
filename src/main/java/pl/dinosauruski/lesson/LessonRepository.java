@@ -20,38 +20,38 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             " FROM Lesson l WHERE l.id = :id")
     Optional<LessonDTO> findOneLessonDTO(@Param("id") Long id);
 
-    @Query("SELECT new pl.dinosauruski.lesson.dto.LessonCancellingDTO(l.id, l.cancelledByTeacher, l.cancelledByStudent, l.lastMinuteCancelled)" +
-            " FROM Lesson l WHERE l.id = :id")
-    Optional<LessonCancellingDTO> findOneCompletionDto(@Param("id") Long id);
-
-    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id = :id AND l.date BETWEEN :thisMondayDate AND :thisSundayDate")
-    List<Lesson> findAllThisWeekLessonsByTeacher(@Param("id") Long id,
-                                                 @Param("thisMondayDate") LocalDate thisMondayDate,
-                                                 @Param("thisSundayDate") LocalDate thisSundayDate);
-
-
-    @Query("SELECT l FROM Lesson l WHERE l.week=:week AND l.slot.teacher.id = :id")
-    List<Lesson> findAllLessonByWeekAndTeacherId(@Param("week") Week week,
-                                                 @Param("id") Long teacherId);
-
-    @Query("SELECT l FROM Lesson l WHERE l.slot.regularStudent.id = :studentId OR l.rebooking.notRegularStudent=:studentId AND l.slot.teacher.id = :teacherId AND l.paid = false AND l.cancelledByStudent =false AND l.cancelledByTeacher=false ORDER BY l.date DESC ")
-    List<Lesson> getNextNotPaidLessons(@Param("teacherId") Long teacherId, @Param("studentId") Long studentId);
-
-    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id = :id AND l.requiredPayment=true AND l.paid = FALSE order by l.date ASC ")
-    List<Lesson> findAllByTeacherIdWherePaidIsFalseAndCancelledIsFalse(@Param("id") Long teacherId);
-
-    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id =:teacherId AND l.slot.regularStudent.id = :studentId AND l.paid = true AND l.date BETWEEN :start ANd :end")
-    List<Lesson> findAllByStudentAndTeacherWherePaidIsTrueThisMonth(@Param("start") LocalDate firstDay,
-                                                                    @Param("end") LocalDate lastDay,
-                                                                    @Param("teacherId") Long teacherId,
-                                                                    @Param("studentId") Long studentId);
-
-    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id =:teacherId AND l.slot.regularStudent.id = :studentId AND l.paid = false AND l.requiredPayment=true  AND l.date BETWEEN :start ANd :end")
-    List<Lesson> findAllByStudentAndTeacherWherePaidIsFalseNextMonth(@Param("start") LocalDate firstDay,
-                                                                     @Param("end") LocalDate lastDay,
-                                                                     @Param("teacherId") Long teacherId,
-                                                                     @Param("studentId") Long studentId);
-
+//    @Query("SELECT new pl.dinosauruski.lesson.dto.LessonCancellingDTO(l.id, l.cancelledByTeacher, l.cancelledByStudent, l.lastMinuteCancelled)" +
+//            " FROM Lesson l WHERE l.id = :id")
+//    Optional<LessonCancellingDTO> findOneCompletionDto(@Param("id") Long id);
+//
+//    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id = :id AND l.date BETWEEN :thisMondayDate AND :thisSundayDate")
+//    List<Lesson> findAllThisWeekLessonsByTeacher(@Param("id") Long id,
+//                                                 @Param("thisMondayDate") LocalDate thisMondayDate,
+//                                                 @Param("thisSundayDate") LocalDate thisSundayDate);
+//
+//
+//    @Query("SELECT l FROM Lesson l WHERE l.week=:week AND l.slot.teacher.id = :id")
+//    List<Lesson> findAllLessonByWeekAndTeacherId(@Param("week") Week week,
+//                                                 @Param("id") Long teacherId);
+//
+//    @Query("SELECT l FROM Lesson l WHERE l.slot.regularStudent.id = :studentId OR l.rebooking.notRegularStudent=:studentId AND l.slot.teacher.id = :teacherId AND l.paid = false AND l.cancelledByStudent =false AND l.cancelledByTeacher=false ORDER BY l.date DESC ")
+//    List<Lesson> getNextNotPaidLessons(@Param("teacherId") Long teacherId, @Param("studentId") Long studentId);
+//
+//    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id = :id AND l.requiredPayment=true AND l.paid = FALSE order by l.date ASC ")
+//    List<Lesson> findAllByTeacherIdWherePaidIsFalseAndCancelledIsFalse(@Param("id") Long teacherId);
+//
+//    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id =:teacherId AND l.slot.regularStudent.id = :studentId AND l.paid = true AND l.date BETWEEN :start ANd :end")
+//    List<Lesson> findAllByStudentAndTeacherWherePaidIsTrueThisMonth(@Param("start") LocalDate firstDay,
+//                                                                    @Param("end") LocalDate lastDay,
+//                                                                    @Param("teacherId") Long teacherId,
+//                                                                    @Param("studentId") Long studentId);
+//
+//    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id =:teacherId AND l.slot.regularStudent.id = :studentId AND l.paid = false AND l.requiredPayment=true  AND l.date BETWEEN :start ANd :end")
+//    List<Lesson> findAllByStudentAndTeacherWherePaidIsFalseNextMonth(@Param("start") LocalDate firstDay,
+//                                                                     @Param("end") LocalDate lastDay,
+//                                                                     @Param("teacherId") Long teacherId,
+//                                                                     @Param("studentId") Long studentId);
+//
     @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id =:teacherId AND l.cancelledByTeacher = false AND l.date <= :end ORDER BY l.date ")
     List<Lesson> findAllByTeacherUntilLastDayOfNextMonth(
             @Param("end") LocalDate lastDay,
@@ -73,4 +73,12 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     @Query("SELECT COUNT(l) FROM Lesson l WHERE l.slot.id = :id")
     int findAllGeneratedLessonsBySlot(@Param("id") Long slotId);
+
+    @Query("SELECT l FROM Lesson l WHERE l.slot.teacher.id = :teacherId AND l.slot.regularStudent.id = :studentId AND  l.rebooked = false AND l.paid = true ")
+    List<Lesson> findAllPaidLessonsByRegularStudent(@Param("teacherId")Long teacherId,
+                                                    @Param("studentId")Long studentId);
+
+    @Query("SELECT l FROM Lesson l WHERE  l.slot.teacher.id = :teacherId AND l.rebooked = true AND l.rebooking.notRegularStudent.id = :studentId AND l.paid = true")
+    List<Lesson> findAllPaidLessonsByNotRegularStudent(@Param("teacherId")Long teacherId,
+                                                       @Param("studentId")Long studentId);
 }

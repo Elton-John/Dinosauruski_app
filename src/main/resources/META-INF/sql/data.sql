@@ -16,6 +16,7 @@ INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 1
 INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 2);
 INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 3);
 INSERT INTO dinosauruski.teachers_students (teacher_id, student_id) VALUES (1, 4);
+INSERT INTO dinosauruski.YearForTeacher (isArchived, isGenerated, year, teacher_id) VALUES ('F', 'T', 2020, 1);
 INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id, mondayDate) VALUES ('F', 'F', 1, 2020, 1, '2020-12-30');
 INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id, mondayDate) VALUES ('F', 'F', 2, 2020, 1,'2020-01-06');
 INSERT INTO dinosauruski.Week (isArchived, isGenerated, numberOfWeek, year, teacher_id, mondayDate) VALUES ('F', 'F', 3, 2020, 1, '2020-01-13');

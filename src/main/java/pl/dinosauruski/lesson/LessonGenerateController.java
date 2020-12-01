@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.dinosauruski.lesson.dto.LessonCancellingDTO;
 import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.lesson.dto.LessonsOfWeekDTO;
 import pl.dinosauruski.models.Lesson;
@@ -16,8 +15,8 @@ import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 import pl.dinosauruski.week.WeekQueryService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.time.temporal.IsoFields;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,46 +32,75 @@ public class LessonGenerateController {
     private RebookingCommandService rebookingCommandService;
     private RebookingQueryService rebookingQueryService;
 
+//    @GetMapping
+//    String index(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO, Model model) {
+//        Long teacherId = teacherDTO.getId();
+//        int numberOfWeek = weekQueryService.getCurrentNumberOfWeek();
+//        int year = weekQueryService.getCurrentYear();
+//        int nextNumberOfWeek = numberOfWeek + 1;
+//        int nextYear = year;
+//        LocalDate now = LocalDate.now();
+//        int weeksInYear = (int) IsoFields.WEEK_OF_WEEK_BASED_YEAR.rangeRefinedBy(now).getMaximum();
+//        if (numberOfWeek == weeksInYear) {
+//            nextNumberOfWeek = 1;
+//            nextYear = year + 1;
+//        }
+//
+//        boolean isGenerated = weekQueryService.checkWeekIsGenerated(year, numberOfWeek, teacherId);
+//        if (isGenerated) {
+//            model.addAttribute("isGenerated", true);
+//            List<Lesson> lessons = lessonQueryService.getGeneratedLessonsOfWeek(year, numberOfWeek, teacherId);
+//            model.addAttribute("thisWeekLessons", lessons);
+//        } else {
+//            model.addAttribute("isGenerated", false);
+//        }
+//
+//        boolean isNextGenerated = weekQueryService.checkWeekIsGenerated(year, nextNumberOfWeek, teacherId);
+//        if (isNextGenerated) {
+//            model.addAttribute("isNextGenerated", true);
+//            List<Lesson> lessons = lessonQueryService.getGeneratedLessonsOfWeek(year, nextNumberOfWeek, teacherId);
+//            model.addAttribute("nextWeekLessons", lessons);
+//        } else {
+//            model.addAttribute("isNextGenerated", false);
+//        }
+//
+//        model.addAttribute("teacher", teacherDTO);
+//        model.addAttribute("week", numberOfWeek);
+//        model.addAttribute("year", year);
+//        model.addAttribute("nextWeek", nextNumberOfWeek);
+//        model.addAttribute("nextYear", nextYear);
+//        model.addAttribute("months");
+//        return "calendar/index";
+//    }
+
+
     @GetMapping
     String index(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO, Model model) {
-        Long teacherId = teacherDTO.getId();
-        int numberOfWeek = weekQueryService.getCurrentNumberOfWeek();
-        int year = weekQueryService.getCurrentYear();
-        int nextNumberOfWeek = numberOfWeek + 1;
-        int nextYear = year;
         LocalDate now = LocalDate.now();
-        int weeksInYear = (int) IsoFields.WEEK_OF_WEEK_BASED_YEAR.rangeRefinedBy(now).getMaximum();
-        if (numberOfWeek == weeksInYear) {
-            nextNumberOfWeek = 1;
-            nextYear = year + 1;
-        }
-
-        boolean isGenerated = weekQueryService.checkWeekIsGenerated(year, numberOfWeek, teacherId);
-        if (isGenerated) {
-            model.addAttribute("isGenerated", true);
-            List<Lesson> lessons = lessonQueryService.getGeneratedLessonsOfWeek(year, numberOfWeek, teacherId);
-            model.addAttribute("thisWeekLessons", lessons);
-        } else {
-            model.addAttribute("isGenerated", false);
-        }
-
-        boolean isNextGenerated = weekQueryService.checkWeekIsGenerated(year, nextNumberOfWeek, teacherId);
-        if (isNextGenerated) {
-            model.addAttribute("isNextGenerated", true);
-            List<Lesson> lessons = lessonQueryService.getGeneratedLessonsOfWeek(year, nextNumberOfWeek, teacherId);
-            model.addAttribute("nextWeekLessons", lessons);
-        } else {
-            model.addAttribute("isNextGenerated", false);
-        }
-
+        int year = now.getYear();
+        int previousYear = year - 1;
+        int nextYear = year + 1;
         model.addAttribute("teacher", teacherDTO);
-        model.addAttribute("week", numberOfWeek);
         model.addAttribute("year", year);
-        model.addAttribute("nextWeek", nextNumberOfWeek);
+        model.addAttribute("previousYear", previousYear);
         model.addAttribute("nextYear", nextYear);
         model.addAttribute("months");
         return "calendar/index";
     }
+
+    @GetMapping("/{year}")
+    String showYear(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+                    @PathVariable("year") int year, Model model) {
+        int previousYear = year - 1;
+        int nextYear = year + 1;
+        model.addAttribute("teacher", teacherDTO);
+        model.addAttribute("year", year);
+        model.addAttribute("previousYear", previousYear);
+        model.addAttribute("nextYear", nextYear);
+        model.addAttribute("months");
+        return "calendar/index";
+    }
+
 
 //    @GetMapping("/generate/{year}/{week}")
 //    String generateWeek(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
@@ -144,15 +172,18 @@ public class LessonGenerateController {
     @GetMapping("/lessons/{id}")
     String letCancelLessonByTeacher(@PathVariable Long id,
                                     Model model) {
-        LessonCancellingDTO lessonCancellingDto = lessonQueryService.getOneLessonCompletionDtoOrThrow(id);
-        model.addAttribute("lesson", lessonCancellingDto);
+        model.addAttribute("lesson", lessonQueryService.getOneOrThrow(id));
         return "calendar/lesson";
     }
 
-    @PatchMapping("/lessons")
-    String cancelLessonByTeacher(LessonCancellingDTO lessonCancellingDTO) {
-        lessonCommandService.updateCancelling(lessonCancellingDTO);
-        Lesson lesson = lessonQueryService.getOneOrThrow(lessonCancellingDTO.getId());
+    @PostMapping("/lessons/cancel/{id}")
+    String cancelLessonByTeacher(@PathVariable Long id,
+                                 HttpServletRequest request) {
+        String cancel = request.getParameter("cancel");
+        if (!lessonCommandService.cancelling(id, cancel)) {
+            return "redirect:/teacher/calendar/lessons/" + id;
+        }
+        Lesson lesson = lessonQueryService.getOneOrThrow(id);
         int month = lesson.getDate().getMonth().getValue();
         int year = lesson.getDate().getYear();
         return "redirect:/teacher/calendar/" + month + "/" + year;

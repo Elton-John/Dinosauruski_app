@@ -83,8 +83,8 @@ public class StudentController {
         model.addAttribute("plannedLessonThisMonth", lessonQueryService.getGeneratedLessonInMonthByStudent(teacherId, id));
         model.addAttribute("countNotPaidNextMonth", lessonQueryService.countNotPaidLessonsByStudentNextMonth(teacherId, id));
         model.addAttribute("notPaidLessonsNextMonth", lessonQueryService.getNotPaidLessonsUntilLastDayOfNextMonth(teacherId, id));
-        model.addAttribute("overPayment", paymentQueryService.getOverPayment(id, teacherId));
-        model.addAttribute("requiredPayment", lessonQueryService.countRequiredPaymentAfterAddingOverPayment(id, teacherId));
+      //  model.addAttribute("overPayment", paymentQueryService.getOverPayment(id, teacherId));
+      //  model.addAttribute("requiredPayment", lessonQueryService.countRequiredPaymentAfterAddingOverPayment(id, teacherId));
         return "teachers/students/profile";
     }
 
