@@ -11,9 +11,6 @@ import java.util.Optional;
 @Repository
 public interface YearRepository extends JpaRepository<YearForTeacher, Long> {
 
-//    @Query("SELECT y FROM YearForTeacher y WHERE y.year = :year")
-//    Optional<YearForTeacher> findByYear(@Param("year") int year);
-
     @Query("SELECT y FROM YearForTeacher y WHERE y.year = :year AND y.teacher.id = :id")
     Optional<YearForTeacher> findByYearAndTeacherId(@Param("year")int year,
                                                     @Param("id") Long teacherId);

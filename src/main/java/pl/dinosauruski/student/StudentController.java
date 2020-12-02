@@ -7,10 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.dinosauruski.lesson.LessonQueryService;
 import pl.dinosauruski.models.Student;
-import pl.dinosauruski.payment.PaymentQueryService;
-import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.student.dto.StudentDTO;
-import pl.dinosauruski.teacher.TeacherQueryService;
 import pl.dinosauruski.teacher.dto.TeacherDTO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +22,8 @@ import java.util.List;
 public class StudentController {
     private final StudentCommandService studentCommandService;
     private final StudentQueryService studentQueryService;
-    private final SlotQueryService slotQueryService;
     private final LessonQueryService lessonQueryService;
-    private final PaymentQueryService paymentQueryService;
-    private final TeacherQueryService teacherQueryService;
+
 
     @GetMapping
     String index(@SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
@@ -78,13 +73,12 @@ public class StudentController {
         model.addAttribute("teacher", loggedTeacher);
         model.addAttribute("student", student);
         model.addAttribute("slots", student.getSlots());
-        model.addAttribute("countPaidThisMonth", lessonQueryService.countPaidLessonsByStudentThisMonth(teacherId, id));
         model.addAttribute("countPlannedThisMonth", lessonQueryService.countGeneratedLessonThisMonthByStudent(teacherId, id));
-        model.addAttribute("plannedLessonThisMonth", lessonQueryService.getGeneratedLessonInMonthByStudent(teacherId, id));
+        model.addAttribute("plannedLessonThisMonth", lessonQueryService.getAllLessonsInMonthByStudent(teacherId, id));
         model.addAttribute("countNotPaidNextMonth", lessonQueryService.countNotPaidLessonsByStudentNextMonth(teacherId, id));
         model.addAttribute("notPaidLessonsNextMonth", lessonQueryService.getNotPaidLessonsUntilLastDayOfNextMonth(teacherId, id));
-      //  model.addAttribute("overPayment", paymentQueryService.getOverPayment(id, teacherId));
-      //  model.addAttribute("requiredPayment", lessonQueryService.countRequiredPaymentAfterAddingOverPayment(id, teacherId));
+        model.addAttribute("overPayment", studentQueryService.getOverPayment(id));
+        model.addAttribute("requiredPayment", lessonQueryService.getRequiredPaymentByStudentNextMonth(id, teacherId));
         return "teachers/students/profile";
     }
 

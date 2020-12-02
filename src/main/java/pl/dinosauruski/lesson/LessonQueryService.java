@@ -4,16 +4,19 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.lesson.dto.*;
 import pl.dinosauruski.models.Lesson;
-import pl.dinosauruski.models.Week;
 import pl.dinosauruski.payment.PaymentQueryService;
 import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.week.WeekQueryService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,10 +36,6 @@ public class LessonQueryService {
         return lessonRepository.findOneLessonDTO(id).orElseThrow(EntityNotFoundException::new);
     }
 
-//    public LessonCancellingDTO getOneLessonCompletionDtoOrThrow(Long id) {
-//        return lessonRepository.findOneCompletionDto(id).orElseThrow(EntityNotFoundException::new);
-//    }
-
     public LessonsOfWeekDTO getAllThisWeekLessonsByTeacher(Long id) {
         ZoneId zoneId = ZoneId.of("Europe/Warsaw");
         LocalDate today = LocalDate.now(zoneId);
@@ -45,42 +44,6 @@ public class LessonQueryService {
         LessonsOfWeekDTO lessonsOfWeekDTO = createLessonsOfWeekDTO(thisMondayDate, id);
         return lessonsOfWeekDTO;
     }
-
-//    public List<Lesson> getGeneratedLessonsOfWeek(int year, int nextNumberOfWeek, Long teacherId) {
-//        Week week = weekQueryService.getOneOrThrow(year, nextNumberOfWeek, teacherId);
-//        return lessonRepository.findAllLessonByWeekAndTeacherId(week, teacherId);
-//    }
-
-//    public List<Lesson> getAllMonthYearLessonsByTeacher(int year, int month, Long teacherId) {
-//        YearMonth ym = YearMonth.of(year, month);
-//        LocalDate firstDay = ym.atDay(1);
-//        LocalDate lastDay = ym.atEndOfMonth();
-//        int numberOfFirstWeek = weekQueryService.getIdOfWeekByDate(firstDay,teacherId);
-//        int numberOfLastWeek = weekQueryService.getIdOfWeekByDate(lastDay,teacherId);
-//        List<Lesson> allLessons = new ArrayList<>();
-//        for (int i = numberOfFirstWeek; i <= numberOfLastWeek; i++) {
-//            List<Lesson> lessonsOfWeek = getGeneratedLessonsOfWeek(year, i, teacherId);
-//            allLessons.addAll(lessonsOfWeek);
-//        }
-//        return allLessons;
-//    }
-
-
-//    public Optional<Lesson> getNextNotPaidLesson(Long teacherId, Long studentId) {
-//        List<Lesson> allLessonsByTeacher = lessonRepository.findAllByTeacherIdWherePaidIsFalseAndCancelledIsFalse(teacherId);
-//
-//        List<LessonPaymentDTO> allLessonsByStudent = allLessonsByTeacher.stream()
-//                .map(this::createLessonPaymentDTO)
-//                .filter(lessonPaymentDTO -> lessonPaymentDTO.getStudentWhoPays().getId().equals(studentId))
-//                .collect(Collectors.toList());
-//
-//
-//        if (allLessonsByStudent.size() > 0) {
-//            LessonPaymentDTO firstLessonPaymentDTO = allLessonsByStudent.get(0);
-//            return Optional.ofNullable(getOneOrThrow(firstLessonPaymentDTO.getId()));
-//        }
-//        return Optional.empty();
-//    }
 
     public LessonPaymentDTO createLessonPaymentDTO(Lesson lesson) {
         LessonPaymentDTO lessonPaymentDTO = new LessonPaymentDTO();
@@ -91,6 +54,7 @@ public class LessonQueryService {
         lessonPaymentDTO.setWeek(lesson.getWeek());
         lessonPaymentDTO.setRebooked(lesson.isRebooked());
         lessonPaymentDTO.setRequiredPayment(lesson.isRequiredPayment());
+        lessonPaymentDTO.setPaid(lesson.isPaid());
         boolean isRebooked = lessonPaymentDTO.isRebooked();
         if (isRebooked) {
             lessonPaymentDTO.setStudentWhoPays(lesson.getRebooking().getNotRegularStudent());
@@ -128,12 +92,30 @@ public class LessonQueryService {
                 .collect(Collectors.toList());
     }
 
-    public int countPaidLessonsByStudentThisMonth(Long teacherId, Long studentId) {
-        List<LessonPaymentDTO> lessons = getPaidLessonsThisMonth(teacherId, studentId);
+    public List<Lesson> getAllLessonsInMonthByStudent(Long teacherId, Long studentId) {
+        Month month = LocalDate.now().getMonth();
+        int year = LocalDate.now().getYear();
+
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstDay = ym.atDay(1);
+        LocalDate lastDay = ym.atEndOfMonth();
+        List<Lesson> regularLessons = lessonRepository.findAllNotCancelledByTeacherAndStudentInMonth(firstDay, lastDay, teacherId, studentId);
+        List<Lesson> rebookedLessons = lessonRepository.findAllRebookedByTeacherAndStudentInMonth(firstDay, lastDay, teacherId, studentId);
+        regularLessons.addAll(rebookedLessons);
+        List<Lesson> result = regularLessons.stream()
+
+                .sorted(Comparator.comparing(Lesson::getDate))
+                .collect(Collectors.toList());
+        return result;
+    }
+
+
+    public int countGeneratedLessonThisMonthByStudent(Long teacherId, Long studentId) {
+        List<Lesson> lessons = getAllLessonsInMonthByStudent(teacherId, studentId);
         return lessons.size();
     }
 
-    public List<LessonPaymentDTO> getNotPaidLessonsUntilLastDayOfNextMonth(Long teacherId, Long studentId) {
+    public List<Lesson> getNotPaidLessonsUntilLastDayOfNextMonth(Long teacherId, Long studentId) {
         Month thisMonth = LocalDate.now().getMonth();
         Month nextMonth = thisMonth.plus(1);
         int year = LocalDate.now().getYear();
@@ -144,55 +126,31 @@ public class LessonQueryService {
         }
         YearMonth ym = YearMonth.of(year, nextMonth);
         LocalDate lastDay = ym.atEndOfMonth();
-        List<Lesson> lessons = lessonRepository.findAllByTeacherUntilLastDayOfNextMonth(lastDay, teacherId);
-        return lessons.stream()
-                .filter(Lesson::isRequiredPayment)
-                .map(this::createLessonPaymentDTO)
-                .filter(lessonPaymentDTO -> lessonPaymentDTO.getStudentWhoPays().getId().equals(studentId))
+
+        List<Lesson> regularLessons = lessonRepository.findAllNotCancelledByTeacherAndStudentUntilNextMonth(lastDay, teacherId, studentId);
+        List<Lesson> rebookedLessons = lessonRepository.findAllRebookedByTeacherAndStudentUntilNextMonth(lastDay, teacherId, studentId);
+        regularLessons.addAll(rebookedLessons);
+        List<Lesson> result = regularLessons.stream()
+                .filter(lesson -> !lesson.isPaid())
+                .sorted(Comparator.comparing(Lesson::getDate))
                 .collect(Collectors.toList());
+        return result;
 
     }
 
-//    public BigDecimal countRequiredPaymentAfterAddingOverPayment(Long studentId, Long teacherId) {
-//        List<LessonPaymentDTO> notPaidLessons = getNotPaidLessonsUntilLastDayOfNextMonth(teacherId, studentId);
-//        BigDecimal overPaymentByStudent = paymentQueryService.getOverPayment(studentId, teacherId);
-//        BigDecimal priceForOneLesson = studentQueryService.getOneOrThrow(studentId).getPriceForOneLesson();
-//        int quantityLessonsCanBePaid = overPaymentByStudent.divide(priceForOneLesson, 2, RoundingMode.HALF_UP).intValue();
-//        if (overPaymentByStudent.equals(BigDecimal.valueOf(0))) {
-//            return priceForOneLesson.multiply(BigDecimal.valueOf(notPaidLessons.size()));
-//        } else if (quantityLessonsCanBePaid < notPaidLessons.size()) {
-//            int difference = notPaidLessons.size() - quantityLessonsCanBePaid;
-//            int lessonsRequiredPayment = notPaidLessons.size() - difference;
-//            return priceForOneLesson.multiply(BigDecimal.valueOf(lessonsRequiredPayment));
-//        } else {
-//            return BigDecimal.valueOf(0);
-//
-//        }
-//    }
 
     public int countNotPaidLessonsByStudentNextMonth(Long teacherId, Long studentId) {
-        List<LessonPaymentDTO> lessons = getNotPaidLessonsUntilLastDayOfNextMonth(teacherId, studentId);
+        List<Lesson> lessons = getNotPaidLessonsUntilLastDayOfNextMonth(teacherId, studentId);
         return lessons.size();
     }
 
+    public BigDecimal getRequiredPaymentByStudentNextMonth(Long studentId, Long teacherId) {
+        int count = countNotPaidLessonsByStudentNextMonth(teacherId, studentId);
+        BigDecimal priceForOneLesson = studentQueryService.getOneOrThrow(studentId).getPriceForOneLesson();
+        BigDecimal require = priceForOneLesson.multiply(BigDecimal.valueOf(count));
+        BigDecimal result = require.subtract((BigDecimal) studentQueryService.getOverPayment(studentId));
 
-    public List<LessonPaymentDTO> getGeneratedLessonInMonthByStudent(Long teacherId, Long studentId) {
-        Month month = LocalDate.now().getMonth();
-        int year = LocalDate.now().getYear();
-
-        YearMonth ym = YearMonth.of(year, month);
-        LocalDate firstDay = ym.atDay(1);
-        LocalDate lastDay = ym.atEndOfMonth();
-        List<Lesson> lessons = lessonRepository.findAllByTeacherInMonth(firstDay, lastDay, teacherId);
-        return lessons.stream()
-                .map(this::createLessonPaymentDTO)
-                .filter(lessonPaymentDTO -> lessonPaymentDTO.getStudentWhoPays().getId().equals(studentId))
-                .collect(Collectors.toList());
-    }
-
-    public Object countGeneratedLessonThisMonthByStudent(Long teacherId, Long studentId) {
-        List<LessonPaymentDTO> lessons = getGeneratedLessonInMonthByStudent(teacherId, studentId);
-        return lessons.size();
+        return result;
     }
 
     private LessonViewDTO createLessonViewDTO(Lesson lesson) {
@@ -209,6 +167,7 @@ public class LessonQueryService {
         lessonViewDTO.setLastMinuteCancelled(lesson.isLastMinuteCancelled());
         lessonViewDTO.setRebooked(lesson.isRebooked());
         lessonViewDTO.setRequiredPayment(lesson.isRequiredPayment());
+        lessonViewDTO.setPaid(lesson.isPaid());
         return lessonViewDTO;
     }
 
@@ -232,7 +191,7 @@ public class LessonQueryService {
             day = day.plusDays(1);
         }
 
-        lessonsOfWeekDTO.setDates(dates);   //sort
+        lessonsOfWeekDTO.setDates(dates);
 
         List<LessonsOfDayDTO> lessonsOfDayDTOs = getLessonsOfDayDTOS(dates, teacherId);
         lessonsOfWeekDTO.setLessonsOfDayDTOS(lessonsOfDayDTOs);
@@ -266,13 +225,11 @@ public class LessonQueryService {
 
     public boolean generatedLessonsWereRebookedOrCancelByTeacherAfterDate(Long slotId, LocalDate date) {
         List<Optional<Lesson>> lessons = getAllGeneratedLessonsBySlotAfterDate(slotId, date);
-
         List<Lesson> changedLessons = lessons.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(lesson -> lesson.isCancelledByTeacher() || lesson.isRebooked())
                 .collect(Collectors.toList());
-
         return changedLessons.size() > 0;
     }
 

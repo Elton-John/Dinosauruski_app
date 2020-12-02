@@ -28,9 +28,6 @@ public class Teacher {
     @NotBlank(message = "Pole nie możeeee być puste.")
     @Size(min = 3, message = "Minimum 8 znaków.")
     private String password;
-    //    @Transient
-//    @NotBlank(message = "Pole nie może być puste.")
-//    private String repeatPassword;
     @NotBlank(message = "Pole nie może być puste.")
     @Email
     private String email;

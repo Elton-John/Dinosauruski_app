@@ -16,7 +16,7 @@
 <div class="container-fluid">
     <div class="row  my-5">
 
-        <div class="col-sm-4 text-white offset-md-4 ">
+        <div class="col-sm-4 text-white offset-md-2 ">
             <p>
                 <a class="btn btn-info text-uppercase px-5"
                    th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}">Wróć</a>
@@ -46,7 +46,9 @@
                     </td>
                 </tr>
             </table>
-
+        </div>
+        <div class="col-sm-4 text-white  ">
+            <h4 class="text-warning text-uppercase">Dodawanie nowego terminu:</h4>
             <form th:method="POST" th:action="@{/teacher/slots/booking}">
                 <div class="form-group">
                     <label for="freeSlot">Wybierz inną godzinę z dostępnych:</label>
@@ -61,7 +63,7 @@
                     <label for="date">Data z przyszłości, od której termin będzie zajęty:</label>
                     <input type="date" class="form-control" name="date" id="date"/>
                 </div>
-                <button type="submit" class="btn btn-success  text-uppercase px-5">Zapisz</button>
+                <button type="submit" class="btn btn-success  text-uppercase px-5">Dodaj</button>
             </form>
         </div>
     </div>

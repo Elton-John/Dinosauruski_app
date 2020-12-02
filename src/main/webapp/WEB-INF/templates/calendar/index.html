@@ -19,7 +19,6 @@
     <div class="row">
 
         <div class="col-sm-3 px-0">
-            <!--            list-group-item-action-->
             <nav class="nav flex-column nav-pills list-group bg-dark ml-0">
                 <a class="nav-link  list-group-item  text-white bg-secondary py-5 px-5"
                    th:href="@{/teacher/cockpit}"><h3>
@@ -44,152 +43,11 @@
 
 
         <div class="col-sm-9 text-white bg-dark pl-5 py-5">
-
-
-<!--            &lt;!&ndash;                wszystkie tygodnie aktualnego miesiąca&ndash;&gt;-->
-
-<!--            <table class="table">-->
-<!--                <thead class="thead-dark text-uppercase">-->
-<!--                &lt;!&ndash;                dni tygonia for eahce&ndash;&gt;-->
-<!--                <tr>-->
-<!--                    <th scope="col">pn</th>-->
-<!--                    <th scope="col">wt</th>-->
-<!--                    <th scope="col">śr</th>-->
-<!--                    <th scope="col">czw</th>-->
-<!--                    <th scope="col">pt</th>-->
-<!--                    <th scope="col">sb</th>-->
-<!--                    <th scope="col">nd</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-
-<!--                <tbody>-->
-
-
-<!--                &lt;!&ndash;                row jednego tygodnia w tym tygodniu &ndash;&gt;-->
-<!--                <tr>-->
-
-<!--                    <td class="one day">-->
-<!--                        &lt;!&ndash;                        tablica jednego dnia&ndash;&gt;-->
-<!--                        <table class="table">-->
-<!--                            <thead class="thead-light">-->
-<!--                            <th scope="col">data pn</th>-->
-<!--                            </thead>-->
-<!--                            <tr>-->
-<!--                                <td> lekcja</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td> lekcja</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td> lekcja</td>-->
-<!--                            </tr>-->
-
-<!--                        </table>-->
-<!--                        &lt;!&ndash;               koniec         tablica jednego dnia&ndash;&gt;-->
-<!--                    </td>-->
-
-<!--                    &lt;!&ndash;                    <table></table>&ndash;&gt;-->
-<!--                    <td class="one day">-->
-<!--                        &lt;!&ndash;                        tablica jednego dnia&ndash;&gt;-->
-<!--                        <table class="table">-->
-<!--                            <thead class="thead-light">-->
-<!--                            <th scope="col">data pn</th>-->
-<!--                            </thead>-->
-<!--                            <tr>-->
-<!--                                <td> lekcja</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td> lekcja</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td> lekcja</td>-->
-<!--                            </tr>-->
-
-<!--                        </table>-->
-<!--                        &lt;!&ndash;               koniec         tablica jednego dnia&ndash;&gt;-->
-<!--                    </td>-->
-<!--                </tr>-->
-
-
-<!--                </tr>-->
-
-<!--                </tbody>-->
-<!--            </table>-->
-
-
-
-<!--            <p>-->
-<!--&lt;!&ndash;                Witaj, <span th:text="${teacher.nickName}"></span>&ndash;&gt;-->
-<!--                Tutaj możesz zobaczyć swój kalendarz i wygenerować plany lekcji.-->
-<!--                &lt;!&ndash;<a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>&ndash;&gt;-->
-
-
-<!--            <h3>AKTUALNY PLAN</h3>-->
-
-<!--            &lt;!&ndash;<p th:if="${isGenerated}==false">&ndash;&gt;-->
-<!--            &lt;!&ndash;    Dodaj wolne terminy, przypisz do nich studentów,&ndash;&gt;-->
-<!--            &lt;!&ndash;    następnie wygeneruj plan na bieżący tydzień&ndash;&gt;-->
-<!--            &lt;!&ndash;    <br>&ndash;&gt;-->
-<!--            &lt;!&ndash;    <a th:href="@{/teacher/calendar/generate}">WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ</a>&ndash;&gt;-->
-<!--            &lt;!&ndash;</p>&ndash;&gt;-->
-<!--            Dodaj wolne terminy, przypisz do nich studentów,&ndash;&gt;-->
-<!--            następnie wygeneruj plan na bieżący tydzień-->
-<!--            <br>-->
-
-
-<!--            <div th:if="${isGenerated}==false">-->
-<!--                <form th:method="GET"-->
-<!--                      th:action="@{/teacher/calendar/generate/{year}/{week}(week=${week}, year=${year})}">-->
-<!--                    <input type="hidden" th:name="index" th:value="true">-->
-<!--                    <input type="submit" value="WYGENERUJ PLAN LEKCJI NA TEN TYDZIEŃ">-->
-<!--                </form>-->
-<!--            </div>-->
-
-
-            <!--<table th:if="${isGenerated}==true">-->
-            <!--    <tr>-->
-            <!--        <th>DAY</th>-->
-            <!--        <th>TIME</th>-->
-            <!--        <th>DATE</th>-->
-            <!--        <th>STUDENT</th>-->
-            <!--    </tr>-->
-            <!--    <tr th:each="lesson : ${thisWeekLessons}">-->
-            <!--        <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>-->
-            <!--        <td th:text="${lesson.slot.time}">day name</td>-->
-            <!--        <td th:text="${lesson.date}">BOOKED</td>-->
-            <!--        <td th:text="${lesson.student.name}">FREE</td>-->
-            <!--    </tr>-->
-            <!--</table>-->
-
-            <!--<div th:if="${isNextGenerated}==false">-->
-            <!--    <form th:method="GET" th:action="@{/teacher/calendar/generate/{year}/{week}(week=${nextWeek}, year=${nextYear})}">-->
-            <!--        &lt;!&ndash;    <input type="hidden" th:name="${index}">&ndash;&gt;-->
-            <!--        <input type="submit" value="WYGENERUJ NASTĘPNY TYDZIEŃ">-->
-            <!--    </form>-->
-            <!--</div>-->
-
-            <!--<table th:if="${isNextGenerated}==true">-->
-            <!--    <tr>-->
-            <!--        <th>DAY</th>-->
-            <!--        <th>TIME</th>-->
-            <!--        <th>DATE</th>-->
-            <!--        <th>STUDENT</th>-->
-            <!--    </tr>-->
-            <!--    <tr th:each="lesson : ${nextWeekLessons}">-->
-            <!--        <td th:text="${lesson.slot.dayOfWeek.translation}">time</td>-->
-            <!--        <td th:text="${lesson.slot.time}">day name</td>-->
-            <!--        <td th:text="${lesson.date}">BOOKED</td>-->
-            <!--        <td th:text="${lesson.slot.regularStudent.name}">FREE</td>-->
-
-            <!--    </tr>-->
-
-
-            <!--</table>-->
-
             <h3 th:text="${year}"></h3>
             <div th:each="instance : ${months}">
 
-                <a  class="btn btn-success text-uppercase " th:href="@{/teacher/calendar/{month}/{year}(month=${instance.key}, year=${year})}"> <span
+                <a class="btn btn-success text-uppercase "
+                   th:href="@{/teacher/calendar/{month}/{year}(month=${instance.key}, year=${year})}"> <span
                         th:text="${instance.value}"></span></a>
             </div>
 

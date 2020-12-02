@@ -36,4 +36,7 @@ public class StudentQueryService {
     }
 
 
+    public Object getOverPayment(Long studentId) {
+        return getOneOrThrow(studentId).getOverpayment();
+    }
 }

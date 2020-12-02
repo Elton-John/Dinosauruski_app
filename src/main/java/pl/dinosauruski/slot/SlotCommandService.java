@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.lesson.LessonCommandService;
 import pl.dinosauruski.lesson.LessonQueryService;
-import pl.dinosauruski.models.*;
+import pl.dinosauruski.models.Lesson;
+import pl.dinosauruski.models.Slot;
+import pl.dinosauruski.models.Teacher;
+import pl.dinosauruski.models.Week;
 import pl.dinosauruski.slot.dto.BookedSlotDTO;
 import pl.dinosauruski.slot.dto.FreeSlotDTO;
 import pl.dinosauruski.student.StudentQueryService;
@@ -13,10 +16,8 @@ import pl.dinosauruski.week.WeekQueryService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,8 +70,8 @@ public class SlotCommandService {
                 .map(Optional::get)
                 .filter(lesson -> !lesson.isCancelledByTeacher() || !lesson.isRebooked())
                 .forEach(lesson -> {
-                    lessonCommandService.savePaymentForStudentBeforeDeleteOrUpdateLesson(lesson);
-                    lessonCommandService.delete(lesson.getId());
+                    // lessonCommandService.savePaymentForStudentBeforeDeleteOrUpdateLesson(lesson);
+                    lessonCommandService.delete(lesson.getId(), teacherId);
                 });
         Slot slot = slotQueryService.getOneOrThrow(bookedSlotDTO.getId());
         slot.setDayOfWeek(bookedSlotDTO.getDayOfWeek());
@@ -96,30 +97,12 @@ public class SlotCommandService {
 
         List<Optional<Lesson>> lessons = lessonQueryService.getAllGeneratedLessonsBySlotAfterDate(slotId, date);
 
-        Set<Student> students = new HashSet<>();
-
-        lessons.stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .forEach(lesson -> {
-                    if (lesson.isRebooked()) {
-                        Student student = lesson.getRebooking().getNotRegularStudent();
-                        students.add(student);
-                    } else {
-                        Student student = lesson.getSlot().getRegularStudent();
-                        students.add(student);
-                    }
-                });
-
-        students.forEach(student -> lessonCommandService.updatePaymentForStudent(student.getId(), teacherId));
-
         lessons.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(lesson -> !lesson.isCancelledByTeacher() || !lesson.isRebooked())
                 .forEach(lesson -> {
-                    lessonCommandService.savePaymentForStudentBeforeDeleteOrUpdateLesson(lesson);
-                    lessonCommandService.delete(lesson.getId());
+                    lessonCommandService.delete(lesson.getId(), teacherId);
                 });
         slotQueryService.getOneOrThrow(slotId).setArchived(true);
 
@@ -136,8 +119,7 @@ public class SlotCommandService {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .forEach(lesson -> {
-                        lessonCommandService.savePaymentForStudentBeforeDeleteOrUpdateLesson(lesson);
-                        lessonCommandService.delete(lesson.getId());
+                        lessonCommandService.delete(lesson.getId(), slot.getTeacher().getId());
                     });
             slot.setArchived(true);
             FreeSlotDTO newSlot = new FreeSlotDTO();

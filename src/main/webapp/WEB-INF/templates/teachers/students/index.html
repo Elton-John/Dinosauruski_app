@@ -46,8 +46,8 @@
 
         <div class="col-sm-9 text-white bg-dark pl-5 py-5">
 
-                <a th:href="@{/teacher/students/active}"class="btn btn-info text-uppercase"> Pokaż tylko aktywnych</a>
-                <a th:href="@{/teacher/students}" class="btn btn-info text-uppercase"> Pokaż wszystkich </a>
+            <a th:href="@{/teacher/students/active}" class="btn btn-info text-uppercase"> Pokaż tylko aktywnych</a>
+            <a th:href="@{/teacher/students}" class="btn btn-info text-uppercase"> Pokaż wszystkich </a>
             <span th:text="${onlyActive} ? 'TYLKO AKTYWNI' : 'WSZYSCY'"></span>
 
 
@@ -73,46 +73,16 @@
                     <td th:if="${student.priceForOneLesson}==null">0.0</td>
                     <td th:text="${student.active} ? 'ACTIVE' : 'ZAWIESZONY'"></td>
 
-                    <td><a th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}" class="btn btn-info text-uppercase"> ZOBACZ PROFIL</a></td>
+                    <td><a th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}"
+                           class="btn btn-info text-uppercase"> ZOBACZ PROFIL</a></td>
                 </tr>
-
 
                 </tbody>
             </table>
 
-
-            <!--            -->
-            <!--            -->
-            <!--            <table>-->
-            <!--                <tr>-->
-            <!--                    <th> NAME</th>-->
-            <!--                    <th> SURNAME</th>-->
-            <!--                    <th>EMAIL</th>-->
-            <!--                    <th>PRICE FOR ONE LESSON</th>-->
-            <!--                    <th>STATUS</th>-->
-            <!--                    <th>PROFILE</th>-->
-
-
-            <!--                </tr>-->
-            <!--                <tr th:each="student : ${students}">-->
-            <!--                    <td th:text="${student.name}"> name</td>-->
-            <!--                    <td th:text="${student.surname}"> name</td>-->
-            <!--                    <td th:text="${student.email}">email</td>-->
-
-            <!--                    <td th:text="${student.priceForOneLesson}">price</td>-->
-            <!--                    <td th:if="${student.priceForOneLesson}==null">0.0</td>-->
-            <!--                    <td th:text="${student.active} ? 'ACTIVE' : 'RETIRED'"></td>-->
-
-            <!--                    <td><a th:href="@{/teacher/students/{id}/profile(id=${student.getId()})}"> ZOBACZ PROFIL</a></td>-->
-            <!--                </tr>-->
-            <!--            </table>-->
             <div class="text-center">
                 <a th:href="@{/teacher/students/new}" class="btn btn-success text-uppercase">Dodaj studenta</a>
             </div>
-
-
-
-
         </div>
     </div>
 </div>

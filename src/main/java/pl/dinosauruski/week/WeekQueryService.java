@@ -9,6 +9,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.*;
 import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,9 +58,17 @@ public class WeekQueryService {
 
     public List<LocalDate> getAllMondaysOfMonth(int year, int month) {
         List<LocalDate> datesOfMonth = getDatesOfMonth(year, month);
-        return datesOfMonth.stream()
+        List<LocalDate> mondays = datesOfMonth.stream()
                 .filter(localDate -> localDate.getDayOfWeek().equals(DayOfWeek.MONDAY))
                 .collect(Collectors.toList());
+
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        if (!firstDay.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+            LocalDate m = firstDay.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            mondays.add(m);
+        }
+        mondays.sort(LocalDate::compareTo);
+        return mondays;
     }
 
     public List<LocalDate> getDatesOfMonth(int year, int month) {
@@ -69,7 +78,7 @@ public class WeekQueryService {
         for (int i = 1; i <= length; i++) {
             LocalDate date = LocalDate.of(year, month, i);
             dates.add(date);
-            date = date.plusDays(1);
+           // date = date.plusDays(1);
         }
         return dates;
     }

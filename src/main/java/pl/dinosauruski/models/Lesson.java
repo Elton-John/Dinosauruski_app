@@ -2,6 +2,7 @@ package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //  @DateTimeFormat(pattern = "yyyy-MM-dd")
+      @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     @ManyToOne
     private Slot slot;

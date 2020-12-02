@@ -12,10 +12,5 @@ public class LessonsOfWeekDTO {
     private List<LocalDate> dates;
     private List<LessonsOfDayDTO> lessonsOfDayDTOS;
 
-    @Override
-    public String toString() {
-        return "LessonsOfWeekDTO{" +
-                "dates=" + dates +
-                '}';
-    }
+
 }

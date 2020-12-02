@@ -41,7 +41,7 @@ public class PaymentController {
                       Model model,
                       @Valid @ModelAttribute("payment") PaymentDTO paymentDTO,
                       BindingResult result
-                      ) {
+    ) {
         if (result.hasErrors()) {
             model.addAttribute("students", studentQueryService.getAllByTeacherId(teacherDTO.getId()));
             return "payment/new";
@@ -49,28 +49,6 @@ public class PaymentController {
         paymentCommandService.create(paymentDTO, teacherDTO.getId());
         return "redirect:/teacher/payments";
     }
-
-//    @GetMapping("/edit/{id}")
-//    String editPaymentForm(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
-//                           @PathVariable Long id,
-//
-//                           Model model) {
-//        PaymentDTO paymentDTO = paymentQueryService.getOneDtoByIdOrThrow(id);
-//        model.addAttribute("students", studentQueryService.getAllByTeacherId(teacherDTO.getId()));
-//        model.addAttribute("payment", paymentDTO);
-//        return "payment/edit";
-//    }
-//
-//    @PatchMapping("/edit")
-//    String editPayment(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
-//                       @Valid @ModelAttribute("payment") PaymentDTO paymentDTO,
-//                       BindingResult result) {
-//        if (result.hasErrors()) {
-//            return "payment/edit";
-//        }
-//        paymentCommandService.updateByDto(paymentDTO);
-//        return "redirect:/teacher/payments";
-//    }
 
     @GetMapping("/submit/{id}")
     String submitDeletingPaymentForm(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,

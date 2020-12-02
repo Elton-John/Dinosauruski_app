@@ -81,32 +81,35 @@ head>
 
             <h5 class="text-uppercase"> Zaplanowane lekcje w tym miesiącu: <span
                     th:text="${countPlannedThisMonth}">X</span></h5>
-            <!--            <p th:text="${countPlannedThisMonth}">ilość</p>-->
             <div th:each="lesson : ${plannedLessonThisMonth}">
-                <div th:if="${lesson.requiredPayment}==false">
-                    <span class="badge badge-pill badge-success"
-                          th:text="${lesson.date} + ' ' +${lesson.dayOfWeek.translation} + ' '+ ${lesson.time}">data</span>
+
+                <div th:if="${lesson.paid}==true">
+                    <a class="badge badge-success"
+                       th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                        <span th:text="${lesson.date} + ' ' +${lesson.slot.dayOfWeek.translation} + ' '+ ${lesson.slot.time}">data</span></a>
                     <span class="text-success">lekcja opłacona</span>
                 </div>
-                <div th:if="${lesson.requiredPayment}==true">
-                    <span class="badge badge-pill badge-danger"
-                          th:text="${lesson.date} + ' ' +${lesson.dayOfWeek.translation} + ' '+ ${lesson.time}">data</span>
+                <div th:if="${lesson.paid}==false">
+                    <a class="badge badge-danger"
+                       th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                        <span th:text="${lesson.date} + ' ' +${lesson.slot.dayOfWeek.translation} + ' '+ ${lesson.slot.time}">data</span></a>
                 </div>
             </div>
 
             <h5 class="text-uppercase"> lekcje do opłacenia do końca nastepnego miesiąca: <span></span>
-            <span th:text="${countNotPaidNextMonth}"></span></h5>
+                <span th:text="${countNotPaidNextMonth}"></span></h5>
             <div th:each="lesson : ${notPaidLessonsNextMonth}">
                 <div>
-                     <span class="badge badge-pill badge-danger"
-                           th:text="${lesson.date} + ' ' +${lesson.dayOfWeek.translation} + ' '+ ${lesson.time}">data</span>
+                    <a class="badge badge-danger"
+                       th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                        <span th:text="${lesson.date} + ' ' +${lesson.slot.dayOfWeek.translation} + ' '+ ${lesson.slot.time}">data</span></a>
                 </div>
             </div>
 
-            <h6>Twoja portmonetka:</h6>
-            <p>Masz na koncie <span th:text="${overPayment}">x </span> zł. Wykorzystaj je do opłaty lekcji w następnym
-                miesiącu </p>
+            <h6>Nadpłata:</h6>
+            <p><span th:text="${overPayment}">x </span> zł.</p>
             <p>Do opłaty wszystkich lekcji w następnym miesiącu brakuje: <span th:text="${requiredPayment}">x </span>
+                zł.
             </p>
 
             <div th:if="${student.active}==true">

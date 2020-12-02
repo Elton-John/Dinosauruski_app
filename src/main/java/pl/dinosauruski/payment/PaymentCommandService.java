@@ -71,14 +71,6 @@ public class PaymentCommandService {
     }
 
 
-//    public void updateByDto(PaymentDTO paymentDTO) {
-//        Payment payment = paymentQueryService.getOneByIdOrThrow(paymentDTO.getId());
-//        payment.setDate(paymentDTO.getDate());
-//        payment.setStudent(paymentDTO.getStudent());
-//        payment.setSum(paymentDTO.getSum());
-//        paymentRepository.save(payment);
-//    }
-
     public void delete(Long id) {
         Payment payment = paymentQueryService.getOneByIdOrThrow(id);
         Long teacherId = payment.getTeacher().getId();
