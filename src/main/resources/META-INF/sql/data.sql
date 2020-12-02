@@ -1,4 +1,4 @@
-INSERT INTO Teacher (name, surname, nickname, email,  password ) VALUES ('Winni','Pooh','TheBestTeacher', 'olikdiz@mail.ru', '000');
+INSERT INTO Teacher (name, surname, nickname, email,  password ) VALUES ('Winni','Pooh','TheBestTeacher', 'admin@admin', '000');
 INSERT INTO Student (active, email, login, name, nickname, password, priceForOneLesson, surname, overpayment) VALUES (true, 'elton@john', 'aaa', 'Elton', 'Rocketman', '111', 90, 'John',0);
 INSERT INTO Student (active, email, login, name, nickname, password, priceForOneLesson, surname, overpayment) VALUES (true, 'john@john', 'bbb', 'John', 'Dirty', '111', 100, 'Johnovich',0);
 INSERT INTO Student (active, email, login, name, nickname, password, priceForOneLesson, surname, overpayment) VALUES (true, 'leonardo@oscar', 'bbb', 'Leonardo', 'Leo', '111', 120, 'DiCaprio',0);

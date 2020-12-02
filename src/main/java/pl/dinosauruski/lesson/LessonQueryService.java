@@ -41,8 +41,7 @@ public class LessonQueryService {
         LocalDate today = LocalDate.now(zoneId);
         LocalDate thisMondayDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate thisSundayDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-        LessonsOfWeekDTO lessonsOfWeekDTO = createLessonsOfWeekDTO(thisMondayDate, id);
-        return lessonsOfWeekDTO;
+        return createLessonsOfWeekDTO(thisMondayDate, id);
     }
 
     public LessonPaymentDTO createLessonPaymentDTO(Lesson lesson) {
@@ -102,11 +101,10 @@ public class LessonQueryService {
         List<Lesson> regularLessons = lessonRepository.findAllNotCancelledByTeacherAndStudentInMonth(firstDay, lastDay, teacherId, studentId);
         List<Lesson> rebookedLessons = lessonRepository.findAllRebookedByTeacherAndStudentInMonth(firstDay, lastDay, teacherId, studentId);
         regularLessons.addAll(rebookedLessons);
-        List<Lesson> result = regularLessons.stream()
+        return regularLessons.stream()
 
                 .sorted(Comparator.comparing(Lesson::getDate))
                 .collect(Collectors.toList());
-        return result;
     }
 
 
