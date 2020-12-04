@@ -5,9 +5,13 @@ INSERT INTO Student (active, email, login, name, nickname, password, priceForOne
 INSERT INTO Student (active, email, login, name, nickname, password, priceForOneLesson, surname, overpayment) VALUES (true, 'elon@cosmos', 'bbb', 'Elon', 'Mars', '111', 100, 'Musk',0);
 INSERT INTO Slot (booked, time, dayOfWeek, regularStudent_id, teacher_id, archived) VALUES (true, '11:10:00',  0,  1,1, false);
 INSERT INTO Slot (booked, time, dayOfWeek, regularStudent_id, teacher_id, archived) VALUES (true, '19:10:00', 1, 1, 1, false);
+INSERT INTO Slot (booked, time, dayOfWeek, regularStudent_id, teacher_id, archived) VALUES (true, '19:10:00', 2, 1, 1, false);
 INSERT INTO Slot (booked, time,dayOfWeek,  regularStudent_id, teacher_id, archived) VALUES (true, '15:10:00', 3, 2, 1, false);
 INSERT INTO Slot (booked, time, dayOfWeek, regularStudent_id, teacher_id, archived) VALUES (true, '14:00:00', 3, 3, 1, false);
 INSERT INTO Slot (booked, time, dayOfWeek, regularStudent_id, teacher_id, archived) VALUES (true, '20:00:00', 3, 4, 1, false);
+INSERT INTO Slot (booked, time, dayOfWeek, regularStudent_id, teacher_id, archived) VALUES (true, '20:00:00', 4, 2, 1, false);
+INSERT INTO Slot (booked, time, dayOfWeek, regularStudent_id, teacher_id, archived) VALUES (true, '20:00:00', 5, 4, 1, false);
+INSERT INTO Slot (booked, time, dayOfWeek, regularStudent_id, teacher_id, archived) VALUES (true, '20:00:00', 6, 2, 1, false);
 INSERT INTO Slot (booked, time,dayOfWeek,  regularStudent_id, teacher_id, archived) VALUES (false, '10:00:00', 3, null, 1, false);
 INSERT INTO Slot (booked, time, dayOfWeek, regularStudent_id, teacher_id, archived) VALUES (false, '11:00:00', 1, null, 1, false);
 INSERT INTO Slot (booked, time,dayOfWeek,  regularStudent_id, teacher_id, archived) VALUES (false, '13:00:00', 0, null, 1, false);

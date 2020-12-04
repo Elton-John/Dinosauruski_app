@@ -42,18 +42,45 @@
         </div>
 
 
+        <!--                <div class="col-sm-2">-->
+        <!--                    One of three columns-->
+        <!--                </div>-->
+        <!--                <div class="col-sm">-->
+        <!--                    One of three columns-->
+        <!--                </div>-->
+        <!--                <div class="col-sm">-->
+        <!--                    One of three columns-->
+        <!--                </div>-->
+
+
         <div class="col-sm-9 text-white bg-dark pl-5 py-5">
-            <h3 th:text="${year}"></h3>
+            <a th:href="@{/teacher/calendar/{year}(year=${previousYear})}">
+                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-left-square-fill"
+                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm9.5 8.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z"/>
+                </svg>
+            </a>
+            <span th:text="${year}"></span>
+            <a th:href="@{/teacher/calendar/{year}(year=${nextYear})}">
+                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-right-square-fill"
+                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm2.5 8.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"/>
+                </svg>
+            </a>
+
+
             <div th:each="instance : ${months}">
 
+
                 <a class="btn btn-success text-uppercase "
-                   th:href="@{/teacher/calendar/{month}/{year}(month=${instance.key}, year=${year})}"> <span
-                        th:text="${instance.value}"></span></a>
+                   th:href="@{/teacher/calendar/{month}/{year}(month=${instance.key}, year=${year})}">
+                    <div style="width: 8rem; height: 8rem">
+                                    <span class="py-5"
+                                          th:text="${instance.value}"></span></div>
+                </a>
             </div>
-
-            <a th:href="@{/teacher/calendar/{year}(year=${previousYear})}">previousYear</a>
-            <a th:href="@{/teacher/calendar/{year}(year=${nextYear})}">nextYear</a>
-
         </div>
     </div>
 </div>

@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @Controller
 @AllArgsConstructor
@@ -35,15 +36,17 @@ public class LessonGenerateController {
     @GetMapping
     String index(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO, Model model) {
         LocalDate now = LocalDate.now();
+        int month = now.getMonthValue();
         int year = now.getYear();
         int previousYear = year - 1;
         int nextYear = year + 1;
-        model.addAttribute("teacher", teacherDTO);
-        model.addAttribute("year", year);
-        model.addAttribute("previousYear", previousYear);
-        model.addAttribute("nextYear", nextYear);
-        model.addAttribute("months");
-        return "calendar/index";
+//        model.addAttribute("teacher", teacherDTO);
+//        model.addAttribute("year", year);
+//        model.addAttribute("previousYear", previousYear);
+//        model.addAttribute("nextYear", nextYear);
+//        model.addAttribute("months");
+       // return "calendar/index";
+        return "redirect:/teacher/calendar/" + month + "/" + year;
     }
 
     @GetMapping("/{year}")
@@ -52,11 +55,11 @@ public class LessonGenerateController {
         int previousYear = year - 1;
         int nextYear = year + 1;
         model.addAttribute("teacher", teacherDTO);
-        model.addAttribute("year", year);
+        model.addAttribute("thisYear", year);
         model.addAttribute("previousYear", previousYear);
         model.addAttribute("nextYear", nextYear);
         model.addAttribute("months");
-        return "calendar/index";
+        return "redirect:/teacher/calendar/1/" + year;
     }
 
     @GetMapping("/generate/month/{month}/{year}")
@@ -72,22 +75,27 @@ public class LessonGenerateController {
                                 @PathVariable int month,
                                 @PathVariable int year,
                                 Model model) {
-
+        int previousYear = year - 1;
+        int nextYear = year + 1;
         model.addAttribute("teacher", teacherDTO);
+        model.addAttribute("thisMonth", month);
+        model.addAttribute("thisYear", year);
+        model.addAttribute("previousYear", previousYear);
+        model.addAttribute("nextYear", nextYear);
+        model.addAttribute("months");
         boolean isGenerated = weekQueryService.checkMonthIsGenerated(year, month, teacherDTO.getId());
         if (isGenerated) {
             List<LessonsOfWeekDTO> weeks = lessonQueryService.getAllLessonsOfAllWeeksOfMonth(year, month, teacherDTO.getId());
             model.addAttribute("isGenerated", true);
             model.addAttribute("weeks", weeks);
-            model.addAttribute("thisMonth", month);
-            model.addAttribute("thisYear", year);
-            model.addAttribute("months");
+           // model.addAttribute("thisMonth", month);
+         //   model.addAttribute("thisYear", year);
+         //   model.addAttribute("months");
             return "calendar/month";
         }
+
         model.addAttribute("isGenerated", false);
-        model.addAttribute("thisMonth", month);
-        model.addAttribute("thisYear", year);
-        model.addAttribute("months");
+
         return "calendar/month";
 
     }
@@ -180,7 +188,7 @@ public class LessonGenerateController {
 
     @ModelAttribute("months")
     private Map<Integer, String> months() {
-        Map<Integer, String> months = new HashMap<>();
+        Map<Integer, String> months = new TreeMap<>();
         months.put(1, "styczeń");
         months.put(2, "luty");
         months.put(3, "marzec");
