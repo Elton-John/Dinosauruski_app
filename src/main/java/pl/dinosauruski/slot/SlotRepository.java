@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import pl.dinosauruski.models.Slot;
 import pl.dinosauruski.slot.dto.BookedSlotDTO;
 import pl.dinosauruski.slot.dto.FreeSlotDTO;
-import pl.dinosauruski.slot.dto.SlotInfoDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,10 +31,6 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
     @Query("SELECT new pl.dinosauruski.slot.dto.BookedSlotDTO(s.id, s.time, s.dayOfWeek) " +
             "FROM Slot s WHERE s.id = :id")
     Optional<BookedSlotDTO> findOneBookedSlotDtoById(@Param("id") Long id);
-
-    @Query("SELECT new pl.dinosauruski.slot.dto.SlotInfoDTO(s.id, s.dayOfWeek,s.time,s.regularStudent) " +
-            "FROM Slot s WHERE s.teacher.id = :id AND s.booked = TRUE ")
-    List<SlotInfoDTO> findAllBookedSlotInfoByTeacherId(@Param("id") Long id);
 
     @Query("SELECT new pl.dinosauruski.slot.dto.FreeSlotDTO(s.id, s.time, s.dayOfWeek) FROM Slot s WHERE s.teacher.id = :id AND s.booked = false AND s.archived = false ")
     List<FreeSlotDTO> findAllFreeSlotDTOByTeacherWhereBookedIsFalse(@Param("id") Long teacherId);

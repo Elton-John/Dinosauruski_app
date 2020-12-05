@@ -14,7 +14,7 @@ import java.time.LocalTime;
 @Getter
 public class LessonViewDTO {
     private Long id;
-      @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private DayOfWeek dayOfWeek;
     private Student student;
@@ -25,7 +25,7 @@ public class LessonViewDTO {
     private boolean cancelledByStudent;
     private boolean lastMinuteCancelled;
     private boolean rebooked;
-      private boolean paid;
+    private boolean paid;
     private boolean requiredPayment;
 
 }

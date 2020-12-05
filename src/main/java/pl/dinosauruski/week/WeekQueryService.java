@@ -19,21 +19,25 @@ import java.util.stream.Collectors;
 public class WeekQueryService {
     private WeekRepository weekRepository;
 
+
     public Week getOneOrThrow(Integer year, Integer numberOfWeek, Long teacherId) {
         return weekRepository.findByYearAndNumberAndTeacherId(year, numberOfWeek, teacherId)
                 .orElseThrow(EntityNotFoundException::new);
     }
+
 
     public Boolean checkIsGenerated(Integer year, Integer numberOfWeek, Long teacherId) {
         Week week = getOneOrThrow(year, numberOfWeek, teacherId);
         return week.getGenerated();
     }
 
+
     public Boolean checkCurrentWeekIsGenerated(Long teacherId) {
         int weekOfYear = getCurrentNumberOfWeek();
         int year = LocalDate.now().getYear();
         return checkIsGenerated(year, weekOfYear, teacherId);
     }
+
 
     public List<Week> getAllGeneratedWeeksAfterDate(Long teacherId, LocalDate date) {
         YearWeek yw = YearWeek.from(date);
@@ -42,6 +46,7 @@ public class WeekQueryService {
         LocalDate mondayDate = getDateByNumberOfWeekAndDayName(year, numberOfWeek, DayOfWeek.MONDAY.name());
         return weekRepository.findAllGeneratedWeeksAfterDate(mondayDate, teacherId);
     }
+
 
     public int getCurrentNumberOfWeek() {
         LocalDate now = LocalDate.now();
@@ -55,6 +60,7 @@ public class WeekQueryService {
         return date;
 
     }
+
 
     public List<LocalDate> getAllMondaysOfMonth(int year, int month) {
         List<LocalDate> datesOfMonth = getDatesOfMonth(year, month);
@@ -71,6 +77,7 @@ public class WeekQueryService {
         return mondays;
     }
 
+
     public List<LocalDate> getDatesOfMonth(int year, int month) {
         boolean isLeap = Year.isLeap(year);
         int length = Month.of(month).length(isLeap);
@@ -78,7 +85,6 @@ public class WeekQueryService {
         for (int i = 1; i <= length; i++) {
             LocalDate date = LocalDate.of(year, month, i);
             dates.add(date);
-           // date = date.plusDays(1);
         }
         return dates;
     }
@@ -106,6 +112,7 @@ public class WeekQueryService {
         return weeks;
 
     }
+
 
     public boolean checkMonthIsGenerated(int year, int month, Long teacherId) {
         Set<Week> weeks = getAllWeeksOfMonthYear(Month.of(month), year, teacherId);

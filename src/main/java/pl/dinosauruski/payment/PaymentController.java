@@ -66,12 +66,4 @@ public class PaymentController {
         return "redirect:/teacher/payments";
     }
 
-//    @GetMapping("/pdf")
-//    @ResponseBody
-//    String generatePdf() throws IOException, DocumentException {
-//      //  paymentQueryService.generatePdfFromHtml("thymeleaf_template");
-//        paymentQueryService.generatePdfFromHtml(paymentQueryService.parseThymeleafTemplate());
-//        return "thymeleaf_template";
-//    }
-
 }

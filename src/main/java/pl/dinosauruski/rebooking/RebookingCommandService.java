@@ -17,10 +17,11 @@ import javax.transaction.Transactional;
 @AllArgsConstructor
 public class RebookingCommandService {
     private RebookingRepository rebookingRepository;
-    private LessonQueryService lessonQueryService;
     private RebookingQueryService rebookingQueryService;
-    private LessonCommandService lessonCommandService;
     private StudentQueryService studentQueryService;
+    private LessonQueryService lessonQueryService;
+    private LessonCommandService lessonCommandService;
+
 
     public void create(Long id, Long notRegularStudentId, Long teacherId) {
         Rebooking rebooking = new Rebooking();
@@ -34,6 +35,7 @@ public class RebookingCommandService {
         lessonCommandService.updatePaymentForStudent(notRegularStudentId, teacherId);
     }
 
+
     public void update(RebookingDTO rebookingDTO, Long teacherId) {
         Rebooking rebooking = rebookingQueryService.getOneOrThrow(rebookingDTO.getId());
         Student notRegularStudent = rebookingDTO.getNotRegularStudent();
@@ -41,6 +43,7 @@ public class RebookingCommandService {
         lessonCommandService.updatePaymentForStudent(notRegularStudent.getId(), teacherId);
         rebookingRepository.save(rebooking);
     }
+
 
     public void cancelBookingOnceFreeLesson(Long id) {
         Lesson lesson = lessonQueryService.getOneOrThrow(id);
@@ -54,10 +57,9 @@ public class RebookingCommandService {
         Rebooking rebooking = lesson.getRebooking();
         delete(rebooking);
         lesson.setRequiredPayment(false);
-
-        //lessonRepository.save(lesson);
-        lessonCommandService.updatePaymentForStudent(studentId,teacherId);
+        lessonCommandService.updatePaymentForStudent(studentId, teacherId);
     }
+
 
     public void delete(Rebooking rebooking) {
         rebookingRepository.delete(rebooking);

@@ -14,15 +14,18 @@ import javax.transaction.Transactional;
 public class TeacherQueryService {
     private final TeacherRepository teacherRepository;
 
+
     public Teacher getOneOrThrow(Long id) {
         return teacherRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
+
     public TeacherEditDTO getOneDTOToEdit(Long id) {
         return teacherRepository.findEditableDataById(id)
                 .orElseThrow(EntityNotFoundException::new);
     }
+
 
     public Teacher getOneByEmail(String email) {
         return teacherRepository.findByEmail(email);

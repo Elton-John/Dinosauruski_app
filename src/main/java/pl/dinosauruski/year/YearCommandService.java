@@ -14,6 +14,7 @@ public class YearCommandService {
     private YearRepository yearRepository;
     private TeacherQueryService teacherQueryService;
 
+
     public YearForTeacher create(int year, Long teacherId) {
         YearForTeacher yearForTeacher = new YearForTeacher();
         yearForTeacher.setTeacher(teacherQueryService.getOneOrThrow(teacherId));
@@ -23,7 +24,6 @@ public class YearCommandService {
         YearForTeacher saveYear = yearRepository.save(yearForTeacher);
         return saveYear;
     }
-
 
 
     public void setGenerated(YearForTeacher yearForTeacher) {

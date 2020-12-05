@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface WeekRepository extends JpaRepository<Week, Long> {
 
+
     @Query("SELECT w FROM Week w WHERE w.year = :year AND w.numberOfWeek = :number and w.teacher.id = :id")
     Optional<Week> findByYearAndNumberAndTeacherId(@Param("year") Integer year,
                                                    @Param("number") Integer number,
@@ -24,6 +25,7 @@ public interface WeekRepository extends JpaRepository<Week, Long> {
             @Param("week") int weekOfYear,
             @Param("year") int year,
             @Param("id") Long teacherId);
+
 
     @Query("SELECT w FROM Week w WHERE w.mondayDate >= :monday and w.teacher.id = :id AND w.isGenerated = true")
     List<Week> findAllGeneratedWeeksAfterDate(@Param("monday") LocalDate monday,

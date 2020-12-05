@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import pl.dinosauruski.slot.DAY_OF_WEEK;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 @Setter
@@ -14,7 +13,7 @@ import java.time.LocalTime;
 
 public class BookedSlotDTO {
     private Long id;
-       private LocalTime time;
+    private LocalTime time;
     private DAY_OF_WEEK dayOfWeek;
 
     public String getDayAndTime() {

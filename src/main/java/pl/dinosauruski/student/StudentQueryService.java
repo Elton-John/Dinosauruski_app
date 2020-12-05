@@ -16,13 +16,16 @@ import java.util.stream.Collectors;
 public class StudentQueryService {
     private final StudentRepository studentRepository;
 
+
     public Student getOneOrThrow(Long id) {
         return studentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
+
     public List<Student> getAllByTeacherId(Long id) {
         return studentRepository.findAllByTeachersContainsTeacher(id);
     }
+
 
     public List<Student> getAllActiveStudentsByTeacherId(Long id) {
         List<Student> studentList = getAllByTeacherId(id);
@@ -30,6 +33,7 @@ public class StudentQueryService {
                 .filter(Student::getActive)
                 .collect(Collectors.toList());
     }
+
 
     public StudentDTO getOneStudentDTOOrThrow(Long id) {
         return studentRepository.findOneStudentDtoById(id).orElseThrow(EntityNotFoundException::new);

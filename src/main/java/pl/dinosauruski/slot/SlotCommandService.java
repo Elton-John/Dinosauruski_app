@@ -28,9 +28,10 @@ public class SlotCommandService {
     private final SlotQueryService slotQueryService;
     private final StudentQueryService studentQueryService;
     private final TeacherQueryService teacherQueryService;
-    private final LessonCommandService lessonCommandService;
     private final LessonQueryService lessonQueryService;
     private final WeekQueryService weekQueryService;
+    private final LessonCommandService lessonCommandService;
+
 
     public Slot create(Long teacherId, FreeSlotDTO freeSlotDTO) {
         Teacher teacher = teacherQueryService.getOneOrThrow(teacherId);
@@ -45,12 +46,14 @@ public class SlotCommandService {
         return slot;
     }
 
+
     public void updateFreeSlot(FreeSlotDTO freeSlotDTO) {
         Slot slot = slotQueryService.getOneOrThrow(freeSlotDTO.getId());
         slot.setDayOfWeek(freeSlotDTO.getDayOfWeek());
         slot.setTime(freeSlotDTO.getTime());
         slotRepository.save(slot);
     }
+
 
     public void updateBookedSlot(BookedSlotDTO bookedSlotDTO, LocalDate date, Long teacherId) {
         LocalDate now = LocalDate.now();
@@ -81,22 +84,21 @@ public class SlotCommandService {
         if (lessons.size() > 0) {
             lessonCommandService.generateLessonsBySlotForWeeks(savedSlot.getId(), weeks, teacherId);
         }
-
     }
+
 
     public void deleteFreeSlot(Long id) {
         //slotRepository.deleteById(id);
         slotQueryService.getOneOrThrow(id).setArchived(true);
     }
 
+
     public void deleteBookedSlot(Long slotId, LocalDate date, Long teacherId) {
         LocalDate now = LocalDate.now();
         if (date.isBefore(now)) {
             date = now;
         }
-
         List<Optional<Lesson>> lessons = lessonQueryService.getAllGeneratedLessonsBySlotAfterDate(slotId, date);
-
         lessons.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -139,6 +141,7 @@ public class SlotCommandService {
         slot.setRegularStudent(null);
 
     }
+
 
     public void makeSlotBooked(Long slotId, Long studentId, LocalDate date) {
         Slot slot = slotQueryService.getOneOrThrow(slotId);

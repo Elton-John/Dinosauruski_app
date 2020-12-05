@@ -36,6 +36,7 @@ public class StudentController {
         return "teachers/students/index";
     }
 
+
     @GetMapping("/active")
     String showOnlyActive(@SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
                           Model model) {
@@ -47,11 +48,13 @@ public class StudentController {
         return "teachers/students/index";
     }
 
+
     @GetMapping("/new")
     String newStudent(Model model) {
         model.addAttribute("student", new StudentDTO());
         return "teachers/students/new";
     }
+
 
     @PostMapping("/new")
     String create(@SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
@@ -65,6 +68,7 @@ public class StudentController {
         model.addAttribute("student", student);
         return "redirect:/teacher/students";
     }
+
 
     @GetMapping("/{id}/profile")
     String profile(@SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
@@ -84,12 +88,14 @@ public class StudentController {
         return "teachers/students/profile";
     }
 
+
     @GetMapping("/edit/{id}")
     String editForm(@PathVariable Long id,
                     Model model) {
         model.addAttribute("student", studentQueryService.getOneStudentDTOOrThrow(id));
         return "teachers/students/edit";
     }
+
 
     @PatchMapping("/edit/{id}")
     String edit(@PathVariable Long id,
@@ -102,6 +108,7 @@ public class StudentController {
         return "redirect:/teacher/students/" + id.toString() + "/profile";
     }
 
+
     @GetMapping("/submit/{id}")
     String submitDeleting(@PathVariable Long id, Model model) {
         StudentDTO studentDTO = studentQueryService.getOneStudentDTOOrThrow(id);
@@ -109,6 +116,7 @@ public class StudentController {
         model.addAttribute("valid", true);
         return "teachers/students/submit";
     }
+
 
     @DeleteMapping("/delete/{id}")
     String delete(@PathVariable("id") Long studentId,
@@ -130,8 +138,9 @@ public class StudentController {
         return "redirect:/teacher/students";
     }
 
+
     @GetMapping("/activate/{id}")
-    String activate(@PathVariable Long id, Model model) {
+    String activate(@PathVariable Long id) {
         studentCommandService.activate(id);
         return "redirect:/teacher/students/" + id.toString() + "/profile";
     }

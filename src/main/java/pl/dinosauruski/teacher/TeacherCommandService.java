@@ -24,6 +24,7 @@ public class TeacherCommandService {
     private final StudentQueryService studentQueryService;
     private final WeekCommandService weekCommandService;
 
+
     public void create(TeacherRegistrationFormDTO registrationForm) {
         //String hashedPassword = hashPassword(registrationForm.getPassword());
         Teacher teacher = new Teacher();
@@ -33,11 +34,11 @@ public class TeacherCommandService {
         teacher.setEmail(registrationForm.getEmail());
         //      teacher.setPassword(hashedPassword);
         teacher.setPassword(registrationForm.getPassword());
-
         teacherRepository.save(teacher);
         Teacher savedTeacher = teacherQueryService.getOneByEmail(teacher.getEmail());
         weekCommandService.generateWeeksOnesInYear(LocalDate.now().getYear(), savedTeacher.getId());
     }
+
 
     public Teacher update(TeacherEditDTO teacherEditDTO) {
         Teacher teacher = teacherRepository.getOne(teacherEditDTO.getId());
@@ -52,20 +53,11 @@ public class TeacherCommandService {
         teacherRepository.save(teacher);
     }
 
+
     public void delete(Teacher teacher) {
         teacherRepository.delete(teacher);
     }
 
-    public void updateAfterDeletingStudent(Long teacherId, Long studentId) {
-        Teacher teacher = teacherQueryService.getOneOrThrow(teacherId);
-        Student student = studentQueryService.getOneOrThrow(studentId);
-        Set<Student> students = teacher.getStudents();
-        Set<Student> studentSet = students.stream()
-                .filter(student1 -> !student1.equals(student))
-                .collect(Collectors.toSet());
-        teacher.setStudents(studentSet);
-        teacherRepository.save(teacher);
-    }
 
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());

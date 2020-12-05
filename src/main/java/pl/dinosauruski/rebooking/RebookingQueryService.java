@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 public class RebookingQueryService {
     private RebookingRepository rebookingRepository;
 
+
     public RebookingDTO getOneDtoOrThrow(Long lessonId) {
         return rebookingRepository.findOneDtoById(lessonId).orElseThrow(EntityNotFoundException::new);
     }

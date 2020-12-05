@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dinosauruski.lesson.dto.LessonDTO;
 import pl.dinosauruski.lesson.dto.LessonPaymentDTO;
-import pl.dinosauruski.models.*;
-import pl.dinosauruski.rebooking.RebookingCommandService;
+import pl.dinosauruski.models.Lesson;
+import pl.dinosauruski.models.Slot;
+import pl.dinosauruski.models.Student;
+import pl.dinosauruski.models.Week;
 import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.student.StudentQueryService;
 import pl.dinosauruski.week.WeekCommandService;
@@ -26,10 +28,9 @@ public class LessonCommandService {
     private LessonRepository lessonRepository;
     private LessonQueryService lessonQueryService;
     private SlotQueryService slotQueryService;
-    private WeekCommandService weekCommandService;
     private WeekQueryService weekQueryService;
-  //  private RebookingCommandService rebookingCommandService;
     private StudentQueryService studentQueryService;
+    private WeekCommandService weekCommandService;
 
 
     public void create(LessonDTO lessonDTO) {
@@ -47,47 +48,6 @@ public class LessonCommandService {
         lessonRepository.save(lesson);
     }
 
-    public boolean cancelling(Long lessonId, String cancel) {
-        boolean result = true;
-        Lesson lesson = lessonQueryService.getOneOrThrow(lessonId);
-        Optional<Student> studentWhoPaid = savePaymentForStudentBeforeDeleteOrUpdateLesson(lesson);
-        lesson.setCancelledByTeacher(false);
-        lesson.setCancelledByStudent(false);
-        lesson.setLastMinuteCancelled(false);
-        lesson.setRequiredPayment(false);
-        switch (cancel) {
-            case "byTeacher":
-                lesson.setCancelledByTeacher(true);
-                break;
-            case "byStudent":
-                lesson.setCancelledByStudent(true);
-
-                break;
-            case "lastMinute":
-                lesson.setLastMinuteCancelled(true);
-                lesson.setRequiredPayment(true);
-                break;
-            default:
-                result = false;
-        }
-        lessonRepository.save(lesson);
-        studentWhoPaid.ifPresent(student ->
-                updatePaymentForStudent(student.getId(), lesson.getSlot().getTeacher().getId()));
-        return result;
-    }
-
-
-    public void delete(Long lessonId, Long teacherId) {
-        Lesson lesson = lessonQueryService.getOneOrThrow(lessonId);
-        Optional<Student> studentWhoPaid = savePaymentForStudentBeforeDeleteOrUpdateLesson(lesson);
-
-        lesson.setSlot(null);
-        lesson.setPayment(null);
-        lesson.setWeek(null);
-        lessonRepository.deleteById(lessonId);
-        studentWhoPaid.ifPresent(student ->
-                updatePaymentForStudent(student.getId(), teacherId));
-    }
 
     public void generateWeekLessonsForTeacher(Week week, Long teacherId) {
         List<Slot> slots = slotQueryService.getAllSlotsByTeacherId(teacherId);
@@ -127,7 +87,56 @@ public class LessonCommandService {
         }
     }
 
+    public void generateLessonsBySlotForWeeks(Long slotId, List<Week> weeks, Long teacherId) {
+        Slot slot = slotQueryService.getOneOrThrow(slotId);
+        weeks.forEach(week -> {
+            Lesson lesson = new Lesson();
+            LocalDate date = weekQueryService.getDateByNumberOfWeekAndDayName(week.getYear(), week.getNumberOfWeek(), slot.getDayOfWeek().name());
+            lesson.setDate(date);
+            lesson.setSlot(slot);
+            lesson.setWeek(week);
+            lesson.setCompleted(false);
+            lesson.setCancelledByTeacher(false);
+            lesson.setCancelledByStudent(false);
+            lesson.setLastMinuteCancelled(false);
+            lesson.setRebooked(false);
+            lesson.setArchived(false);
+            lesson.setRequiredPayment(true);
+            lessonRepository.save(lesson);
+        });
 
+        updatePaymentForStudent(slot.getRegularStudent().getId(), teacherId);
+    }
+
+
+    public boolean cancelling(Long lessonId, String cancel) {
+        boolean result = true;
+        Lesson lesson = lessonQueryService.getOneOrThrow(lessonId);
+        Optional<Student> studentWhoPaid = savePaymentForStudentBeforeDeleteOrUpdateLesson(lesson);
+        lesson.setCancelledByTeacher(false);
+        lesson.setCancelledByStudent(false);
+        lesson.setLastMinuteCancelled(false);
+        lesson.setRequiredPayment(false);
+        switch (cancel) {
+            case "byTeacher":
+                lesson.setCancelledByTeacher(true);
+                break;
+            case "byStudent":
+                lesson.setCancelledByStudent(true);
+
+                break;
+            case "lastMinute":
+                lesson.setLastMinuteCancelled(true);
+                lesson.setRequiredPayment(true);
+                break;
+            default:
+                result = false;
+        }
+        lessonRepository.save(lesson);
+        studentWhoPaid.ifPresent(student ->
+                updatePaymentForStudent(student.getId(), lesson.getSlot().getTeacher().getId()));
+        return result;
+    }
 
 
     public Optional<Student> savePaymentForStudentBeforeDeleteOrUpdateLesson(Lesson lesson) {
@@ -149,31 +158,22 @@ public class LessonCommandService {
         lesson.setPaid(false);
         lesson.setRequiredPayment(true);
         lesson.setAddedPayment(BigDecimal.valueOf(0));
-        // lesson.setPayment(null);
         lessonRepository.save(lesson);
         return Optional.ofNullable(studentWhoPaid);
     }
 
-    public void generateLessonsBySlotForWeeks(Long slotId, List<Week> weeks, Long teacherId) {
-        Slot slot = slotQueryService.getOneOrThrow(slotId);
-        weeks.forEach(week -> {
-            Lesson lesson = new Lesson();
-            LocalDate date = weekQueryService.getDateByNumberOfWeekAndDayName(week.getYear(), week.getNumberOfWeek(), slot.getDayOfWeek().name());
-            lesson.setDate(date);
-            lesson.setSlot(slot);
-            lesson.setWeek(week);
-            lesson.setCompleted(false);
-            lesson.setCancelledByTeacher(false);
-            lesson.setCancelledByStudent(false);
-            lesson.setLastMinuteCancelled(false);
-            lesson.setRebooked(false);
-            lesson.setArchived(false);
-            lesson.setRequiredPayment(true);
-            lessonRepository.save(lesson);
-        });
 
-        updatePaymentForStudent(slot.getRegularStudent().getId(), teacherId);
+    public void delete(Long lessonId, Long teacherId) {
+        Lesson lesson = lessonQueryService.getOneOrThrow(lessonId);
+        Optional<Student> studentWhoPaid = savePaymentForStudentBeforeDeleteOrUpdateLesson(lesson);
+        lesson.setSlot(null);
+        lesson.setPayment(null);
+        lesson.setWeek(null);
+        lessonRepository.deleteById(lessonId);
+        studentWhoPaid.ifPresent(student ->
+                updatePaymentForStudent(student.getId(), teacherId));
     }
+
 
     public void updatePaymentForStudent(Long studentId, Long teacherId) {
         Student regularStudent = studentQueryService.getOneOrThrow(studentId);
@@ -201,5 +201,4 @@ public class LessonCommandService {
             }
         }
     }
-
 }

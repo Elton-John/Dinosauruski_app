@@ -13,7 +13,9 @@ import java.util.Optional;
 @Repository
  interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
+
     Teacher findByEmail(String email);
+
 
     @Query("SELECT new pl.dinosauruski.teacher.dto.TeacherEditDTO(t.id,t.name, t.surname, t.nickname) FROM Teacher t WHERE t.id = :id")
     Optional<TeacherEditDTO> findEditableDataById(@Param("id") Long id);

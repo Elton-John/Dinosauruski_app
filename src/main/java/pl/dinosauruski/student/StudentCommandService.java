@@ -2,7 +2,6 @@ package pl.dinosauruski.student;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.dinosauruski.lesson.LessonCommandService;
 import pl.dinosauruski.lesson.LessonQueryService;
 import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Student;
@@ -29,10 +28,10 @@ public class StudentCommandService {
     private StudentRepository studentRepository;
     private StudentQueryService studentQueryService;
     private TeacherQueryService teacherQueryService;
-    private TeacherCommandService teacherCommandService;
-    private SlotCommandService slotCommandService;
     private SlotQueryService slotQueryService;
     private LessonQueryService lessonQueryService;
+    private TeacherCommandService teacherCommandService;
+    private SlotCommandService slotCommandService;
     private RebookingCommandService rebookingCommandService;
 
 
@@ -41,10 +40,10 @@ public class StudentCommandService {
         student.setName(studentDTO.getName());
         student.setSurname(studentDTO.getSurname());
         student.setEmail(studentDTO.getEmail());
-        //student.setPriceForOneLesson(studentDTO.getPriceForOneLesson());
-        student.setOverpayment(studentDTO.getOverpayment());
+               student.setOverpayment(studentDTO.getOverpayment());
         studentRepository.save(student);
     }
+
 
     public Student create(StudentDTO studentDTO, Long teacherId) {
         Student student = new Student();
@@ -64,6 +63,7 @@ public class StudentCommandService {
         return savedStudent;
     }
 
+
     public void suspend(Long teacherId, Long studentId, LocalDate date) {
         Student student = studentQueryService.getOneOrThrow(studentId);
         student.getSlots().forEach(slot -> slotCommandService.makeSlotFree(slot.getId(), studentId, date));
@@ -77,6 +77,7 @@ public class StudentCommandService {
         updateStudentStatus(studentId);
     }
 
+
     private void updateStudentStatus(Long studentId) {
         Student student = studentQueryService.getOneOrThrow(studentId);
         int count = slotQueryService.getAllSlotsByStudent(studentId);
@@ -86,6 +87,7 @@ public class StudentCommandService {
             student.setActive(true);
         }
     }
+
 
     public void activate(Long studentId) {
         Student student = studentQueryService.getOneOrThrow(studentId);

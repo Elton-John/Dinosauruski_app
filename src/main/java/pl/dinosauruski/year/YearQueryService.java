@@ -14,14 +14,15 @@ import java.util.Optional;
 public class YearQueryService {
     private YearRepository yearRepository;
 
-    public boolean checkYearExist(int year, Long teacherId) {
 
+    public boolean checkYearExist(int year, Long teacherId) {
         Optional<YearForTeacher> optionalYear = yearRepository.findByYearAndTeacherId(year, teacherId);
-        return  optionalYear.isPresent();
+        return optionalYear.isPresent();
     }
 
+
     public YearForTeacher getYearForTeacher(int year, Long teacherId) {
-        return yearRepository.findByYearAndTeacherId(year,teacherId).orElseThrow(EntityNotFoundException::new);
+        return yearRepository.findByYearAndTeacherId(year, teacherId).orElseThrow(EntityNotFoundException::new);
     }
 
 

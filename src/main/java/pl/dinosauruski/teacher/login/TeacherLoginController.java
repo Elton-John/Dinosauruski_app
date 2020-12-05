@@ -17,12 +17,14 @@ import javax.validation.Valid;
 class TeacherLoginController {
     private final TeacherLoginService teacherLoginService;
 
+
     @GetMapping
     public String loginPage(@SessionAttribute(value = "loggedTeacher", required = false) TeacherDTO loggedTeacher,
                             Model model) {
         model.addAttribute("teacherLoginForm", new TeacherLoginFormDTO());
         return loggedTeacher != null ? "redirect:/teacher/cockpit" : "teachers/login";
     }
+
 
     @PostMapping
     public String login(@Valid @ModelAttribute("teacherLoginForm") TeacherLoginFormDTO loginFormDTO,
@@ -41,6 +43,7 @@ class TeacherLoginController {
         session.setAttribute("loggedTeacher", teacherDTO);
         return "redirect:/teacher/cockpit";
     }
+
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {

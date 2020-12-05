@@ -17,7 +17,6 @@ import pl.dinosauruski.teacher.dto.TeacherDTO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,11 +38,13 @@ class SlotController {
         return "slots/index";
     }
 
+
     @GetMapping("/new")
     String newSlot(Model model) {
         model.addAttribute("slot", new FreeSlotDTO());
         return "slots/new";
     }
+
 
     @PostMapping("/new")
     String create(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
@@ -55,12 +56,14 @@ class SlotController {
         return "redirect:/teacher/slots";
     }
 
+
     @GetMapping("/free/edit/{id}")
     String editForm(@PathVariable Long id, Model model) {
         model.addAttribute("slot", slotQueryService.getOneFreeSlotDtoOrThrow(id));
         model.addAttribute("days");
         return "slots/freeSlotEdit";
     }
+
 
     @PatchMapping("/free/edit")
     String edit(@Valid @ModelAttribute("slot") FreeSlotDTO freeSlotDTO, BindingResult result) {
@@ -71,6 +74,7 @@ class SlotController {
         return "redirect:/teacher/slots";
     }
 
+
     @GetMapping("/booked/edit/{id}")
     String editBookedSlotForm(@PathVariable Long id, Model model) {
         model.addAttribute("slot", slotQueryService.getOneBookedSlotDtoOrThrow(id));
@@ -78,6 +82,7 @@ class SlotController {
         model.addAttribute("valid", true);
         return "slots/bookedSlotEdit";
     }
+
 
     @PatchMapping("/booked/edit")
     String editBookedSlot(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
@@ -105,6 +110,7 @@ class SlotController {
 
     }
 
+
     @GetMapping("/free/submit/{id}")
     String submitDeleting(@PathVariable Long id, Model model) {
         FreeSlotDTO freeSlotDTO = slotQueryService.getOneFreeSlotDtoOrThrow(id);
@@ -112,11 +118,13 @@ class SlotController {
         return "slots/freeSlotSubmit";
     }
 
+
     @DeleteMapping("free/delete/{id}")
     String delete(@PathVariable Long id) {
         slotCommandService.deleteFreeSlot(id);
         return "redirect:/teacher/slots";
     }
+
 
     @GetMapping("/booked/submit/{id}")
     String submitDeletingBookedSlot(@PathVariable Long id, Model model) {
@@ -125,6 +133,7 @@ class SlotController {
         return "slots/bookedSlotSubmit";
     }
 
+
     @DeleteMapping("booked/delete/{id}")
     String deleteBookedSlot(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
                             @PathVariable Long id, HttpServletRequest request) {
@@ -132,6 +141,7 @@ class SlotController {
         slotCommandService.deleteBookedSlot(id, date, loggedTeacher.getId());
         return "redirect:/teacher/slots";
     }
+
 
     @GetMapping("/booking/{studentId}")
     String editSlot(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
@@ -150,6 +160,7 @@ class SlotController {
         return "slots/cancelBooking";
     }
 
+
     @PostMapping("/booking")
     String bookSlot(@SessionAttribute("student") StudentDTO studentDTO,
                     @RequestParam("date") String dateAsString,
@@ -161,6 +172,7 @@ class SlotController {
         return "redirect:/teacher/slots/booking/" + studentDTO.getId();
     }
 
+
     @DeleteMapping("/cancel/{id}")
     String cancelSlot(@SessionAttribute("student") StudentDTO studentDTO,
                       @PathVariable Long id,
@@ -169,5 +181,4 @@ class SlotController {
         slotCommandService.makeSlotFree(id, studentDTO.getId(), date);
         return "redirect:/teacher/slots/booking/" + studentDTO.getId();
     }
-
 }

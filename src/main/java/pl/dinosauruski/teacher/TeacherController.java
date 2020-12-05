@@ -23,7 +23,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/teacher")
 class TeacherController {
-
     private final TeacherCommandService teacherCommandService;
     private final TeacherQueryService teacherQueryService;
     private final SlotQueryService slotQueryService;
@@ -48,15 +47,14 @@ class TeacherController {
         Boolean isGenerated = weekQueryService.checkCurrentWeekIsGenerated(id);
         if (isGenerated) {
             model.addAttribute("isGenerated", true);
-          //  List<Lesson> lessons = lessonQueryService.getAllThisWeekLessonsByTeacher(id);
-           LessonsOfWeekDTO lessons = lessonQueryService.getAllThisWeekLessonsByTeacher(id);
-          //  model.addAttribute("thisWeekLessons", lessons);
-            model.addAttribute("week", lessons);
+                    LessonsOfWeekDTO lessons = lessonQueryService.getAllThisWeekLessonsByTeacher(id);
+                     model.addAttribute("week", lessons);
         } else {
             model.addAttribute("isGenerated", false);
         }
         return "teachers/cockpit";
     }
+
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
@@ -64,6 +62,7 @@ class TeacherController {
         model.addAttribute("teacher", teacherEditDTO);
         return "teachers/edit";
     }
+
 
     @PatchMapping("/{id}")
     public String update(@PathVariable Long id,
@@ -79,19 +78,6 @@ class TeacherController {
         return "redirect:cockpit";
     }
 
-//    @PatchMapping("/{id}")
-//    public String update(@PathVariable Long id,
-//                         @Valid @ModelAttribute TeacherEditDTO teacherEditDTO,
-//                         BindingResult result,
-//                         Model model) {
-//        teacherService.getOneOrThrow(id);
-//        if (result.hasErrors()) {
-//            return "teachers/edit";
-//        }
-//        Teacher updatedTeacher = teacherService.update(teacherEditDTO);
-//        model.addAttribute("teacher", updatedTeacher);
-//        return "redirect:cockpit";
-//    }
 
     @GetMapping("/submit/{id}")
     public String submitDeleting(@PathVariable Long id, Model model) {
@@ -112,9 +98,4 @@ class TeacherController {
         return "redirect:/";
     }
 
-
-//    @ModelAttribute("freeSlots")
-//    public List<Slot> slots() {
-//        return slotQueryService.getAllFreeSlots();
-//    }
 }

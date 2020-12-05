@@ -23,6 +23,7 @@ public class WeekCommandService {
     private YearQueryService yearQueryService;
     private YearCommandService yearCommandService;
 
+
     public void generateWeeksOnesInYear(int year, Long teacherId) {
         boolean yearExist = yearQueryService.checkYearExist(year, teacherId);
         if (!yearExist) {
@@ -30,7 +31,6 @@ public class WeekCommandService {
         }
         YearForTeacher yearForTeacher = yearQueryService.getYearForTeacher(year, teacherId);
         if (!yearForTeacher.getIsGenerated()) {
-
 
             LocalDate date = LocalDate.of(year, 1, 1);
             int weeksInYear = (int) IsoFields.WEEK_OF_WEEK_BASED_YEAR.rangeRefinedBy(date).getMaximum();
@@ -48,6 +48,7 @@ public class WeekCommandService {
         }
 
     }
+
 
     public void setGenerated(Week week) {
         week.setGenerated(true);
