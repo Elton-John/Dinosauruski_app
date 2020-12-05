@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<p>Strona <span th:text="${url}"></span> nie istnieje</p>
+<!--<p th:text="${url}">url</p>-->
+<!--<p th:text="${errorMessage}">message</p>-->
+<!--<p th:text="${exception}">exception</p>-->
+<a th:href="@{/teacher/cockpit}">wróć </a>
+</body>
+</html>

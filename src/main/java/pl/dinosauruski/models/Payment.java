@@ -2,26 +2,30 @@ package pl.dinosauruski.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.dinosauruski.models.Student;
-import pl.dinosauruski.models.Teacher;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Setter
 @Getter
 public class Payment {
     @Id
-    @Setter
-    @Getter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     @ManyToOne
     private Student student;
     @ManyToOne
     private Teacher teacher;
-    private Double sum;
+    private BigDecimal sum;
+    @OneToMany(mappedBy = "payment")
+    private List<Lesson> paidLessons = new ArrayList<>();
 
 
 }
