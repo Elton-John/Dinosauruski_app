@@ -1,6 +1,7 @@
 package pl.dinosauruski.slot;
 
 import lombok.AllArgsConstructor;
+import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import pl.dinosauruski.teacher.dto.TeacherDTO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -73,19 +75,26 @@ class SlotController {
     String editBookedSlotForm(@PathVariable Long id, Model model) {
         model.addAttribute("slot", slotQueryService.getOneBookedSlotDtoOrThrow(id));
         model.addAttribute("days");
+        model.addAttribute("valid", true);
         return "slots/bookedSlotEdit";
     }
 
     @PatchMapping("/booked/edit")
     String editBookedSlot(@SessionAttribute(value = "loggedTeacher") TeacherDTO loggedTeacher,
-                          @Valid @ModelAttribute("slot") BookedSlotDTO bookedSlotDTO,
-                          BindingResult result,
-                          Model model,
-                          HttpServletRequest request) {
-        if (result.hasErrors()) {
+                          @ModelAttribute("slot") BookedSlotDTO bookedSlotDTO,
+                          @RequestParam("date") String dateAsString,
+                          Model model
+    ) {
+        boolean isDate = GenericValidator.isDate(dateAsString, "yyyy-MM-dd", true);
+        if (!isDate) {
+            model.addAttribute("slot", slotQueryService.getOneBookedSlotDtoOrThrow(bookedSlotDTO.getId()));
+            model.addAttribute("days");
+            model.addAttribute("valid", false);
+            model.addAttribute("error", "Pole 'data' nie może być puste. Prawidłowy format:\n \"yyyy-MM-dd\"");
             return "slots/bookedSlotEdit";
         }
-        LocalDate date = LocalDate.parse(request.getParameter("date"));
+
+        LocalDate date = LocalDate.parse(dateAsString);
         if (lessonQueryService.generatedLessonsWereRebookedOrCancelByTeacherAfterDate(bookedSlotDTO.getId(), date)) {
             //List<Week> weeksToChangedManual = slotQueryService.getWeeksWhereGeneratedLessonsWereChanged(bookedSlotDTO, date);
             return "redirect:/teacher/slots";
@@ -148,7 +157,7 @@ class SlotController {
 
 
         LocalDate date = LocalDate.parse(dateAsString);
-        slotCommandService.makeSlotBooked(slotId, studentDTO.getId(),date);
+        slotCommandService.makeSlotBooked(slotId, studentDTO.getId(), date);
         return "redirect:/teacher/slots/booking/" + studentDTO.getId();
     }
 

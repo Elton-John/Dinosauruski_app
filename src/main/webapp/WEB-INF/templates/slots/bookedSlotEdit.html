@@ -35,6 +35,9 @@
                 <div  class="form-group">
                     <label for="date">Data z przyszłości, od której termin będzie zmieniony:</label>
                     <input type="date" class="form-control" name="date" id="date"/>
+                    <div th:if="${valid}==false">
+                        <span class="text-danger" th:text="${error}"></span>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-warning px-5 text-uppercase">Zapisz</button>

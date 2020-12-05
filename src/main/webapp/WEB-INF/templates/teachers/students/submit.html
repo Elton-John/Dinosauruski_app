@@ -35,6 +35,10 @@
                 <div class="form-group">
                     <label for="date">Data, od której student będzie zawieszony:</label>
                     <input type="date" class="form-control" name="date" id="date"/>
+                    <div th:if="${valid}==false">
+                        <span class="text-danger" th:text="${error}"></span>
+                    </div>
+<!--                    <p  class="text-danger" th:errors="${date}"></p>-->
                 </div>
                 <button type="submit" class="btn btn-danger text-uppercase px-5">Zawieś</button>
             </form>

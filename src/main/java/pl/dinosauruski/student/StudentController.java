@@ -1,6 +1,7 @@
 package pl.dinosauruski.student;
 
 import lombok.AllArgsConstructor;
+import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +13,7 @@ import pl.dinosauruski.teacher.dto.TeacherDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -104,14 +106,26 @@ public class StudentController {
     String submitDeleting(@PathVariable Long id, Model model) {
         StudentDTO studentDTO = studentQueryService.getOneStudentDTOOrThrow(id);
         model.addAttribute("student", studentDTO);
+        model.addAttribute("valid", true);
         return "teachers/students/submit";
     }
 
     @DeleteMapping("/delete/{id}")
     String delete(@PathVariable("id") Long studentId,
                   @SessionAttribute("loggedTeacher") TeacherDTO loggedTeacher,
-                  HttpServletRequest request) {
-        LocalDate date = LocalDate.parse(request.getParameter("date"));
+                  @RequestParam("date") @NotBlank String dateAsString,
+                  Model model
+    ) {
+
+        boolean isDate = GenericValidator.isDate(dateAsString, "yyyy-MM-dd", true);
+        if (!isDate) {
+            StudentDTO studentDTO = studentQueryService.getOneStudentDTOOrThrow(studentId);
+            model.addAttribute("student", studentDTO);
+            model.addAttribute("valid", false);
+            model.addAttribute("error", "Pole 'data' nie może być puste. Prawidłowy format:\n \"yyyy-MM-dd\"");
+            return "teachers/students/submit";
+        }
+        LocalDate date = LocalDate.parse(dateAsString);
         studentCommandService.suspend(loggedTeacher.getId(), studentId, date);
         return "redirect:/teacher/students";
     }

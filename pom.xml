@@ -152,6 +152,12 @@
             <artifactId>guava</artifactId>
             <version>29.0-jre</version>
         </dependency>
+
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.6</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>Dinosauruski_app</finalName>

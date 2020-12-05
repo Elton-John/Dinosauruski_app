@@ -14,8 +14,7 @@ import java.time.LocalTime;
 
 public class BookedSlotDTO {
     private Long id;
-    @NotNull(message = "Pole nie może być puste")
-    private LocalTime time;
+       private LocalTime time;
     private DAY_OF_WEEK dayOfWeek;
 
     public String getDayAndTime() {
