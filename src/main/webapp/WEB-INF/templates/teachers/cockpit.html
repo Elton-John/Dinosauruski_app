@@ -61,7 +61,7 @@
             </nav>
         </div>
 
-        <!--        <div class="col-sm-9 text-white bg-dark pl-5 py-5">-->
+
         <div class="col-sm-8 text-white bg-dark pl-4 py-2  border-right border-success">
 
 
@@ -175,15 +175,14 @@
         <div class="col-sm-1.5 text-white bg-dark float-right text-center py-5 px-3">
             <h5 class="text-uppercase text-success">Wolne terminy</h5>
             <div th:each="slot : ${freeSlots}">
-                <a class="badge badge-warning btn-block my-2 py-1  "
+                <a class="badge badge-success btn-block my-2 py-1  "
                    th:href="@{/teacher/slots/booked/edit/{id}(id=${slot.getId()})}">
                     <span th:text="${slot.time} +' '+${slot.dayOfWeek.translation}">termin</span>
                 </a>
             </div>
 
-            <!--            <div class="text-center">-->
-            <a th:href="@{/teacher/slots}" class="btn btn-success mt-4 ">Zarządaj terminami</a>
-            <!--            </div>-->
+            <a th:href="@{/teacher/slots}" class="btn btn-success mt-4 text-uppercase">Zarządaj</a>
+
         </div>
     </div>
 </div>

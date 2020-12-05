@@ -19,8 +19,8 @@
 
             <form th:method="PATCH" th:action="@{/teacher/students/edit/{id}(id=${student.getId()})}"
                   th:object="${student}">
-                <input th:hidden="*{priceForOneLesson}">
-<!--                <input th:hidden="*{overpayment}"> -->
+                <input type="hidden"  th:field="*{priceForOneLesson}">
+
                 <div class="form-group">
                     <label for="name">Imię:</label>
                     <input type="text" class="form-control" th:field="*{name}" id="name">

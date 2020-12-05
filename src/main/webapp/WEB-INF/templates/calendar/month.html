@@ -82,7 +82,7 @@
 
                                         <tr class="text-white">
                                             <div class="bg.light" th:if="${lesson.cancelledByTeacher}==true">
-                                                <td class="bg-danger text-center px-1">
+                                                <td class=" text-center px-1">
                                                     <a class="badge badge-secondary"
                                                        th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
                                                         <span th:text="${lesson.time} + ' ' + ${lesson.student.name} +' '+ ${lesson.student.surname}"></span>
@@ -95,7 +95,7 @@
 
                                             <div class="bg.light" th:if="${lesson.cancelledByStudent}==true">
                                                 <div th:unless="${lesson.rebooked}">
-                                                    <td class="bg-success text-center px-1">
+                                                    <td class=" text-center px-1">
                                                         <a class="badge badge-secondary"
                                                            th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
                                                             <span th:text="${lesson.time} + ' ' + ${lesson.student.name} +' '+ ${lesson.student.surname}"></span>
@@ -111,7 +111,7 @@
                                                     </td>
                                                 </div>
                                                 <div th:if="${lesson.rebooked}==true">
-                                                    <td class="bg-info text-center px-1">
+                                                    <td class=" text-center px-1">
                                                         <a class="badge badge-dark"
                                                            th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
                                                             <span th:text="${lesson.time} + ' ' + ${lesson.student.name} +' '+ ${lesson.student.surname}"></span>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
-head>
+
 <!-- Required meta tags -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,20 +19,19 @@ head>
 <div class="container-fluid pl-0">
     <div class="row">
 
-        <div class="col-sm-3 px-0">
+        <div class="col-sm-2.5 px-0">
             <nav class="nav flex-column nav-pills list-group  ml-0">
                 <a class="nav-link  list-group-item  text-white bg-secondary py-5 px-5"
-                   th:href="@{/teacher/cockpit}"><h3>
-                    AKTUALNY PLAN</h3>
+                   th:href="@{/teacher/cockpit}"><h4> AKTUALNY PLAN</h4>
                 </a>
                 <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
-                   th:href="@{/teacher/calendar}"><h3>KALENDARZ</h3>
+                   th:href="@{/teacher/calendar}"><h4>KALENDARZ</h4>
                 </a>
                 <a class="nav-link list-group-item  text-white bg-secondary py-5 px-5"
-                   th:href="@{/teacher/payments}"><h3>OPŁATY</h3>
+                   th:href="@{/teacher/payments}"><h4>OPŁATY</h4>
                 </a>
                 <a class="nav-link list-group-item  text-white bg-dark py-5 px-5"
-                   th:href="@{/teacher/students}"><h3>STUDENCI</h3>
+                   th:href="@{/teacher/students}"><h4>STUDENCI</h4>
                 </a>
                 <a class="nav-link  disabled text-dark  bg-secondary  py-5 px-5" href="#" tabindex="-1"
                    aria-disabled="true">MATERIAŁY</a>
@@ -45,82 +44,119 @@ head>
 
         <div class="col-sm-9 text-white bg-dark pl-5 pb-5">
             <a class="btn btn-info text-uppercase mb-5" th:href="@{/teacher/students}"> Wróć do listy</a>
-            <h1 th:text="${student.name}+' '+${student.surname}">Imię i nazwisko</h1>
-            <!--            <h1 th:text="${student.surname}">Nazwisko</h1>-->
-            <p th:text="${student.email}">email</p>
-            <!--            <p th:text="${student.active} ? 'AKTYWNY' : 'ZAWIESZONY'"></p>-->
-            <div th:if="${student.active}==true">
-                <span class="badge badge-success text-uppercase px-5 ">Aktywny</span>
-            </div>
 
-            <div th:if="${student.active}==false">
-                <span class="badge badge-danger text-uppercase px-5 ">Zawieszony</span>
-            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+
+                        <a th:href="@{/teacher/students/edit/{id}(id=${student.getId()})}">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square"
+                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd"
+                                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                            </svg>
+                        </a>
+                        <h1 class="text-uppercase" th:text="${student.name}+' '+${student.surname}">Imię i nazwisko
+
+                        </h1>
+                        <div th:if="${student.active}==true">
+                            <span class="badge badge-success text-uppercase px-5 ">Aktywny</span>
+                        </div>
+
+                        <div th:if="${student.active}==false">
+                            <span class="badge badge-danger text-uppercase px-5 ">Zawieszony</span>
+                        </div>
+
+                        <p class="mt-2" th:text="${student.email}">email</p>
 
 
-            <p th:text="${student.priceForOneLesson}+' zł'">cena</p>
-            <a th:href="@{/teacher/students/edit/{id}(id=${student.getId()})}" class="btn btn-warning text-uppercase">
-                edytuj dane personalne</a>
+                        <p class="mt-2" th:text="${student.priceForOneLesson}+' zł'">cena</p>
 
 
-            <div th:each="slot : ${slots}">
-                <div th:if="${slot.archived}==true">
-                    <span class="badge badge-secondary" th:text="${slot.dayOfWeek.translation} + ' ' + ${slot.time}">dzień tygodnia</span>
-                    <span class="text-secondary">archive</span>
+                        <h5 class="text-uppercase text-success mt-5">Stałe terminy
+                            <span th:if="${student.active} == true">
+                                <a th:href="@{/teacher/slots/booking/{studentId}(studentId=${student.getId()})}">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square"
+                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd"
+                                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                            </svg>
+                            </a>
+                            </span>
+                        </h5>
+
+                        <div th:each="slot : ${slots}">
+                            <div th:if="${slot.archived}==true">
+                                    <span class="badge badge-secondary"
+                                          th:text="${slot.dayOfWeek.translation} + ' ' + ${slot.time}">dzień tygodnia</span>
+                                <span class="text-secondary">archive</span>
+                            </div>
+                            <div th:if="${slot.archived}==false">
+                                    <span class="badge badge-info"
+                                          th:text="${slot.dayOfWeek.translation} + ' ' + ${slot.time}">dzień tygodnia</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-5">
+
+                            <div th:if="${student.active}==true">
+                                <a class="btn btn-danger text-uppercase"
+                                   th:href="@{/teacher/students/submit/{id}(id=${student.getId()})}"> Zawieś
+                                    studenta</a>
+                            </div>
+
+                            <div th:if="${student.active}==false">
+                                <a class="btn btn-danger text-uppercase"
+                                   th:href="@{/teacher/students/activate/{id}(id=${student.getId()})}"> Aktywuj
+                                    studenta</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+
+                        <h5 class="text-uppercase text-success"> Zaplanowane lekcje w tym miesiącu: <span
+                                th:text="${countPlannedThisMonth}">X</span></h5>
+                        <div th:each="lesson : ${plannedLessonThisMonth}">
+
+                            <div th:if="${lesson.paid}==true">
+                                <a class="badge badge-success"
+                                   th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                                    <span th:text="${lesson.date} + ' ' +${lesson.slot.dayOfWeek.translation} + ' '+ ${lesson.slot.time}">data</span></a>
+                                <span class="text-success">lekcja opłacona</span>
+                            </div>
+                            <div th:if="${lesson.paid}==false">
+                                <a class="badge badge-danger"
+                                   th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                                    <span th:text="${lesson.date} + ' ' +${lesson.slot.dayOfWeek.translation} + ' '+ ${lesson.slot.time}">data</span></a>
+                            </div>
+                        </div>
+
+                        <h5 class="text-uppercase text-success"> lekcje do opłacenia do końca nastepnego miesiąca:
+                            <span></span>
+                            <span th:text="${countNotPaidNextMonth}"></span></h5>
+                        <div th:each="lesson : ${notPaidLessonsNextMonth}">
+                            <div>
+                                <a class="badge badge-danger"
+                                   th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
+                                    <span th:text="${lesson.date} + ' ' +${lesson.slot.dayOfWeek.translation} + ' '+ ${lesson.slot.time}">data</span></a>
+                            </div>
+                        </div>
+
+                        <h5 class="text-uppercase text-success"> Nadpłata: <span th:text="${overPayment}">x </span> zł.
+                        </h5>
+
+
+                        <h6 class="text-uppercase text-success">Do opłaty wszystkich lekcji w następnym miesiącu
+                            brakuje: <span th:text="${requiredPayment}">x </span>
+                            zł.
+                        </h6>
+                    </div>
                 </div>
-                <div th:if="${slot.archived}==false">
-                    <span class="badge badge-info" th:text="${slot.dayOfWeek.translation} + ' ' + ${slot.time}">dzień tygodnia</span>
-                </div>
             </div>
 
-            <div th:if="${student.active} == true"><a
-                    th:href="@{/teacher/slots/booking/{studentId}(studentId=${student.getId()})}"
-                    class="btn btn-warning text-uppercase"> Edytuj stały termin </a>
-            </div>
-
-
-            <h5 class="text-uppercase"> Zaplanowane lekcje w tym miesiącu: <span
-                    th:text="${countPlannedThisMonth}">X</span></h5>
-            <div th:each="lesson : ${plannedLessonThisMonth}">
-
-                <div th:if="${lesson.paid}==true">
-                    <a class="badge badge-success"
-                       th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
-                        <span th:text="${lesson.date} + ' ' +${lesson.slot.dayOfWeek.translation} + ' '+ ${lesson.slot.time}">data</span></a>
-                    <span class="text-success">lekcja opłacona</span>
-                </div>
-                <div th:if="${lesson.paid}==false">
-                    <a class="badge badge-danger"
-                       th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
-                        <span th:text="${lesson.date} + ' ' +${lesson.slot.dayOfWeek.translation} + ' '+ ${lesson.slot.time}">data</span></a>
-                </div>
-            </div>
-
-            <h5 class="text-uppercase"> lekcje do opłacenia do końca nastepnego miesiąca: <span></span>
-                <span th:text="${countNotPaidNextMonth}"></span></h5>
-            <div th:each="lesson : ${notPaidLessonsNextMonth}">
-                <div>
-                    <a class="badge badge-danger"
-                       th:href="@{/teacher/calendar/lessons/{id}(id=${lesson.getId()})}">
-                        <span th:text="${lesson.date} + ' ' +${lesson.slot.dayOfWeek.translation} + ' '+ ${lesson.slot.time}">data</span></a>
-                </div>
-            </div>
-
-            <h6>Nadpłata:</h6>
-            <p><span th:text="${overPayment}">x </span> zł.</p>
-            <p>Do opłaty wszystkich lekcji w następnym miesiącu brakuje: <span th:text="${requiredPayment}">x </span>
-                zł.
-            </p>
-
-            <div th:if="${student.active}==true">
-                <a class="btn btn-danger text-uppercase"
-                   th:href="@{/teacher/students/submit/{id}(id=${student.getId()})}"> Zawieś studenta</a>
-            </div>
-
-            <div th:if="${student.active}==false">
-                <a class="btn btn-danger text-uppercase"
-                   th:href="@{/teacher/students/activate/{id}(id=${student.getId()})}"> Aktywuj studenta</a>
-            </div>
 
         </div>
     </div>

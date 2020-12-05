@@ -27,6 +27,9 @@ public class StudentDTO {
     @Digits(integer = 3, fraction = 2)
     @NotNull(message = "Pole nie może być puste")
     private BigDecimal priceForOneLesson;
+    @DecimalMin(value = "0.0", inclusive = true, message = "Nadpłata nie może być liczbą ujemną")
+    @Digits(integer = 5, fraction = 2)
+    @NotNull(message = "Pole nie może być puste")
     private BigDecimal overpayment;
 
     public String getFullName() {

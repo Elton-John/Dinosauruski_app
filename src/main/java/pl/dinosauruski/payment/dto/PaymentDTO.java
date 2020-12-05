@@ -27,7 +27,7 @@ public class PaymentDTO {
     @NotNull
     private Student student;
     @DecimalMin(value = "0.0", inclusive = false, message = "Suma nie może być liczbą ujemną")
-    @Digits(integer = 3, fraction = 2)
+    @Digits(integer = 4, fraction = 2)
     @NotNull(message = "Pole nie może być puste")
     private BigDecimal sum;
 
