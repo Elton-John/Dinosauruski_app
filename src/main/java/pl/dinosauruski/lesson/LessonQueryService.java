@@ -248,6 +248,11 @@ public class LessonQueryService {
         return result;
     }
 
+    public List<Optional<Lesson>> getAllRebookingLessonByStudentAndTeacherAfterDate(LocalDate date,Long teacherId, Long studentId){
+
+
+    return lessonRepository.findAllRebookedByTeacherAndStudentWhereDateIsAfter(date,teacherId, studentId);
+    }
 //    public Table<Long, LocalDate, LessonViewDTO> createOneMonthSchedule(int year, Month month, Long teacherId) {
 //        Table<Long, LocalDate, LessonViewDTO> schedule = TreeBasedTable.create();
 //        List<Lesson> allMonthLessons = getAllMonthYearLessonsByTeacher(year, month.ordinal(), teacherId);

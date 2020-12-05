@@ -33,6 +33,8 @@ public class Student {
     @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
     private Set<Payment> payments = new HashSet<>();
     private BigDecimal overpayment;
+    @OneToMany(mappedBy = "notRegularStudent", fetch = FetchType.EAGER)
+    private Set<Rebooking> rebookings =  new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

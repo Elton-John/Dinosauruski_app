@@ -28,7 +28,7 @@ public class LessonCommandService {
     private SlotQueryService slotQueryService;
     private WeekCommandService weekCommandService;
     private WeekQueryService weekQueryService;
-    private RebookingCommandService rebookingCommandService;
+  //  private RebookingCommandService rebookingCommandService;
     private StudentQueryService studentQueryService;
 
 
@@ -66,6 +66,7 @@ public class LessonCommandService {
             case "lastMinute":
                 lesson.setLastMinuteCancelled(true);
                 lesson.setRequiredPayment(true);
+                break;
             default:
                 result = false;
         }
@@ -126,18 +127,8 @@ public class LessonCommandService {
         }
     }
 
-    public void cancelBookingOnceFreeLesson(Long id) {
-        Lesson lesson = lessonQueryService.getOneOrThrow(id);
-        lesson.setRebooked(false);
-        Rebooking rebooking = lesson.getRebooking();
-        rebookingCommandService.delete(rebooking);
-        lesson.setRequiredPayment(false);
-        lessonRepository.save(lesson);
-    }
 
-    public void saveLesson(Lesson lesson) {
-        lessonRepository.save(lesson);
-    }
+
 
     public Optional<Student> savePaymentForStudentBeforeDeleteOrUpdateLesson(Lesson lesson) {
         Student studentWhoPaid = null;
@@ -194,6 +185,7 @@ public class LessonCommandService {
             if (notPaidLessons.size() > 0) {
                 int i = 0;
                 while (overpayment.compareTo(priceForOneLesson) >= 0) {
+
                     Lesson lesson = lessonQueryService.getOneOrThrow(notPaidLessons.get(i).getId());
                     lesson.setPaid(true);
                     lesson.setRequiredPayment(false);
@@ -201,6 +193,10 @@ public class LessonCommandService {
                     overpayment = overpayment.subtract(priceForOneLesson);
                     regularStudent.setOverpayment(overpayment);
                     i++;
+                    if (notPaidLessons.size() <= i) {
+                        break;
+                    }
+
                 }
             }
         }

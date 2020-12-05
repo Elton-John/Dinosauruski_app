@@ -143,11 +143,11 @@ public class LessonGenerateController {
     }
 
     @PostMapping("/lessons/rebooking/{id}")
-    String addStudentToOnceFreeSlot(
+    String addStudentToOnceFreeSlot(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
             @PathVariable Long id,
             Model model,
-            @RequestParam("notRegularStudent") Student student) {
-        rebookingCommandService.create(id, student);
+            @RequestParam("notRegularStudent") Long studentId) {
+        rebookingCommandService.create(id, studentId, teacherDTO.getId());
         LessonDTO lessonDTO = lessonQueryService.getOneLessonDtoOrThrow(id);
         int month = lessonDTO.getDate().getMonth().ordinal() + 1;
         int year = lessonDTO.getDate().getYear();
@@ -166,9 +166,10 @@ public class LessonGenerateController {
     }
 
     @PatchMapping("/lessons/rebooking/edit/{id}")
-    String editOnesFreeBookedLesson(@ModelAttribute("rebooking") RebookingDTO rebookingDTO,
+    String editOnesFreeBookedLesson(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
+            @ModelAttribute("rebooking") RebookingDTO rebookingDTO,
                                     @PathVariable Long id) {
-        rebookingCommandService.update(rebookingDTO);
+        rebookingCommandService.update(rebookingDTO, teacherDTO.getId());
         LessonDTO lessonDTO = lessonQueryService.getOneLessonDtoOrThrow(id);
         int month = lessonDTO.getDate().getMonth().ordinal() + 1;
         int year = lessonDTO.getDate().getYear();
@@ -178,7 +179,7 @@ public class LessonGenerateController {
     @GetMapping("/lessons/rebooking/delete/{id}")
     String cancelBookingOnceFreeSlot(@SessionAttribute("loggedTeacher") TeacherDTO teacherDTO,
                                      @PathVariable Long id) {
-        lessonCommandService.cancelBookingOnceFreeLesson(id);
+       rebookingCommandService.cancelBookingOnceFreeLesson(id);
         LessonDTO lessonDTO = lessonQueryService.getOneLessonDtoOrThrow(id);
         int month = lessonDTO.getDate().getMonth().ordinal() + 1;
         int year = lessonDTO.getDate().getYear();

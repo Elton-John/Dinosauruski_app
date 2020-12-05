@@ -44,30 +44,32 @@ public class PaymentCommandService {
         BigDecimal priceForOneLesson = student.getPriceForOneLesson();
         BigDecimal sum = payment.getSum();
         BigDecimal overPaymentByStudent = student.getOverpayment();
+        student.setOverpayment(overPaymentByStudent.add(sum));
+     //   sum = sum.add(overPaymentByStudent);
+        lessonCommandService.updatePaymentForStudent(student.getId(),teacherId);
 
-        sum = sum.add(overPaymentByStudent);
-
-        int countLessonsCanBePaid = sum.divide(priceForOneLesson, 2, RoundingMode.HALF_DOWN).intValue();
-        BigDecimal rest = sum.subtract(priceForOneLesson.multiply(BigDecimal.valueOf(countLessonsCanBePaid)));
-        student.setOverpayment(rest);
-
-        List<LessonPaymentDTO> notPaidLessons = lessonQueryService.getNotPaidLessonsByStudent(teacherId, student.getId());
-
-        if (notPaidLessons.size() < countLessonsCanBePaid) {
-            int difference = countLessonsCanBePaid - notPaidLessons.size();
-            BigDecimal overPayment = priceForOneLesson.multiply(BigDecimal.valueOf(difference));
-            student.setOverpayment(overPayment);
-            countLessonsCanBePaid = countLessonsCanBePaid - difference;
-        }
-        for (int i = 0; i < countLessonsCanBePaid; i++) {
-            LessonPaymentDTO lessonPaymentDTO = notPaidLessons.get(i);
-            Lesson lesson = lessonQueryService.getOneOrThrow(lessonPaymentDTO.getId());
-            lesson.setPayment(payment);
-            lesson.setPaid(true);
-            lesson.setRequiredPayment(false);
-            lesson.setAddedPayment(priceForOneLesson);
-            lessonCommandService.saveLesson(lesson);
-        }
+//        int countLessonsCanBePaid = sum.divide(priceForOneLesson, 2, RoundingMode.HALF_DOWN).intValue();
+//        BigDecimal rest = sum.subtract(priceForOneLesson.multiply(BigDecimal.valueOf(countLessonsCanBePaid)));
+//        student.setOverpayment(rest);
+//
+//        List<LessonPaymentDTO> notPaidLessons = lessonQueryService.getNotPaidLessonsByStudent(teacherId, student.getId());
+//
+//        if (notPaidLessons.size() < countLessonsCanBePaid) {
+//            int difference = countLessonsCanBePaid - notPaidLessons.size();
+//            BigDecimal overPayment = priceForOneLesson.multiply(BigDecimal.valueOf(difference));
+//            //pobierz najpierw
+//            student.setOverpayment(overPayment);
+//            countLessonsCanBePaid = countLessonsCanBePaid - difference;
+//        }
+//        for (int i = 0; i < countLessonsCanBePaid; i++) {
+//            LessonPaymentDTO lessonPaymentDTO = notPaidLessons.get(i);
+//            Lesson lesson = lessonQueryService.getOneOrThrow(lessonPaymentDTO.getId());
+//            lesson.setPayment(payment);
+//            lesson.setPaid(true);
+//            lesson.setRequiredPayment(false);
+//            lesson.setAddedPayment(priceForOneLesson);
+//            lessonCommandService.saveLesson(lesson);
+//        }
     }
 
 

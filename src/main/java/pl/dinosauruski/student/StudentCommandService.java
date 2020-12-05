@@ -2,8 +2,12 @@ package pl.dinosauruski.student;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.dinosauruski.lesson.LessonCommandService;
+import pl.dinosauruski.lesson.LessonQueryService;
+import pl.dinosauruski.models.Lesson;
 import pl.dinosauruski.models.Student;
 import pl.dinosauruski.models.Teacher;
+import pl.dinosauruski.rebooking.RebookingCommandService;
 import pl.dinosauruski.slot.SlotCommandService;
 import pl.dinosauruski.slot.SlotQueryService;
 import pl.dinosauruski.student.dto.StudentDTO;
@@ -14,6 +18,8 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -26,6 +32,8 @@ public class StudentCommandService {
     private TeacherCommandService teacherCommandService;
     private SlotCommandService slotCommandService;
     private SlotQueryService slotQueryService;
+    private LessonQueryService lessonQueryService;
+    private RebookingCommandService rebookingCommandService;
 
 
     public void update(StudentDTO studentDTO) {
@@ -59,6 +67,13 @@ public class StudentCommandService {
     public void suspend(Long teacherId, Long studentId, LocalDate date) {
         Student student = studentQueryService.getOneOrThrow(studentId);
         student.getSlots().forEach(slot -> slotCommandService.makeSlotFree(slot.getId(), studentId, date));
+        List<Optional<Lesson>> optionalRebookingLessons = lessonQueryService.getAllRebookingLessonByStudentAndTeacherAfterDate(date, teacherId, studentId);
+        optionalRebookingLessons.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(lesson -> {
+                    rebookingCommandService.cancelBookingOnceFreeLesson(lesson.getId());
+                });
         updateStudentStatus(studentId);
     }
 
