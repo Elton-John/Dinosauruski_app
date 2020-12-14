@@ -11,7 +11,7 @@ At the end of the month, 15 of the 25 students ask you: How much do I have to pa
 This can be a hell.
 
 
-**This web application helps to manage all processes for individual classes for teachers and their students.**
+# This web application helps to manage all processes for individual classes for teachers and their students.
 
 ![alt text][main]
 
