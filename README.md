@@ -1,5 +1,19 @@
 # Dinosauruski_app
-Web application helps to manage all processes for individual classes for teachers and their students. 
+
+Imagine you have 25 individual students and you charge them monthly in advance. 
+
+Some have lessons once a week and some have more. Some have a fixed slots and some have flexible.
+
+Sometimes some people cancel classes, some want to move exceptionally this week to another day, some cancel them at the last minute, and you have a policy that late cancellations should be paid.
+
+At the end of the month, 15 of the 25 students ask you: How much do I have to pay because I think I canceled this month, but I don't remember how much and when? 
+
+This can be a hell.
+
+
+**This web application helps to manage all processes for individual classes for teachers and their students.**
+
+![alt text][main]
 
 **As a teacher:**
 * :star2: you can generate your schedule of classes by adding slots (ex. Mondays, 3 p.m), students and relations between them. 
@@ -14,11 +28,13 @@ MIT license (It lets people do almost anything they want with the project, like 
 
 # PAGES:
 
-:globe_with_meridians:  **LOGIN** 
+:point_right:  **LOGIN** 
 
-:globe_with_meridians: **REGISTRATION**
+:point_right: **REGISTRATION**
 
-:globe_with_meridians: **COCKPIT:**
+:point_down: **COCKPIT:**
+
+![alt text][cockpit]
 
 :heavy_check_mark: Display current week with lessons plan
 
@@ -28,7 +44,17 @@ MIT license (It lets people do almost anything they want with the project, like 
 
 :heavy_check_mark: Access to slots management
 
-:globe_with_meridians: **MANAGEMENT SLOTS:**
+:point_right: **DROPDOWN TEACHER PANEL:**
+
+:heavy_check_mark: Editing  teacher profile
+
+:heavy_check_mark: Logout
+
+:heavy_check_mark: Deleting  teacher profile
+
+:point_down: **MANAGEMENT SLOTS:**
+
+![alt text][slots]
 
 :heavy_check_mark: Display all booked and free slots
 
@@ -38,15 +64,13 @@ MIT license (It lets people do almost anything they want with the project, like 
 
 :heavy_check_mark: Adding new slots
  
-:globe_with_meridians: **DROPDOWN TEACHER PANEL:**
 
-:heavy_check_mark: Editing  teacher profile
-
-:heavy_check_mark: Logout
-
-:heavy_check_mark: Deleting  teacher profile
  
-:globe_with_meridians: **CALENDAR:**
+:point_down: **CALENDAR:**
+:point_down: Before generation
+![alt text][cal-before]
+:point_down: After generation
+![alt text][cal-after]
 
 :heavy_check_mark: Generating current month lessons
 
@@ -56,7 +80,8 @@ MIT license (It lets people do almost anything they want with the project, like 
 
 :heavy_check_mark: Access to lesson management
  
-:globe_with_meridians: **LESSON MANAGEMENT:**
+:point_down: **LESSON MANAGEMENT:**
+![alt text][rebooking]
 
 :heavy_check_mark: Cancelling lesson by teacher (payment will be saved for student)
 
@@ -68,7 +93,8 @@ MIT license (It lets people do almost anything they want with the project, like 
 
 :heavy_check_mark: Deleting lesson from plan  (payment will be saved for student)
  
-:globe_with_meridians: **PAYMENT:**
+:point_down: **PAYMENT:**
+![alt text][payments]
 
 :heavy_check_mark: Display last 10 added payments
 
@@ -77,7 +103,8 @@ MIT license (It lets people do almost anything they want with the project, like 
 :heavy_check_mark: Deleting payment
 
  
-:globe_with_meridians: **STUDENTS:**
+:point_down: **STUDENTS:**
+![alt text][students]
 
 :heavy_check_mark: Display all active and suspended students
 
@@ -85,7 +112,8 @@ MIT license (It lets people do almost anything they want with the project, like 
 
 :heavy_check_mark: Access to student’s profile
  
-:globe_with_meridians: **STUDENT PROFILE:**
+:point_down: **STUDENT PROFILE:**
+![alt text][student-profile]
 
 :heavy_check_mark: Display information about student:
 
@@ -108,7 +136,8 @@ required payment for lessons until last day of next month
 
 :heavy_check_mark: Activating student
  
-:globe_with_meridians: **STUDENT'S SLOTS MANAGEMENT:**
+:point_down: **STUDENT'S SLOTS MANAGEMENT:**
+![alt text][student-slots]
 
 :heavy_check_mark: deleting booked slots after chosen date
 
@@ -123,4 +152,14 @@ required payment for lessons until last day of next month
 * Maven
 * Bootstrap
 
-
+[cockpit]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/main.png "cockpit"
+[edit]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/edit_teacher.png "editing teacher profile"
+[slots]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/slots-manage.png "slots"
+[cal-before]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/calendar_before_gen.png "calendar before generation"
+[cal-after]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/cal-after-gen.png "calendar after generation"
+[rebooking]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/rebooking.png "lesson changes"
+[payments]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/payments.png "payments"
+[students]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/students.png "students"
+[student-profile]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/student_profile.png "student profile"
+[main]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/cal-after-change.png "demo view"
+[student-slots]: https://github.com/Elton-John/Dinosauruski_app/blob/main/demoViews/student_slots.png "changing studet's slots"
