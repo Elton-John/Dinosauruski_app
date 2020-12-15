@@ -15,6 +15,7 @@
 
         <org.springframework.version>5.1.9.RELEASE</org.springframework.version>
         <failOnMissingWebXml>false</failOnMissingWebXml>
+    <java.version>13</java.version>
 <!--        <maven.compiler.source>1.8</maven.compiler.source>-->
 <!--        <maven.compiler.target>1.8</maven.compiler.target>-->
     </properties>
@@ -200,8 +201,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                     <configuration>
-                        <source>11</source>
-                        <target>11</target>
+                        <source>13</source>
+                        <target>13</target>
                     </configuration>
                 </plugin>
             </plugins>
